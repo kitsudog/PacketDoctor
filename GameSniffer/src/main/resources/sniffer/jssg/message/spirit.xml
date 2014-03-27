@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="spirit">
+
+    <protocol id="0x00150102" alias="sync">
+        <toServer desc="战纹系统同步" class="com.kueem.webgame.game.action.game.SpiritAction" method="sync">
+        </toServer>
+    </protocol>
+
+
+    <!-- 战纹信息,战魂信息,机信息,战魂最大等级,当前修炼的战纹,当前修炼的战纹等级,当前修炼的开始时间 战纹套件的等级，战魂套件的等级 -->
+    <protocol id="0x00150202" alias="syncInfo">
+        <toClient desc="战纹信息">
+            <param fieldName="vein" tag="1" fieldType="int32" repeated="true" />
+            <param fieldName="soul" tag="2" fieldType="int32" repeated="true" />
+            <param fieldName="secret" tag="3" fieldType="int32" repeated="true" />
+            <param fieldName="soul_max" tag="4" fieldType="int32" repeated="true" />
+            <param fieldName="practice_vein" tag="5" fieldType="int32" />
+            <param fieldName="practice_level" tag="6" fieldType="int32" />
+            <param fieldName="practice_time" tag="7" fieldType="int64" />
+            <param fieldName="secret_count" tag="8" fieldType="int32" />
+            <param fieldName="vein_suit_level" tag="9" fieldType="int32" />
+            <param fieldName="soul_suit_level" tag="10" fieldType="int32" />
+        </toClient>
+    </protocol>
+
+    <!-- type 0 - 7 -->
+    <protocol id="0x00150302" alias="practice">
+        <toServer desc="战纹修炼" class="com.kueem.webgame.game.action.game.SpiritAction" method="practice">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <!-- type 1 加速一个小时 2 直接完成 -->
+    <protocol id="0x00150402" alias="speedUpPractice">
+        <toServer desc="战纹加速" class="com.kueem.webgame.game.action.game.SpiritAction" method="speedUpPractice">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+
+    <!-- 1 类型 2保护符数量 3是否自动购买 -->
+    <protocol id="0x00150502" alias="soulUp">
+        <toServer desc="战魂进化" class="com.kueem.webgame.game.action.game.SpiritAction" method="soulUp">
+            <param fieldName="type" tag="1" fieldType="int32" />
+            <param fieldName="baohufuNumber" tag="2" fieldType="int32" />
+            <param fieldName="autoBuy" tag="3" fieldType="bool" />
+        </toServer>
+    </protocol>
+
+
+    <!-- 1 类型 -->
+    <protocol id="0x00150602" alias="secretUp">
+        <toServer desc="感悟天机" class="com.kueem.webgame.game.action.game.SpiritAction" method="secretUp">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <!-- 1 类型 -->
+    <protocol id="0x00150702" alias="soulLevelExpand">
+        <toServer desc="战魂突破" class="com.kueem.webgame.game.action.game.SpiritAction" method="soulLevelExpand">
+            <param fieldName="type" tag="1" fieldType="int32" />
+            <param fieldName="tupodanNumber" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+
+    <protocol id="0x00150802" alias="notice">
+        <toClient desc="通知客户端 可以修炼战纹">
+            <param fieldName="flag" tag="1" fieldType="bool" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00150902" alias="opRet">
+        <toClient desc="一些操作返回信息">
+            <param fieldName="ret" tag="1" fieldType="int32" desc="操作结果 1 修炼的时候收到修炼的请求 2 没修炼的时候收到加速请求" />
+        </toClient>
+    </protocol>
+
+</config>

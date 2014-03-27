@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="activity">
+	<protocol id="0x001F0102" alias="gain">
+		<toServer desc="奖励领取"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="gain">
+			<param fieldName="actid" tag="1" fieldType="int32" />
+			<param fieldName="index" tag="2" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0202" alias="sync">
+		<toServer desc="活动同步"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="sync">
+			<param fieldName="actid" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0302" alias="syncResult">
+		<toClient desc="活动同步返回">
+			<param fieldName="indexs" tag="1" fieldType="int32" repeated="true" />
+			<param fieldName="canGains" tag="2" fieldType="bool" repeated="true" />
+			<param fieldName="status" tag="3" fieldType="int32" repeated="true" />
+			<param fieldName="startTime" tag="4" fieldType="int32" />
+			<param fieldName="duration" tag="5" fieldType="int32" />
+			<param fieldName="actid" tag="6" fieldType="int32" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x001F0402" alias="canRewardNeiceJunling">
+		<toClient desc="返回内测军令福利是否已经领取了">
+			<param fieldName="canReward" tag="1" fieldType="bool" desc="是否已经领取了" />
+		</toClient>
+		<toServer desc="请求是否可以领取军令"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="canRewardNeiceJunling">
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0502" alias="rewardNeiceJunling">
+		<toClient desc="返回内测军令福利是否已经领取了">
+			<param fieldName="canReward" tag="1" fieldType="bool" desc="是否成功" />
+		</toClient>
+		<toServer desc="领取奖励"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="rewardNeiceJunling">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F0602" alias="syncActivityLogin">
+		<toClient desc="活动信息">
+			<param fieldName="get111" tag="1" fieldType="int32" repeated="true" />
+			<param fieldName="login" tag="2" fieldType="int32" repeated="true" />
+		</toClient>
+		<toServer desc="请求活动信息"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="requestActivityLogin">
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0702" alias="getActivityLoginReward">
+		<toServer desc="领取奖励"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityLoginReward">
+			<param fieldName="day" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x001F0802" alias="getActivityEquipSuit">
+		<toClient desc="同步活动装备领取状态">
+			<param fieldName="state" tag="1" fieldType="int32" repeated="true" /> <!-- 0 / 1 -->
+		</toClient>
+		<toServer desc="领取"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityEquipSuit">
+			<param fieldName="index" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0902" alias="getActivityZhanWen">
+		<toClient desc="同步活动战纹领取状态">
+			<param fieldName="state" tag="1" fieldType="int32" repeated="true" /> <!-- 0 / 1 -->
+		</toClient>
+		<toServer desc="领取"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityZhanWen">
+			<param fieldName="index" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F0A02" alias="getActivityRank">
+		<toClient desc="同步排行">
+			<param fieldName="index" tag="1" fieldType="int32" /> <!-- 1:等级 2:战力 -->
+			<param fieldName="name" tag="2" fieldType="string" repeated="true" />
+			<param fieldName="camp" tag="3" fieldType="int32" repeated="true" />
+			<param fieldName="level_force" tag="4" fieldType="int32"
+				repeated="true" />
+		</toClient>
+		<toServer desc="请求排行"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityRank">
+			<param fieldName="index" tag="1" fieldType="int32" /><!-- 1:等级 2:战力 -->
+		</toServer>
+	</protocol>
+	<protocol id="0x001F0B02" alias="getActivityTopUp">
+		<toClient desc="同步充值">
+			<param fieldName="state" tag="1" fieldType="int32" repeated="true" /> <!-- 0 / 1 -->
+		</toClient>
+		<toServer desc="领取"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityTopUp">
+			<param fieldName="index" tag="1" fieldType="int32" /><!-- 1:等级 2:战力 -->
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x001F0C02" alias="getActivityTopUpRank">
+		<toClient desc="同步充值排行">
+			<param fieldName="name" tag="1" fieldType="string" repeated="true" />
+			<param fieldName="gender" tag="2" fieldType="string" repeated="true" />
+			<param fieldName="camp" tag="3" fieldType="int32" repeated="true" />
+			<param fieldName="payNum" tag="4" fieldType="int32" repeated="true" />
+		</toClient>
+		<toServer desc="请求排行"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityTopUpRank">
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x001F0D02" alias="recoverLogin">
+		<toServer desc="在活动期间内可花费50元宝/天补回之前未登陆的天数"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="recoverLogin">
+			<param fieldName="day" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F0F02" alias="getActivityGetCoinInfo">
+		<toClient desc="同步发放元宝数据">
+			<param fieldName="hadGet" tag="1" fieldType="int32" /><!-- 已领取 -->
+		</toClient>
+		<toServer desc="请求排行"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityGetCoinInfo">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F1002" alias="getActivityCoin">
+		<toServer desc="领取活动发放的50元宝"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityCoin">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F1102" alias="getActivityBuyWingsInfo">
+		<toClient desc="同步已经购翅膀的数量">
+			<param fieldName="hadBuyCount" tag="1" fieldType="int32" />
+		</toClient>
+		<toServer desc="请求已经购翅膀的数量"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getActivityLimitBuyItemInfo">
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x001F1202" alias="buyWings">
+		<toServer desc="购买翅膀"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="buyWings">
+			<param fieldName="actid" tag="1" fieldType="int32" /><!-- 翅膀的id -->
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x001F1302" alias="requestPayforInfo">
+		<toClient desc="同步充值活的信息">
+			<param fieldName="days" tag="1" fieldType="int32" repeated="true" /><!--充值状态1：已充，2已领 -->
+			<param fieldName="lastPayTime" tag="2" fieldType="string" /><!-- 
+				最后一次充值时间 -->
+		</toClient>
+		<toServer desc="请求同步充值活的信息"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="requestPayforInfo">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F1402" alias="getPayForActivityReward">
+		<toServer desc="领取充值活动奖励"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getPayForActivityReward">
+			<param fieldName="actid" tag="1" fieldType="int32" /><!--天 -->
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F1502" alias="requestSixGiftInfo">
+		<toClient desc="同步三天六个物品　活动">
+			<param fieldName="state" tag="1" fieldType="int32" repeated="true" /><!--0未领,1错过了领取,2已领取 -->
+			<param fieldName="endTime" tag="2" fieldType="string" /><!--倒计时时间 -->
+			<param fieldName="times" tag="3" fieldType="int32" /><!--领取的次数-->
+		</toClient>
+		<toServer desc="请求同步充值活的信息"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="requestSixGiftInfo">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x001F1602" alias="getSixGiftRewrad">
+		<toClient desc="同步rock到的索引 ">
+			<param fieldName="index" tag="1" fieldType="int32" /><!-- 同步到的随机物品索引 -->
+		</toClient>
+
+		<toServer desc="领取充值活动奖励"
+			class="com.kueem.webgame.game.action.game.ActivityAction" method="getSixGiftRewrad">
+		</toServer>
+	</protocol>
+
+
+
+
+
+
+</config>

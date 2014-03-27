@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="gem">
+    <!--宝石系统 -->
+    <protocol id="0x00130102" alias="hole">
+        <toServer desc="装备打孔" class="com.kueem.webgame.game.action.game.GemAction" method="hole">
+            <param fieldName="ueid" tag="1" fieldType="int32" />
+            <param fieldName="is_bind_first" tag="2" fieldType="bool" />
+            <param fieldName="auto_buy" tag="3" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130202" alias="inlay">
+        <toServer desc="宝石镶嵌" class="com.kueem.webgame.game.action.game.GemAction" method="inlay">
+            <param fieldName="ueid" tag="1" fieldType="int32" />
+            <param fieldName="poses" tag="2" fieldType="int32" repeated="true" />
+            <param fieldName="indexList" tag="3" fieldType="int32" repeated="true" />
+            <param fieldName="is_bind_first" tag="4" fieldType="bool" />
+            <param fieldName="auto_buy" tag="5" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130302" alias="remove">
+        <toServer desc="宝石摘除" class="com.kueem.webgame.game.action.game.GemAction" method="remove">
+            <param fieldName="ueid" tag="1" fieldType="int32" />
+            <param fieldName="poses" tag="2" fieldType="int32" repeated="true" />
+            <param fieldName="is_bind_first" tag="3" fieldType="bool" />
+            <param fieldName="auto_buy" tag="4" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130402" alias="synthesis">
+        <toServer desc="宝石合成" class="com.kueem.webgame.game.action.game.GemAction" method="synthesis">
+            <param fieldName="indexList" tag="1" fieldType="int32" repeated="true" />
+            <param fieldName="numList" tag="2" fieldType="int32" repeated="true" />
+            <param fieldName="useBaohufu" tag="3" fieldType="bool" />
+            <param fieldName="is_bind_first" tag="4" fieldType="bool" />
+            <param fieldName="auto_buy" tag="5" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130602" alias="batch_synthesis">
+        <toServer desc="批量宝石合成" class="com.kueem.webgame.game.action.game.GemAction" method="batch_synthesis">
+            <param fieldName="gemId" tag="1" fieldType="int32" />
+            <param fieldName="bound" tag="2" fieldType="int32" />
+            <param fieldName="gemNum" tag="3" fieldType="int32" />
+            <param fieldName="num" tag="4" fieldType="int32" />
+            <param fieldName="useBaohufu" tag="5" fieldType="bool" />
+            <param fieldName="flag" tag="6" fieldType="bool" />
+            <param fieldName="is_bind_first" tag="7" fieldType="bool" />
+            <param fieldName="auto_buy" tag="8" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130702" alias="batch_synthesis_result">
+        <toClient desc="批量合成结果">
+            <param tag="1" fieldType="int32" fieldName="" />
+            <param tag="2" fieldType="int32" fieldName="" />
+            <param tag="3" fieldType="int32" fieldName="" />
+        </toClient>
+    </protocol>
+    <protocol id="0x00130802" alias="refine">
+        <toServer desc="宝石提纯" class="com.kueem.webgame.game.action.game.GemAction" method="refine">
+            <param fieldName="type" tag="1" fieldType="int32" />
+            <param fieldName="index" tag="2" fieldType="int32" />
+            <param fieldName="pos" tag="3" fieldType="int32" />
+            <param fieldName="num" tag="4" fieldType="int32" />
+            <param fieldName="is_bind_first" tag="5" fieldType="bool" />
+            <param fieldName="auto_buy" tag="6" fieldType="bool" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130902" alias="transform_base">
+        <toServer desc="基础宝石转换" class="com.kueem.webgame.game.action.game.GemAction" method="transform_base">
+            <param fieldName="indexList" tag="1" fieldType="int32" repeated="true" />
+            <param fieldName="numList" tag="2" fieldType="int32" repeated="true" />
+            <param fieldName="attributeList" tag="3" fieldType="int32" repeated="true" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130A02" alias="transform_special">
+        <toServer desc="特性宝石转换" class="com.kueem.webgame.game.action.game.GemAction" method="transform_special">
+            <param fieldName="indexList" tag="1" fieldType="int32" repeated="true" />
+            <param fieldName="numList" tag="2" fieldType="int32" repeated="true" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00130B02" alias="synthesis_result">
+        <toClient desc="合成结果">
+            <param tag="1" fieldType="bool" fieldName="" />
+        </toClient>
+    </protocol>
+</config>

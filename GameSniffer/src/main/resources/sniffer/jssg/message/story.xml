@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="story">
+    <protocol id="0x00180102" alias="gainStory">
+        <toServer desc="获取剧情" class="com.kueem.webgame.game.action.game.StoryAction" method="gainStory">
+            <param fieldName="duplicateId" tag="1" fieldType="int32" /><!-- 副本id -->
+            <param fieldName="storyType" tag="2" fieldType="int32" /><!-- 触发类型 -->
+            <param fieldName="triggerId" tag="3" fieldType="int32" /><!-- 触发源的id . 如击杀某npc,则值为对应npc的id -->
+        </toServer>
+    </protocol>
+    <protocol id="0x00180202" alias="start">
+        <toClient desc="开始剧情">
+            <param fieldName="storyId" tag="1" fieldType="int32" /><!-- 剧情id -->
+        </toClient>
+    </protocol>
+    <protocol id="0x00180302" alias="endStory">
+        <toServer desc="结束剧情" class="com.kueem.webgame.game.action.game.StoryAction" method="endStory">
+        </toServer>
+    </protocol>
+</config>

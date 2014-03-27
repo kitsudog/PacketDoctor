@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="hero">
+    <protocol id="0x000C0102" alias="equipsInfo">
+        <toServer desc="人物属性：获取装备信息" class="com.kueem.webgame.game.action.game.HeroAction" method="equipsInfo">
+        </toServer>
+    </protocol>
+    <protocol id="0x000C0202" alias="equipInfoResult">
+        <toClient desc="返回用户装备数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserEquipProtobuf.Equips">
+        </toClient>
+    </protocol>
+    <protocol id="0x000C0302" alias="equip">
+        <toServer desc="人物属性：穿戴装备" class="com.kueem.webgame.game.action.game.HeroAction" method="equip">
+            <param fieldName="index" tag="1" fieldType="int32" />
+            <param fieldName="pos" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+    <protocol id="0x000C0402" alias="remove">
+        <toServer desc="人物属性：从人物身上移除装备,放入背包" class="com.kueem.webgame.game.action.game.HeroAction" method="remove">
+            <param fieldName="pos" tag="1" fieldType="int32" />
+            <param fieldName="index" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+    <protocol id="0x000C0502" alias="info">
+        <toServer desc="人物属性：获取人物属性" class="com.kueem.webgame.game.action.game.HeroAction" method="info">
+        </toServer>
+    </protocol>
+    <protocol id="0x000C0702" alias="showConfig">
+        <toServer desc="人物属性：三种时装的显示/隐藏" class="com.kueem.webgame.game.action.game.HeroAction" method="showConfig">
+            <param fieldName="wing" tag="1" fieldType="int32" />
+            <param fieldName="clothes" tag="2" fieldType="int32" />
+            <param fieldName="weapon" tag="3" fieldType="int32" />
+        </toServer>
+    </protocol>
+    <protocol id="0x000C0A02" alias="updateEquipInfo">
+        <toClient desc="更新部分用户装备数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserEquipProtobuf.Equips">
+        </toClient>
+    </protocol>
+
+    <!--宝石套装，强化套装，……………… -->
+    <protocol id="0x000C0B02" alias="getGemSuit">
+        <toClient desc="宝石套装 参数">
+            <param tag="1" fieldType="int32" fieldName="" desc="当前宝石套装的id" />
+            <param tag="2" fieldType="int32" fieldName="" desc="当前拥有的宝石个数 " />
+        </toClient>
+        <toServer desc="宝石套装 " class="com.kueem.webgame.game.action.game.HeroAction" method="getGemSuit">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000C0C02" alias="getStrengthEquipSuit">
+        <toClient desc="装备强化套装参数">
+            <param tag="1" fieldType="int32" fieldName="" desc="当前宝石套装的id" />
+            <param tag="2" fieldType="int32" fieldName="" desc="当前拥有的宝石个数" />
+        </toClient>
+        <toServer desc="装备套装 " class="com.kueem.webgame.game.action.game.HeroAction" method="getStrengthEquipSuit">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000C0D02" alias="getEquipSuit">
+        <toClient desc="装备套装参数">
+            <param tag="1" fieldType="int32" fieldName="" desc="当前宝石套装的id" />
+        </toClient>
+        <toServer desc="装备套装 " class="com.kueem.webgame.game.action.game.HeroAction" method="getEquipSuit">
+        </toServer>
+    </protocol>
+
+
+</config>

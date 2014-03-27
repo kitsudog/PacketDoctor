@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="spa">
+    <protocol id="0x00280102" alias="获取现有温泉场景信息">
+        <toClient desc="返回用现有温泉场景信息">
+            <param fieldName="mapId" tag="1" fieldType="int32" repeated="true" /><!--场景id,数组 -->
+            <param fieldName="num" tag="2" fieldType="int32" repeated="true" /><!--当前场景人数,数组 -->
+        </toClient>
+        <toServer desc="获取现有温泉场景信息" class="com.kueem.webgame.game.action.game.SpaAction" method="syncAllMaps">
+        </toServer>
+    </protocol>
+    <protocol id="0x00280202" alias="enter">
+        <toServer desc="进入温泉" class="com.kueem.webgame.game.action.game.SpaAction" method="enter">
+            <param fieldName="mapId" tag="1" fieldType="int32" /><!--场景id -->
+        </toServer>
+    </protocol>
+    <protocol id="0x00280302" alias="hit">
+        <toClient desc="返回结果">
+            <param fieldName="num" tag="1" fieldType="bool" />
+        </toClient>
+        <toServer desc="砸晕" class="com.kueem.webgame.game.action.game.SpaAction" method="hit">
+            <param fieldName="uid" tag="1" fieldType="string" /><!--目标人物id -->
+        </toServer>
+    </protocol>
+    <protocol id="0x00280402" alias="massage">
+        <toClient desc="返回结果">
+            <param fieldName="num" tag="1" fieldType="bool" />
+        </toClient>
+        <toServer desc="按摩" class="com.kueem.webgame.game.action.game.SpaAction" method="massage">
+            <param fieldName="uid" tag="1" fieldType="string" /><!--目标人物id -->
+        </toServer>
+    </protocol>
+    <protocol id="0x00280502" alias="restAddtionTime">
+        <toClient desc="返回今日剩余互动收益次数">
+            <param fieldName="num" tag="1" fieldType="int32" />
+        </toClient>
+    </protocol>
+    <protocol id="0x00280602" alias="singlePractice">
+        <toClient desc="返回结果">
+            <param fieldName="num" tag="1" fieldType="bool" />
+        </toClient>
+        <toServer desc="单修" class="com.kueem.webgame.game.action.game.SpaAction" method="singlePractice">
+        </toServer>
+    </protocol>
+    <protocol id="0x00280702" alias="doublePractice">
+        <toClient desc="返回结果">
+            <param fieldName="num" tag="1" fieldType="bool" />
+            <param fieldName="selfId" tag="2" fieldType="string" />
+            <param fieldName="targetId" tag="3" fieldType="string" />
+        </toClient>
+        <toServer desc="双修" class="com.kueem.webgame.game.action.game.SpaAction" method="doublePractice">
+            <param fieldName="uid" tag="1" fieldType="string" /><!--目标人物id -->
+        </toServer>
+    </protocol>
+    <protocol id="0x00280802" alias="stopSinglePractice">
+        <toClient desc="返回结果">
+            <param tag="1" fieldType="bool" desc="" fieldName="result" />
+        </toClient>
+        <toServer desc="打断单修" class="com.kueem.webgame.game.action.game.SpaAction" method="stopSinglePractice">
+        </toServer>
+    </protocol>
+    <protocol id="0x00280902" alias="stopDoublePractice">
+        <toClient desc="返回结果">
+            <param tag="1" fieldType="bool" desc="" fieldName="result" />
+        </toClient>
+        <toServer desc="打断双修" class="com.kueem.webgame.game.action.game.SpaAction" method="stopDoublePractice">
+        </toServer>
+    </protocol>
+</config>

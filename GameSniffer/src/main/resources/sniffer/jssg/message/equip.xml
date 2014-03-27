@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="equip">
+    <protocol id="0x000D0102" alias="strength">
+        <toServer desc="强化"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="strength">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="type" tag="2" fieldType="int32"/>
+            <param fieldName="useWanmeifu" tag="3" fieldType="bool"/>
+            <param fieldName="auto_buy" tag="4" fieldType="bool"/>
+            <param fieldName="is_bind_first" tag="5" fieldType="bool"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0202" alias="strengthResult">
+        <toClient desc="强化返回数据">
+            <param fieldName="currentLevel" tag="1" fieldType="int32"/>
+            <param fieldName="pointNum" tag="2" fieldType="int32"/>
+            <param fieldName="useUpStone" tag="3" fieldType="int32"/>
+            <param fieldName="boundCash" tag="4" fieldType="int32"/>
+            <param fieldName="stoneId" tag="5" fieldType="int32"/>
+            <param fieldName="type" tag="6" fieldType="int32"/>
+        </toClient>
+    </protocol>
+    <protocol id="0x000D0302" alias="washPractice">
+        <toServer desc="洗练"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="washPractice">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="lockAttribute" tag="2" fieldType="int32"
+             repeated="true"/>
+            <param fieldName="auto_buy" tag="3" fieldType="bool"/>
+            <param fieldName="is_bind_first" tag="4" fieldType="bool"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0402" alias="additionAttrInfoResult">
+        <toClient desc="返回指定装备的洗练附加属性" proto="true"
+         messageClass="com.kueem.webgame.game.protobuf.UserWashPraticeBuffers.EquipWashPracticeInfo">
+        </toClient>
+    </protocol>
+    <protocol id="0x000D0502" alias="additionAttrInfo">
+        <toServer desc="洗练：获取指定装备的附加属性信息"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="additionAttrInfo">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0602" alias="batchWashPractice">
+        <toServer desc="洗练：批量洗练"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="batchWashPractice">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="expectAttr" tag="2" fieldType="int32"
+             repeated="true"/>
+            <param fieldName="lockAttribute" tag="3" fieldType="int32"
+             repeated="true"/>
+            <param fieldName="stone_auto_buy" tag="4" fieldType="bool"/>
+            <param fieldName="lock_auto_buy" tag="5" fieldType="bool"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0702" alias="replaceAttr">
+        <toServer desc="洗练：替换附加属性"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="replaceAttr">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="position" tag="2" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0902" alias="advance">
+        <toServer desc="装备进阶"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="advance">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="useBaohufu" tag="2" fieldType="bool"/>
+            <param fieldName="is_bind_first" tag="3" fieldType="bool"/>
+            <param fieldName="auto_buy" tag="4" fieldType="bool"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0A02" alias="advanceResult">
+        <toClient desc="进阶返回数据">
+            <param fieldName="result" tag="1" fieldType="int32"/>
+        </toClient>
+    </protocol>
+    <protocol id="0x000D0B02" alias="quality">
+        <toServer desc="装备品质提升"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="quality">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="is_bind_first" tag="2" fieldType="bool"/>
+            <param fieldName="auto_buy" tag="3" fieldType="bool"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x000D0C02" alias="qualityResult">
+        <toClient desc="装备品质提升结果">
+            <param fieldName="res" tag="1" fieldType="bool"/>
+        </toClient>
+    </protocol>
+    <protocol id="0x000D0D02" alias="strengthForNew">
+        <toServer desc="新手引导专用的强化"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="strengthForNew">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="type" tag="2" fieldType="int32"/><!--强化类型 1:普通强化;2:最高强化 -->
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D0E02" alias="transferStrength">
+        <toServer desc="强化转移 将A转移给 B"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="transferStrength">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="ueidB" tag="2" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D0F02" alias="syncTransferStrength">
+        <toClient desc="强化转移结果">
+            <param fieldName="state" tag="1" fieldType="int32"/>
+        </toClient>
+    </protocol>
+    
+    <protocol id="0x000D1002" alias="requestStrengthWash">
+        <toClient desc="请求强化转移洗练属性">
+            <param fieldName="attr" tag="1" fieldType="int32" repeated="true"/>
+            <param fieldName="value" tag="2" fieldType="int32" repeated="true"/>
+        </toClient>
+        <toServer desc="返回强化转移洗练属性"
+         class="com.kueem.webgame.game.action.game.EquipAction" method="requestStrengthWash">
+            <param fieldName="ueid" tag="1" fieldType="int32"/>
+            <param fieldName="ueidB" tag="2" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D1102" alias="sbbj_jiefeng">
+        <toServer desc="神兵宝甲解封" class="com.kueem.webgame.game.action.game.EquipAction" method="sbbj_jiefeng">
+            <param fieldName="id" tag="1" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D1202" alias="sbbj_upgrade">
+        <toClient desc="神兵宝甲升级">
+            <param fieldName="id" tag="1" fieldType="int32"/>
+        </toClient>
+        <toServer desc="神兵宝甲升级" class="com.kueem.webgame.game.action.game.EquipAction" method="sbbj_upgrade">
+            <param fieldName="id" tag="1" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D1302" alias="sync_sbbj_condition">
+        <toClient desc="同步已经完成的神兵宝甲解封条件">
+            <param fieldName="id" tag="1" fieldType="int32" repeated="true"/>
+        </toClient>
+        <toServer desc="同步已经完成的神兵宝甲解封条件" class="com.kueem.webgame.game.action.game.EquipAction" method="sync_sbbj_condition">
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x000D1402" alias="sync_sbbj">
+        <toClient desc="同步已经解封过的神兵宝甲">
+            <param fieldName="id" tag="1" fieldType="int32" repeated="true"/>
+        </toClient>
+        <toServer desc="同步已经解封过的神兵宝甲" class="com.kueem.webgame.game.action.game.EquipAction" method="sync_sbbj">
+        </toServer>
+    </protocol>
+    
+</config>

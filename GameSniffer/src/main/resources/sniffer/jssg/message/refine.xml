@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="refine">
+    <protocol id="0x000F0102" alias="refine">
+        <toServer desc="炼化" class="com.kueem.webgame.game.action.game.RefineAction" method="refine">
+            <param fieldName="id" tag="1" fieldType="int32" />
+            <param fieldName="type" tag="2" fieldType="int32" />
+            <param fieldName="num" tag="3" fieldType="int32" />
+        </toServer>
+    </protocol>
+</config>

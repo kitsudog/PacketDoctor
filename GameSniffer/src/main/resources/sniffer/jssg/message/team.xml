@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="team">
+
+	<!-- 组队系统 -->
+	<protocol id="0x00120102" alias="create">
+		<toServer desc="玩家创建队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="create">
+			<param fieldName="allowInvite" tag="1" fieldType="bool" />
+			<param fieldName="allowDirectJoin" tag="2" fieldType="bool" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120E02" alias="memberInvite">
+		<toServer desc="允许队员邀请其他玩家" class="com.kueem.webgame.game.action.game.TeamAction" method="memberInvite">
+			<param fieldName="allowInvite" tag="1" fieldType="bool" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120F02" alias="directJoin">
+		<toServer desc="队伍场景变更" class="com.kueem.webgame.game.action.game.TeamAction" method="directJoin">
+			<param fieldName="allowDirectJoin" tag="1" fieldType="bool" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120302" alias="dismiss">
+		<toClient desc="解散队伍">
+		</toClient>
+		<toServer desc="解散队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="dismiss">
+		</toServer>
+	</protocol>
+	<protocol id="0x00120402" alias="join">
+		<toClient desc="玩家申请加入队伍">
+			<param fieldName="palyerId" tag="1" fieldType="string" desc="申请玩家id" />
+			<param fieldName="name" tag="2" fieldType="string" desc="申请玩家id" />
+			<param fieldName="camp" tag="3" fieldType="int32" desc="申请玩家id" />
+			<param fieldName="level" tag="4" fieldType="int32" desc="申请玩家id" />
+		</toClient>
+		<toServer desc="玩家申请加入队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="join">
+			<param fieldName="teamId" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120502" alias="replyJoin">
+		<toServer desc="回复申请加入队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="replyJoin">
+			<param fieldName="reply" tag="1" fieldType="bool" />
+			<param fieldName="uid" tag="2" fieldType="string" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120602" alias="inviteJoin">
+		<toClient desc="返回给被邀请玩家">
+			<param fieldName="palyerId" tag="1" fieldType="string" desc="邀请者id" />
+			<param fieldName="camp" tag="2" fieldType="int32" desc="邀请者阵营" />
+			<param fieldName="level" tag="3" fieldType="int32" desc="邀请者级别" />
+			<param fieldName="name" tag="4" fieldType="string" desc="邀请者名称" />
+			<param fieldName="mapId" tag="5" fieldType="int32" desc="当前副本" />
+		</toClient>
+		<toServer desc="" class="com.kueem.webgame.game.action.game.TeamAction" method="inviteJoin">
+			<param fieldName="uid" tag="1" fieldType="string" />
+			<param fieldName="mapId" tag="2" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120702" alias="replyInviteJoin">
+		<toServer desc="回复邀请玩家加入队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="replyInviteJoin">
+			<param fieldName="reply" tag="1" fieldType="bool" />
+			<param fieldName="uid" tag="2" fieldType="string" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120802" alias="leave">
+		<toServer desc="离开当前所在队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="leave">
+		</toServer>
+	</protocol>
+	<protocol id="0x00120902" alias="kickOut">
+		<toClient desc="把某玩家踢出当前队伍">
+			<param fieldName="teamLeaderName" tag="1" fieldType="string" desc="队长名称" />
+		</toClient>
+		<toServer desc="把某玩家踢出当前队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="kickOut">
+			<param fieldName="uid" tag="1" fieldType="string" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120A02" alias="gather">
+		<toServer desc="集合队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="gather">
+			<param fieldName="mapId" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00120C02" alias="nearTeamList">
+		<toServer desc="附近队伍" class="com.kueem.webgame.game.action.game.TeamAction" method="nearTeamList">
+		</toServer>
+	</protocol>
+	<protocol id="0x00120D02" alias="nearNameList">
+		<toServer desc="附近未组队玩家" class="com.kueem.webgame.game.action.game.TeamAction" method="nearNameList">
+		</toServer>
+	</protocol>
+	<protocol id="0x00121002" alias="ignor">
+		<toServer desc="全部忽略" class="com.kueem.webgame.game.action.game.TeamAction" method="ignor">
+		</toServer>
+	</protocol>
+	<protocol id="0x00121302" alias="updateTeamleader">
+		<toServer desc="提升为队长" class="com.kueem.webgame.game.action.game.TeamAction" method="updateTeamleader">
+			<param fieldName="uid" tag="1" fieldType="string" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00121402" alias="applyForTeam">
+		<toServer desc="玩家互动菜单的申请入队" class="com.kueem.webgame.game.action.game.TeamAction" method="applyForTeam">
+			<param fieldName="uid" tag="1" fieldType="string" />
+		</toServer>
+	</protocol>
+</config>

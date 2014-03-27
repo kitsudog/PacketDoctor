@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="battle">
+	<protocol id="0x00020102" alias="die">
+		<toClient desc="死亡">
+			<param fieldName="soldierId" tag="1" fieldType="string" desc="战士的id" />
+			<param fieldName="x" tag="2" fieldType="int32" desc="战士的位置X" />
+			<param fieldName="y" tag="3" fieldType="int32" desc="战士的位置Y" />
+			<param fieldName="attackX" tag="4" fieldType="int32"
+				desc="最后攻击它导致死亡的士兵x,y (buff死的不传值)" />
+			<param fieldName="attackY" tag="5" fieldType="int32" />
+			<param fieldName="attackerName" tag="6" fieldType="string" />
+			<param fieldName="attackerLevel" tag="7" fieldType="int32" />
+			<param fieldName="attackerCamp" tag="8" fieldType="int32" />
+			<param fieldName="perfectRebirthCost" tag="9" fieldType="int32" />
+			<param fieldName="dieTime" tag="10" fieldType="int64" />
+			<param fieldName="safetyRebrithTime" tag="11" fieldType="int64" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020202" alias="followUp">
+		<toClient desc="追击(玩家,或者怪)">
+			<param fieldName="soldierId" tag="1" fieldType="string" desc="追击目标的id" />
+			<param fieldName="type" tag="2" fieldType="int32" desc="角色类型" />
+			<param fieldName="skillId" tag="3" fieldType="int32" desc="使用的技能id" />
+			<param fieldName="targetX" tag="4" fieldType="int32" desc="可攻击目标位置x" />
+			<param fieldName="targetY" tag="5" fieldType="int32" desc="可攻击目标位置x" />
+			<param fieldName="userNowPointX" tag="6" fieldType="int32"
+				desc="用户当前位置x" />
+			<param fieldName="userNowPointY" tag="7" fieldType="int32"
+				desc="用户当前位置y" />
+			<param fieldName="moving" tag="8" fieldType="bool" desc="是否正在移动中" />
+
+
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020302" alias="attack">
+		<toServer desc="用户战士攻击目标"
+			class="com.kueem.webgame.game.action.game.BattleAction" method="attack">
+			<param fieldName="soldierId" tag="1" fieldType="string" />
+			<param fieldName="skillId" tag="2" fieldType="int32" />
+			<param fieldName="position_x" tag="3" fieldType="int32" />
+			<param fieldName="position_y" tag="4" fieldType="int32" />
+			<param fieldName="autoAttack" tag="5" fieldType="bool"
+				desc="是否是自动释放 true 是， false 否" />
+
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00020402" alias="attackFail">
+		<toClient desc="攻击失败">
+			<param fieldName="failCode" tag="1" fieldType="int32" desc="失败编号" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020502" alias="attackOccur">
+		<toClient desc="开始攻击（攻击产生）" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.BattleAttackOccurBuff.BattleAttackOccurProto">
+		</toClient>
+	</protocol>
+
+	<!-- 伤害产生 1 受击单位 string 2 受击角色类型 3 使用的技能id 4 AttackType 枚举 5 血量提示（暴击：扣多少血 
+		格挡：少扣多少血）,STRING -->
+	<protocol id="0x00020602" alias="damageOccur">
+		<toClient desc="伤害产生">
+			<param fieldName="soldierId" tag="1" fieldType="string" />
+			<param fieldName="roleId" tag="2" fieldType="int32" />
+			<param fieldName="skillId" tag="3" fieldType="int32" />
+			<param fieldName="attackType" tag="4" fieldType="int32"
+				repeated="true" />
+			<param fieldName="values" tag="5" fieldType="string" repeated="true" />
+			<param fieldName="attackerId" tag="6" fieldType="string" />
+			<param fieldName="attackerType" tag="7" fieldType="int32" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020702" alias="monsterDie">
+		<toClient desc="怪死亡">
+			<param fieldName="soldierId" tag="1" fieldType="string" desc="死亡的战士id" />
+			<param fieldName="attackX" tag="2" fieldType="int32"
+				desc="最后攻击它导致死亡的士兵x,y (buff死的不传值)" />
+			<param fieldName="attackY" tag="3" fieldType="int32" />
+			<param fieldName="lastDie" tag="4" fieldType="int32"
+				desc="是否最后一个怪死亡 1 是，其他否" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020802" alias="autoBattleConfig">
+		<toServer desc="请求同步自动战斗配置"
+			class="com.kueem.webgame.game.action.game.BattleAction" method="syncAutoBattleConfig">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00020902" alias="saveAutoBattleConfig">
+		<toServer desc="设置自动攻击的配置信息"
+			class="com.kueem.webgame.game.action.game.BattleAction" method="saveAutoBattleConfig">
+			<param fieldName="baseConfig" tag="1" fieldType="int32"
+				desc="基本信息（自动接收组队，自动拾取物品，自动原地复活，自动修理" />
+			<param fieldName="hpRecoveryPercent" tag="2" fieldType="int32"
+				desc="自动恢复生命值的最小百分比" />
+			<param fieldName="hpRecoveryOrder" tag="3" fieldType="bool"
+				desc="自动使用生命恢复药品的顺序（false 小到大，true大到小）" />
+			<param fieldName="manaRecoveryPercent" tag="4" fieldType="int32"
+				desc="自动恢复魔法值的最小百分比" />
+			<param fieldName="manaRecoveryOrder" tag="5" fieldType="bool"
+				desc="自动使用魔法恢复药品的顺序（false  小到大，true大到小）" />
+			<param fieldName="feedPetPercent" tag="6" fieldType="int32"
+				desc="自动喂养宠物，宠物血量的最低百分比" />
+			<param fieldName="firstSkills" tag="7" fieldType="int32"
+				repeated="true" desc="技能配置1" />
+			<param fieldName="secondSkills" tag="8" fieldType="int32"
+				repeated="true" desc="技能配置2" />
+			<param fieldName="defaultSkill" tag="9" fieldType="int32" desc="默认技能配置" />
+			<param fieldName="autoRelife" tag="10" fieldType="int32"
+				desc="自动复活、0未选 ，1选 项，2选项" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00020A02" alias="syncAutoBattleConfig">
+		<toClient desc="同步自动攻击的配置信息">
+			<param fieldName="baseConfig" tag="1" fieldType="int32"
+				desc="基本信息（自动接收组队，自动拾取物品，自动原地复活，自动修理" />
+			<param fieldName="hpRecoveryPercent" tag="2" fieldType="int32"
+				desc="自动恢复生命值的最小百分比" />
+			<param fieldName="hpRecoveryOrder" tag="3" fieldType="bool"
+				desc="自动使用生命恢复药品的顺序（false小到大，true大到小）" />
+			<param fieldName="manaRecoveryPercent" tag="4" fieldType="int32"
+				desc="自动恢复魔法值的最小百分比" />
+			<param fieldName="manaRecoveryOrder" tag="5" fieldType="bool"
+				desc="自动使用魔法恢复药品的顺序（false 小到大，true大到小）" />
+			<param fieldName="feedPetPercent" tag="6" fieldType="int32"
+				desc="自动喂养宠物，宠物血量的最低百分比" />
+			<param fieldName="firstSkills" tag="7" fieldType="int32"
+				repeated="true" desc="技能配置1" />
+			<param fieldName="secondSkills" tag="8" fieldType="int32"
+				repeated="true" desc="技能配置2" />
+			<param fieldName="defaultSkill" tag="9" fieldType="int32" desc="默认技能配置" />
+			<param fieldName="autoRelife" tag="10" fieldType="int32"
+				desc="自动复活、0未选 ，1选 项，2选项" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020B02" alias="startCast">
+		<toClient desc="技能释放开始读条">
+			<param fieldName="roleType" tag="1" fieldType="int32" desc="角色类型" />
+			<param fieldName="rid" tag="2" fieldType="string" desc="用户ID" />
+			<param fieldName="skillId" tag="3" fieldType="int32" desc="技能ID" />
+			<param fieldName="autoRelife" tag="4" fieldType="int32" desc="释放时间" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020C02" alias="endCast">
+		<toClient desc="结束技能读条">
+			<param fieldName="roleType" tag="1" fieldType="int32" desc="角色类型" />
+			<param fieldName="rid" tag="2" fieldType="string" desc="用户ID" />
+			<param fieldName="skillId" tag="3" fieldType="int32" desc="技能ID" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00020D02" alias="monsterTarget">
+		<toClient desc="AI的目标（追击或者攻击）">
+			<param fieldName="sid" tag="1" fieldType="string" desc="人物ID" />
+			<param fieldName="stype" tag="2" fieldType="int32" desc="人物类型" />
+			<param fieldName="tid" tag="3" fieldType="string" desc="目标ID" />
+			<param fieldName="ttype" tag="4" fieldType="int32" desc="目标类型" />
+		</toClient>
+	</protocol>
+
+
+	<protocol id="0x00023002" alias="generalDie">
+		<toClient desc="宠物死亡">
+			<param fieldName="soldierId" tag="1" fieldType="string" desc="死亡的战士id" />
+			<param fieldName="attackX" tag="2" fieldType="int32"
+				desc="最后攻击它导致死亡的士兵x,y (buff死的不传值)" />
+			<param fieldName="attackY" tag="3" fieldType="int32" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00023102" alias="canclePursuit">
+		<toServer desc="玩家取消追击"
+			class="com.kueem.webgame.game.action.game.BattleAction" method="canclePursuit">
+		</toServer>
+	</protocol>
+
+</config>

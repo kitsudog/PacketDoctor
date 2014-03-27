@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="battle_3v3">
+	<protocol id="0x002C0102" alias="battleResult">
+		<toClient desc="排行" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.Battle3V3MsgBuff.Battle3V3Proto">
+		</toClient>
+	</protocol>
+
+	<protocol id="0x002C0202" alias="syncRank">
+		<toClient desc="排行" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.Battle3V3MsgBuff.Battle3V3Proto">
+		</toClient>
+
+		<toServer desc="排行"
+			class="com.kueem.webgame.game.action.game.Battle3V3Action" method="syncRank">
+			<param fieldName="page" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+</config>

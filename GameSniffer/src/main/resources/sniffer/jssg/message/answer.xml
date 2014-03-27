@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="answer">
+    <protocol id="0x00220102" alias="startAnswering">
+        <toClient desc="返回本次题目的id列表以及上期的状元榜">
+            <param fieldName="idList" tag="1" fieldType="int32" repeated="true"/><!--问题id列表 -->
+            <param fieldName="rankings" tag="2" fieldType="int32" repeated="true"/><!--上期排行榜-排名 -->
+            <param fieldName="names" tag="3" fieldType="string" repeated="true"/><!--上期排行榜-名字 -->
+            <param fieldName="scores" tag="4" fieldType="int32" repeated="true"/><!--上期排行榜-积分 -->
+        </toClient>
+        <toServer desc="开始答题" class="com.kueem.webgame.game.action.game.AnswerAction" method="start">
+        </toServer>
+    </protocol>
+    <protocol id="0x00220202" alias="answer">
+        <toServer desc="答题" class="com.kueem.webgame.game.action.game.AnswerAction" method="answer">
+            <!--答案 -->
+            <param fieldName="answer" tag="1" fieldType="int32"/>
+            <!--使用道具的id,从0-3,0代表不使用,1-3分别代表:妙,灵,双 -->
+            <param fieldName="functionId" tag="2" fieldType="int32"/>
+            <param fieldName="fuck" tag="3" fieldType="string"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x00220302" alias="result">
+        <toClient desc="答题结束，向客户端发送对应的数据">
+            <param fieldName="ranking" tag="1" fieldType="int32"/><!--当前排名 -->
+            <param fieldName="xp" tag="2" fieldType="int32"/><!--经验奖励 -->
+        </toClient>
+        <toServer desc="结束答题" class="com.kueem.webgame.game.action.game.AnswerAction" method="end">
+            <param fieldName="fuck" tag="1" fieldType="string"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x00220402" alias="hasAnsweredToday">
+        <toClient desc="今日是否已经答过题">
+            <param fieldName="hasAnsweredToday" tag="1" fieldType="bool"/>
+        </toClient>
+    </protocol>
+</config>

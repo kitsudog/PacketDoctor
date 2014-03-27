@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="user">
+	<protocol id="0x00010102" alias="info">
+		<toClient desc="取得会员信息返回" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserProfileBuffers.UserProfileProto">
+		</toClient>
+		<toServer desc="取得会员信息请求"
+			class="com.kueem.webgame.game.action.game.UserAction" method="info">
+		</toServer>
+	</protocol>
+	<protocol id="0x00010302" alias="login">
+		<!-- 用户连接成功，资源载入完成 -->
+		<toServer desc="正式登入开始广播"
+			class="com.kueem.webgame.game.action.game.UserAction" method="login">
+			<param tag="1" fieldName="via" fieldType="string" />
+			<param tag="2" fieldName="friend_platformid" fieldType="string" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00010402" alias="syncUser">
+		<toClient desc="同步给客户端用户修改的属性,单一属性变化" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserProfileBuffers.UserProfileProto">
+		</toClient>
+	</protocol>
+	<protocol id="0x00010502" alias="syncMonster">
+		<toClient desc="怪物单一属性变化" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.MonsterBuffers.MonsterProto">
+		</toClient>
+	</protocol>
+	<protocol id="0x00010B02" alias="gainConfig">
+		<toServer desc="读取系统设置内容"
+			class="com.kueem.webgame.game.action.game.UserAction" method="gainConfig">
+		</toServer>
+	</protocol>
+	<protocol id="0x00010C02" alias="updateConfig">
+		<toClient desc="更新系统设置内容">
+			<param fieldName="update" tag="1" fieldType="bool" repeated="true" />
+		</toClient>
+	</protocol>
+	<protocol id="0x00010D02" alias="config">
+		<toServer desc="系统设置"
+			class="com.kueem.webgame.game.action.game.UserAction" method="config">
+			<param tag="1" fieldName="trueConfigList" fieldType="int32"
+				repeated="true" />
+			<param tag="2" fieldName="falseConfigList" fieldType="int32"
+				repeated="true" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00010E02" alias="checkHpAndManaStorage">
+		<toServer desc="血包或者血包自动回血"
+			class="com.kueem.webgame.game.action.game.UserAction" method="checkHpAndManaStorage">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00010F02" alias="configHpAndManaStorage">
+		<toServer desc="设置血包或者魔包自动回复的百分比临界点"
+			class="com.kueem.webgame.game.action.game.UserAction" method="configHpAndManaStorage">
+			<param tag="1" fieldName="percent" fieldType="int32" />
+			<param tag="2" fieldName="type" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011002" alias="disappear">
+		<toClient desc="人物消失">
+			<param fieldName="role_type" tag="1" fieldType="int32" />
+			<param fieldName="uid" tag="2" fieldType="string" />
+			<param fieldName="type" tag="3" fieldType="int32" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00011102" alias="appear">
+		<toClient desc="人物出现">
+			<param fieldName="role_type" tag="1" fieldType="int32" />
+			<param fieldName="uid" tag="2" fieldType="string" />
+			<param fieldName="px" tag="3" fieldType="int32" />
+			<param fieldName="py" tag="4" fieldType="int32" />
+			<param fieldName="type" tag="5" fieldType="int32" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00011202" alias="changeJob">
+		<toServer desc="转职"
+			class="com.kueem.webgame.game.action.game.UserAction" method="changeJob">
+			<param tag="1" fieldName="job_id" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011302" alias="saveStep">
+		<toServer desc="保存已完成的引导"
+			class="com.kueem.webgame.game.action.game.UserAction" method="saveStep">
+			<param tag="1" fieldName="step_id" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011402" alias="gainStep">
+		<toServer desc="获取已完成的引导"
+			class="com.kueem.webgame.game.action.game.UserAction" method="gainStep">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011502" alias="returnStep">
+		<toClient desc="返回已完成的引导">
+			<param fieldName="step_id" tag="1" fieldType="int32" repeated="true" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x00011602" alias="chooseCamp">
+		<toClient desc="所选是否为推荐阵营">
+			<param fieldName="isRecommanded" tag="1" fieldType="bool" />
+		</toClient>
+		<toServer desc="选择阵营(国家)"
+			class="com.kueem.webgame.game.action.game.UserAction" method="chooseCamp">
+			<param fieldName="camp" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+	<protocol id="0x00011702" alias="gainRecommandedCamp">
+		<toClient desc="返回推荐阵营(国家)">
+			<param fieldName="recommandedCamp" tag="1" fieldType="int32" />
+		</toClient>
+		<toServer desc="获取推荐阵营(国家)"
+			class="com.kueem.webgame.game.action.game.UserAction" method="gainRecommandedCamp">
+		</toServer>
+	</protocol>
+	<!--protocol id="0x00011802" alias="removeCache"> <toServer desc="清除用户在内存中数据" 
+		class="com.kueem.webgame.game.action.game.UserAction" method="removeCache"> 
+		<param fieldName="uid" tag="1" fieldType="string" /> </toServer> </protocol -->
+
+
+	<protocol id="0x00011902" alias="hadEnterInstanceMaps">
+		<toClient desc="[100001,100002,100003,100004,100005,100006]">
+			<param fieldName="mapId" tag="1" fieldType="int32" repeated="true" />
+		</toClient>
+		<toServer desc="请求已登录的地图列表"
+			class="com.kueem.webgame.game.action.game.UserAction" method="hadEnterInstanceMaps">
+			<param fieldName="camp" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011A02" alias="openFuncsList">
+		<toClient desc="获取用户已经开放的功能">
+			<param fieldName="funcs" tag="1" fieldType="int32" repeated="true" />
+		</toClient>
+		<toServer desc="获取用户已经开放的功能"
+			class="com.kueem.webgame.game.action.game.UserAction" method="openFuncsList">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011B02" alias="addOpenFuncs">
+		<toServer class="com.kueem.webgame.game.action.game.UserAction"
+			desc="增加一个开放的功能点" method="addOpenFuncs">
+			<param fieldName="func" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011C02" alias="enterdXinshouBattleMap">
+		<toClient desc="获取用户已经开放的功能">
+			<param fieldName="hasEnterdXinshouBattleMap" tag="1" fieldType="bool" />
+		</toClient>
+		<toServer class="com.kueem.webgame.game.action.game.UserAction"
+			desc="是否进入过第一场战斗" method="enterdXinshouBattleMap">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011D02" alias="xinshouStepLog">
+		<toServer desc="发送新手步骤统计日志"
+			class="com.kueem.webgame.game.action.game.UserAction" method="xinshouStepLog">
+			<param fieldName="step" tag="1" fieldType="int32" desc="新手步骤ID" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x00011E02" alias="use_liquan_first">
+		<toServer desc="设置消耗元宝时，是否优先使用礼券"
+			class="com.kueem.webgame.game.action.game.UserAction" method="useLiquanFirst">
+			<param fieldName="liquan_first" tag="1" fieldType="bool" desc="布尔类型的值" />
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x00011F02" alias="server_open_time">
+		<toClient desc="同步服务器开启时间">
+			<param fieldName="openTime" tag="1" fieldType="string" />
+		</toClient>
+		<toServer class="com.kueem.webgame.game.action.game.UserAction"
+			desc="请求服务器开启时间" method="syncServerOpenTime">
+		</toServer>
+	</protocol>
+
+</config>

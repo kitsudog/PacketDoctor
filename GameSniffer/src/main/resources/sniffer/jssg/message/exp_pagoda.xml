@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="exp_pagoda">
+    <protocol id="0x00260102" alias="getExp">
+        <toServer desc="领取经验 " class="com.kueem.webgame.game.action.game.ExpPagodaAction" method="getExp">
+        </toServer>
+    </protocol>
+    <protocol id="0x00260202" alias="syncGetExp">
+        <toClient desc="返回领取经验">
+            <param fieldName="state" tag="1" fieldType="int32" />
+        </toClient>
+    </protocol>
+
+
+    <protocol id="0x00260502" alias="levelUpTellFriends">
+        <toServer desc="玩家升级后，需要向服务端推送一个向所有好友索要的一个祝福请求  " class="com.kueem.webgame.game.action.game.ExpPagodaAction" method="levelUpTellFriends">
+        </toServer>
+    </protocol>
+    <protocol id="0x00260602" alias="requestBlessings">
+        <toClient desc="收到玩家索要的祝福请求">
+            <param fieldName="name" tag="1" fieldType="string" />
+            <param fieldName="level" tag="2" fieldType="int32" />
+            <param fieldName="gender" tag="3" fieldType="string" />
+            <param fieldName="camp" tag="4" fieldType="int32" />
+            <param fieldName="id" tag="5" fieldType="string" />
+        </toClient>
+    </protocol>
+
+
+
+    <protocol id="0x00260702" alias="sendBlessing">
+        <toServer desc="向服务端发送祝福好友  " class="com.kueem.webgame.game.action.game.ExpPagodaAction" method="sendBlessing">
+            <param fieldName="friendId" tag="1" fieldType="string" />
+
+        </toServer>
+    </protocol>
+    <protocol id="0x00260802" alias="syncSendBlessing">
+        <toClient desc="返回　向服务端发送祝福好友 ">
+            <param fieldName="state" tag="1" fieldType="int32" />
+            <param fieldName="id" tag="2" fieldType="string" />
+            <param fieldName="name" tag="3" fieldType="string" />
+            <param fieldName="count" tag="4" fieldType="int32" />
+            <param fieldName="exp" tag="5" fieldType="int32" />
+
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00260902" alias="receiveBlessing">
+        <toClient desc="收到好友的祝福 ">
+            <param fieldName="id" tag="1" fieldType="string" />
+            <param fieldName="name" tag="2" fieldType="string" />
+            <param fieldName="exp" tag="3" fieldType="int32" />
+        </toClient>
+    </protocol>
+
+
+    <protocol id="0x00261002" alias="getExpPagoda">
+        <!-- 供初始化用(比如：当前经验，当前一键次数,当前祝福好友数); -->
+        <toServer desc="请求查询模块公共信息" class="com.kueem.webgame.game.action.game.ExpPagodaAction" method="getExpPagoda">
+        </toServer>
+    </protocol>
+    <protocol id="0x00261102" alias="syncGetExpPagoda">
+        <toClient desc="返回宝塔信息">
+            <param fieldName="exp" tag="1" fieldType="int32" />
+            <param fieldName="oneKeyTime" tag="2" fieldType="int32" />
+            <param fieldName="sendBlessingTime" tag="3" fieldType="int32" />
+        </toClient>
+    </protocol>
+
+
+</config>

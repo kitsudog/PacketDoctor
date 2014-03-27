@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="bag">
+
+    <protocol id="0x000B0302" alias="combine">
+        <toServer desc="合并" class="com.kueem.webgame.game.action.game.BagAction" method="combine">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0402" alias="trim">
+        <toServer desc="整理" class="com.kueem.webgame.game.action.game.BagAction" method="trim">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0502" alias="sell">
+        <toServer desc="出售" class="com.kueem.webgame.game.action.game.BagAction" method="sell">
+            <param fieldName="index" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0602" alias="split">
+        <toServer desc="拆分" class="com.kueem.webgame.game.action.game.BagAction" method="split">
+            <param fieldName="index" tag="1" fieldType="int32" />
+            <param fieldName="num" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0702" alias="destroy">
+        <toServer desc="摧毁" class="com.kueem.webgame.game.action.game.BagAction" method="destroy">
+            <param fieldName="index" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0802" alias="info">
+        <toServer desc="获取背包数据" class="com.kueem.webgame.game.action.game.BagAction" method="info">
+            <param fieldName="page" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0C02" alias="move">
+        <toServer desc="拖动" class="com.kueem.webgame.game.action.game.BagAction" method="move">
+            <param fieldName="start" tag="1" fieldType="int32" />
+            <param fieldName="target" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0D02" alias="open">
+        <toServer desc="开格子" class="com.kueem.webgame.game.action.game.BagAction" method="open">
+            <param fieldName="num" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0E02" alias="use">
+        <toServer desc="使用道具" class="com.kueem.webgame.game.action.game.BagAction" method="use">
+            <param fieldName="index" tag="1" fieldType="int32" />
+            <param fieldName="num" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x000B0B02" alias="sync">
+        <toClient desc="同步整个背包数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserBagProtobuf.UserBag">
+        </toClient>
+    </protocol>
+
+    <protocol id="0x000B0F02" alias="syncPart">
+        <toClient desc="同步部分背包数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserBagProtobuf.UserBag">
+        </toClient>
+    </protocol>
+</config>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="tencent">
+    <protocol id="0x003D0102" alias="buyGoods">
+        <toClient desc="返回token以及其他值">
+            <param fieldName="ret" tag="1" fieldType="string"/>
+            <param fieldName="msg" tag="2" fieldType="string"/>
+            <param fieldName="token" tag="3" fieldType="string"/>
+            <param fieldName="validate" tag="4" fieldType="string"/>
+            <param fieldName="url_params" tag="5" fieldType="string"/>
+            <param fieldName="amttype" tag="6" fieldType="string"/>
+            <param fieldName="paymode" tag="7" fieldType="int32"/>
+        </toClient>
+        <toServer desc="腾讯平台购买物品前获取token" class="com.kueem.webgame.game.action.game.TencentAction" method="buyGoods">
+            <param fieldName="id" tag="1" fieldType="int32" desc="isBuy=true时表示shopid,否则表示具体功能对应的id"/>
+            <param fieldName="itemnum" tag="2" fieldType="int32"/>
+            <param fieldName="itemurl" tag="3" fieldType="string"/>
+            <param fieldName="validate" tag="4" fieldType="string"/>
+            <param fieldName="amttype" tag="5" fieldType="string"/>
+            <param fieldName="present" tag="6" fieldType="int32"/>
+            <param fieldName="paymode" tag="7" fieldType="int32"/>
+            <param fieldName="isBuy" tag="8" fieldType="bool" desc="true表示是购买具体物品,false表示是功能花费"/>
+            <param fieldName="params" tag="9" fieldType="int32" desc="当isBuy=false时,此字段用于传递功能逻辑对应的元宝消耗"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x003D0201" alias="payCallback">
+        <toClient desc="返回错误码">
+            <param fieldName="ret" tag="1" fieldType="int32"/>
+            <param fieldName="msg" tag="2" fieldType="string"/>
+        </toClient>
+        <toServer desc="腾讯平台购买物品后回调发货" class="com.kueem.webgame.game.action.game.TencentAction" method="payCallback">
+            <param fieldName="appid" tag="1" fieldType="string"/>
+            <param fieldName="requestURL" tag="2" fieldType="string"/>
+            <param fieldName="requestMethod" tag="3" fieldType="string"/>
+            <param fieldName="openid" tag="4" fieldType="string"/>
+            <param fieldName="ts" tag="5" fieldType="int64"/>
+            <param fieldName="payitem" tag="6" fieldType="string"/>
+            <param fieldName="amt" tag="7" fieldType="int32"/>
+            <param fieldName="token" tag="8" fieldType="string"/>
+            <param fieldName="billno" tag="9" fieldType="string"/>
+            <param fieldName="version" tag="10" fieldType="string"/>
+            <param fieldName="zoneid" tag="11" fieldType="string"/>
+            <param fieldName="providetype" tag="12" fieldType="string"/>
+            <param fieldName="payamt_coins" tag="13" fieldType="string"/>
+            <param fieldName="pubacct_payamt_coins" tag="14" fieldType="string"/>
+            <param fieldName="sig" tag="15" fieldType="string"/>
+        </toServer>
+    </protocol>
+    
+    <protocol id="0x003D0302" alias="gainYellowVipGift">
+        <toClient desc="获取黄钻礼包">
+            <param fieldName="type" tag="1" fieldType="int32" desc="领取结果 1 成功 2失败"/>
+        </toClient>
+        <toServer desc="获取黄钻礼包" class="com.kueem.webgame.game.action.game.TencentAction" method="gainYellowVipGift">
+            <param fieldName="type" tag="1" fieldType="int32" desc="礼包类型"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003D0402" alias="syncGiftInfo">
+        <toClient desc="同步黄钻礼包领取情况">
+            <param fieldName="yellowLevelReward" tag="1" fieldType="bool" desc="黄钻等级礼包是否已领取 ture-已领取 fase-未领取"/>
+            <param fieldName="yellowYearReward" tag="2" fieldType="bool" desc="年费黄钻礼包是否已领取 ture-已领取 fase-未领取"/>
+            <param fieldName="yellowRookieReward" tag="3" fieldType="bool" desc="黄钻新手礼包是否已领取true-已领取false-未领取"/>
+            <param fieldName="yellowGrow" tag="4" fieldType="int32" desc="黄钻成长礼包领取进度"/>
+        </toClient>
+        <toServer desc="同步黄钻礼包领取情况" class="com.kueem.webgame.game.action.game.TencentAction" method="syncGiftInfo">
+        </toServer>
+    </protocol>
+    <protocol id="0x003D0502" alias="syncUserCoin">
+        <toServer desc="同步用户元宝(充值后调用!)" class="com.kueem.webgame.game.action.game.TencentAction" method="syncUserCoin">
+        </toServer>
+    </protocol>
+    <protocol id="0x003D0602" alias="tencent_relogin">
+        <toClient desc="腾讯平台下，通知客户端提示用户重新登录">
+        </toClient>
+    </protocol>
+</config>

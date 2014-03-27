@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="item">
+    <protocol id="0x00080102" alias="use">
+        <toServer desc="使用道具" class="com.kueem.webgame.game.action.game.ItemAction" method="use">
+            <param fieldName="itemId" tag="1" fieldType="int32" />
+            <param fieldName="number" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00080202">
+        <toServer class="com.kueem.webgame.game.action.game.ItemAction" desc="购买接口" method="buy">
+            <param tag="1" fieldType="int32" fieldName="itemId" desc="道具id" />
+            <param tag="2" fieldType="int32" fieldName="number" desc="数量" />
+            <param tag="3" fieldType="int32" fieldName="option" desc="0 单纯的购买,1 保证数量(所有背包里的也算)" />
+        </toServer>
+        <returnMsg>
+            <msg value="购买没有发生" id="1" />
+            <msg value="购买失败" id="2" />
+        </returnMsg>
+    </protocol>
+    <protocol id="0x00080302">
+        <toServer class="com.kueem.webgame.game.action.game.ItemAction" desc="购买并使用" method="buyAndUse">
+            <param tag="1" fieldType="int32" fieldName="itemId" desc="道具id" />
+            <param tag="2" fieldType="int32" fieldName="number" desc="数量" />
+            <param tag="3" fieldType="int32" fieldName="option" desc="0 严格执行,1 允许部分使用但购买足够,2 允许使用购买也不足够" />
+        </toServer>
+        <returnMsg>
+            <msg value="不需要购买" id="1" />
+            <msg value="购买失败了" id="2" />
+            <msg value="使用失败了" id="3" />
+        </returnMsg>
+    </protocol>
+</config>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="buff">
+    <protocol id="0x001B0102" alias="addCD">
+        <toClient desc="增加CD">
+            <param fieldName="id" tag="1" fieldType="int32" repeated="true" desc="cd的id" />
+            <param fieldName="startTime" tag="2" fieldType="int64" repeated="true" desc="开始时间" />
+            <param fieldName="endTime" tag="3" fieldType="int64" repeated="true" desc="结束时间" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x001B0202" alias="removeCD">
+        <toClient desc="移除CD">
+            <param fieldName="id" tag="1" fieldType="int32" repeated="true" desc="cd的id" />
+        </toClient>
+    </protocol>
+
+</config>
