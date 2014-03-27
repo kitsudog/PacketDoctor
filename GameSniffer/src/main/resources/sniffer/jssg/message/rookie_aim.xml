@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="rookie_aim">
+    <protocol id="0x00200102" alias="syncChapterProgress">
+        <toClient desc="同步章节进度">
+            <param tag="1" fieldType="int32" repeated="true" fieldName="chapterId" desc="章节id" />
+            <param tag="2" fieldType="int32" repeated="true" fieldName="cnt" desc="已完成个数" />
+        </toClient>
+    </protocol>
+    <protocol id="0x00200202" alias="notifyFinishAim">
+        <toClient desc="完成目标通知前端">
+            <param tag="1" fieldType="int32" fieldName="targetId" desc="新手目标的id" />
+        </toClient>
+    </protocol>
+    <protocol id="0x00200302" alias="gainChapterInfo">
+        <toClient desc="返回指定章节的完成情况">
+            <param tag="1" fieldName="aimId" fieldType="int32" repeated="true" desc="是否已领取" />
+            <param tag="2" fieldName="aimHasFinish" fieldType="bool" repeated="true" desc="是否已领取" />
+            <param tag="3" fieldName="aimHasReward" fieldType="bool" repeated="true" desc="是否已领取" />
+            <param tag="4" fieldName="chapterHasReward" fieldType="bool" desc="是否已领取" />
+        </toClient>
+        <toServer desc="获取指定章节的完成情况" class="com.kueem.webgame.game.action.game.RookieAimAction" method="gainChapterInfo">
+            <param fieldName="chapterId" tag="1" fieldType="int32" desc="章节id" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00200402" alias="chapterReward">
+        <toClient desc="是否领取成功">
+            <param tag="1" fieldName="isOK" fieldType="bool" />
+            <param tag="2" fieldName="chapterId" fieldType="int32" desc="章节id" />
+        </toClient>
+        <toServer desc="领取章节完成奖励" class="com.kueem.webgame.game.action.game.RookieAimAction" method="chapterReward">
+            <param fieldName="chapterId" tag="1" fieldType="int32" desc="章节id" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00200502" alias="aimReward">
+        <toClient desc="是否领取成功">
+            <param tag="1" fieldName="isOK" fieldType="bool" />
+            <param tag="2" fieldName="aimId" fieldType="int32" desc="新手目标id" />
+        </toClient>
+        <toServer desc="领取目标完成奖励" class="com.kueem.webgame.game.action.game.RookieAimAction" method="aimReward">
+            <param fieldName="aimId" tag="1" fieldType="int32" desc="新手目标id" />
+        </toServer>
+    </protocol>
+</config>

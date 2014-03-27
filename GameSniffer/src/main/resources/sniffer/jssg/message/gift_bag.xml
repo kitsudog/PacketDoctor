@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="giftBag">
+    <!--礼包系统 -->
+    <protocol id="0x001A0102" alias="sync_time_gift_bag">
+        <toClient desc="同步时长礼包信息">
+            <param tag="1" fieldType="int32" repeated="true" fieldName="" desc="礼包物品id,对应reward表 " />
+            <param tag="2" fieldType="int64" fieldName="" desc="结束时间" />
+        </toClient>
+    </protocol>
+    <protocol id="0x001A0202" alias="gain_gift_bag">
+        <toServer desc="领取礼包" class="com.kueem.webgame.game.action.game.GiftBagAction" method="gainGiftBag">
+            <param fieldName="type" tag="1" fieldType="int32" /><!--1代表时长礼包;2代表等级礼包 -->
+        </toServer>
+    </protocol>
+
+    <protocol id="0x001A0302" alias="sync_level_gift_bag">
+        <toClient desc="同步等级礼包信息">
+            <param tag="1" fieldType="int32" repeated="true" fieldName="" desc="礼包物品id,对应reward表" />
+            <param tag="2" fieldType="int32" repeated="true" fieldName="" desc="领取等级 " />
+        </toClient>
+    </protocol>
+</config>

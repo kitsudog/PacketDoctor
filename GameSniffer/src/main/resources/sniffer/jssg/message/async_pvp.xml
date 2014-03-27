@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="async_pvp">
+	<protocol id="0x003C0102" alias="firstRankInfo">
+		<!-- <toClient desc="排名第一的信息">
+			<param fieldName="uid" tag="1" fieldType="string"  repeated="true" desc="当前排名前三的玩家ID"></param>
+			<param fieldName="uname" tag="2" fieldType="string"  repeated="true" desc="当前排名前三的玩家名称"></param>
+			<param fieldName="ucamp" tag="3" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的阵营"></param>
+			<param fieldName="ulevel" tag="4" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的等级"></param>
+			<param fieldName="ubody" tag="5" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的BODYID"></param>
+			<param fieldName="uweaponId" tag="6" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的WeaponId"></param>
+			<param fieldName="ujob" tag="7" fieldType="int32" repeated="true" desc="当前排名前三的玩家的职业"></param>
+			<param fieldName="uforce" tag="8" fieldType="int32" repeated="true" desc="当前排名前三的玩家的战斗力"></param>
+			<param fieldName="winCount" tag="9" fieldType="int32" repeated="true" desc="当前排名前三的玩家的胜利次数"></param>
+			<param fieldName="looseCount" tag="10" fieldType="int32" repeated="true" desc="当前排名前三的玩家的失败次数"></param>
+			<param fieldName="winnerId" tag="11" fieldType="string" repeated="true" desc="胜者玩家ID"></param>
+			<param fieldName="winnerName" tag="12" fieldType="string" repeated="true" desc="胜者玩家名称"></param>
+			<param fieldName="winnerCamp" tag="13" fieldType="int32" repeated="true" desc="胜者玩家的阵营"></param>
+			<param fieldName="looserId" tag="14" fieldType="string" repeated="true" desc="输者玩家ID"></param>
+			<param fieldName="looserName" tag="15" fieldType="string" repeated="true" desc="输者玩家名称"></param>
+			<param fieldName="looserCamp" tag="16" fieldType="int32" repeated="true" desc="输者玩家的阵营"></param>
+			<param fieldName="halo_id" tag="17" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的光环"></param>
+			<param fieldName="wings_id" tag="18" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的翅膀"></param>
+			<param fieldName="title_id" tag="19" fieldType="int32"  repeated="true" desc="当前排名前三的玩家的称号"></param>
+			<param fieldName="faction_name" tag="20" fieldType="string"  repeated="true"  desc="当前排名前三的玩家的帮派"></param>
+		</toClient> -->
+		
+		
+		<toClient desc="排名第一的信息" proto="true"
+            messageClass="Open Declaration com.kueem.webgame.game.protobuf.AsyncPvpProto.firstRankInfo">
+        </toClient>
+	</protocol>
+
+
+	<protocol id="0x003C0202" alias="myBattleInfo">
+		<toClient desc="个人的战斗信息">
+			<param fieldName="isWin" tag="1" fieldType="bool" repeated="true"
+				desc="是否赢了"></param>
+			<param fieldName="isChallenger" tag="2" fieldType="bool"
+				repeated="true" desc="是否是挑战者"></param>
+			<param fieldName="rank" tag="3" fieldType="int32" repeated="true"
+				desc="挑战结束后排名"></param>
+			<param fieldName="rankChange" tag="4" fieldType="int32"
+				repeated="true" desc="排名变化情况 1上升 2下降 3不变"></param>
+			<param fieldName="targetId" tag="5" fieldType="string"
+				repeated="true" desc="对方ID"></param>
+			<param fieldName="looserName" tag="6" fieldType="string"
+				repeated="true" desc="对方名称"></param>
+			<param fieldName="looserCamp" tag="7" fieldType="int32"
+				repeated="true" desc="对方阵营"></param>
+		</toClient>
+	</protocol>
+
+
+	<protocol id="0x003C0302" alias="rankInfo">
+		<toClient desc="异步pvp排名信息">
+			<param fieldName="currentPage" tag="1" fieldType="int32" desc="当前页数" />
+			<param fieldName="totalPage" tag="2" fieldType="int32" desc="总页数" />
+			<param fieldName="urank" tag="3" fieldType="int32" repeated="true"
+				desc="排名"></param>
+			<param fieldName="uid" tag="4" fieldType="string" repeated="true"
+				desc="玩家的ID"></param>
+			<param fieldName="uname" tag="5" fieldType="string" repeated="true"
+				desc="玩家的姓名"></param>
+			<param fieldName="ucamp" tag="6" fieldType="int32" repeated="true"
+				desc="玩家的阵营"></param>
+			<param fieldName="uforce" tag="7" fieldType="int32" repeated="true"
+				desc="玩家的战斗力"></param>
+			<param fieldName="ujob" tag="8" fieldType="int32" repeated="true"
+				desc="玩家的职业"></param>
+		</toClient>
+	</protocol>
+
+	<protocol id="0x003C0402" alias="myPvpInfo">
+		<toClient desc="个人PVP信息">
+			<param fieldName="rank" tag="1" fieldType="int32" desc="排名信息"></param>
+			<param fieldName="pvpCount" tag="2" fieldType="int32" desc="今日挑战次数"></param>
+			<param fieldName="challengeRefreshTime" tag="3" fieldType="string"
+				desc="挑战冷却时间"></param>
+			<param fieldName="totalAuraReward" tag="4" fieldType="int32" desc="奖励累计的灵气"></param>
+            <param fieldName="totalCashReward" tag="5" fieldType="int32" desc="奖励累计的铜钱"></param>
+			<param fieldName="pvpBuyCount" tag="6" fieldType="int32" desc="购买多少次了"></param>
+		</toClient>
+	</protocol>
+
+
+
+	<protocol id="0x003C0502" alias="requestAsyncPvpInfo">
+		<!-- 1 同步个人的PVP信息 2同步排名第一的信息 3同步个人的战斗信息 4可战斗的列表 -->
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="请求异步PVP信息" method="pvpInfo"></toServer>
+	</protocol>
+
+
+	<protocol id="0x003C0602" alias="requestRankInfo">
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="请求同步排名信息" method="rankInfo">
+			<param fieldName="page" tag="1" fieldType="int32" desc="页数" />
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x003C0702" alias="challenge">
+		<toClient desc="请求挑战结果">
+			<param fieldName="ret" tag="1" fieldType="bool" desc="是否可以挑战"></param>
+		</toClient>
+		<!-- 1 同步排行信息 -->
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="请求挑战" method="challenge">
+			<param fieldName="targetId" tag="1" fieldType="string" desc="挑战对象" />
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x003C0802" alias="challengeRet">
+		<toClient desc="挑战结果">
+			<param fieldName="isWin" tag="1" fieldType="bool" desc="是否成功"></param>
+			<param fieldName="cash" tag="2" fieldType="int32" desc="获得铜币"></param>
+			<param fieldName="rank" tag="3" fieldType="int32" desc="排名"></param>
+			<param fieldName="tname" tag="4" fieldType="string" desc="目标名称"></param>
+			<param fieldName="tcamp" tag="5" fieldType="int32" desc="目标阵营"></param>
+			<param fieldName="initiative" tag="6" fieldType="bool" desc="是否玩家主动退出" />
+			<param fieldName="arua" tag="7" fieldType="int32" desc="获得灵气" />
+		</toClient>
+	</protocol>
+
+	<protocol id="0x003C0902" alias="reward">
+		<!-- 1 同步个人的PVP信息 -->
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="领奖" method="reward">
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x003C0A02" alias="coolDown">
+		<!-- 1 同步个人的PVP信息 -->
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="快速冷却" method="coolDown">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x003C0B02" alias="buyPvpCount">
+		<!-- 1 同步个人的PVP信息 -->
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="购买挑战次数" method="buyPvpCount">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x003C0C02" alias="canChallengeList">
+		<toClient desc="可挑战的列表">
+			<param fieldName="urank" tag="1" fieldType="int32" repeated="true"
+				desc="排名"></param>
+			<param fieldName="uid" tag="2" fieldType="string" repeated="true"
+				desc="玩家的ID"></param>
+			<param fieldName="uname" tag="3" fieldType="string" repeated="true"
+				desc="玩家的姓名"></param>
+			<param fieldName="ucamp" tag="4" fieldType="int32" repeated="true"
+				desc="玩家的阵营"></param>
+			<param fieldName="ulevel" tag="5" fieldType="int32" repeated="true"
+				desc="玩家的等级"></param>
+			<param fieldName="ujob" tag="6" fieldType="int32" repeated="true"
+				desc="玩家的职业"></param>
+			<param fieldName="uforce" tag="7" fieldType="int32" repeated="true"
+				desc="玩家的战斗力"></param>
+			<param fieldName="ubodyID" tag="8" fieldType="int32" repeated="true"
+				desc="玩家的bodyID"></param>
+			<param fieldName="uweaponID" tag="9" fieldType="int32"
+				repeated="true" desc="玩家的weaponID"></param>
+			<param fieldName="uwinCount" tag="10" fieldType="int32"
+				repeated="true" desc="玩家的胜利次数"></param>
+			<param fieldName="ulooseCount" tag="11" fieldType="int32"
+				repeated="true" desc="玩家的失败次数"></param>
+			<param fieldName="halo_id" tag="12" fieldType="int32" repeated="true"
+				desc="光环"></param>
+			<param fieldName="wings_id" tag="13" fieldType="int32"
+				repeated="true" desc="翅膀"></param>
+			<param fieldName="title_id" tag="14" fieldType="int32"
+				repeated="true" desc="称号"></param>
+		</toClient>
+	</protocol>
+
+	<protocol id="0x003C0D02" alias="requestMyPvpInfo">
+		<toServer class="com.kueem.webgame.game.action.game.AsyncPvpAction"
+			desc="请求同步个人PVP信息" method="myPvpInfo">
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x003C0E02" alias="notifyTarget">
+		<toClient desc="通知被挑战者的结果">
+			<param fieldName="result" tag="1" fieldType="int32" desc="胜负"></param>
+			<param fieldName="rank" tag="2" fieldType="int32" desc="排名"></param>
+			<param fieldName="rankChange" tag="3" fieldType="int32"
+				desc="排名变化情况 1上升 2下降 3不变"></param>
+			<param fieldName="cid" tag="4" fieldType="string" desc="挑战者ID"></param>
+			<param fieldName="name" tag="5" fieldType="string" desc="挑战者姓名"></param>
+			<param fieldName="camp" tag="6" fieldType="int32" desc="挑战者阵营"></param>
+			<param fieldName="vipLevel" tag="7" fieldType="int32" desc="挑战者VIP等级"></param>
+			<param fieldName="vipTime" tag="8" fieldType="string" desc="挑战者VIP时间"></param>
+		</toClient>
+	</protocol>
+
+</config>

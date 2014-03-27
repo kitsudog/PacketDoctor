@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="storage">
+    <protocol id="0x003E0102" alias="storageInfo">
+        <toClient desc="返回仓库全部数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.FactionBuffers.FactionsProto">
+        </toClient>
+        <toServer desc="获取仓库全部数据" class="com.kueem.webgame.game.action.game.StorageAction" method="info">
+        </toServer>
+    </protocol>
+    <protocol id="0x003E0202" alias="putIn">
+        <toServer desc="放入(从背包放入仓库)" class="com.kueem.webgame.game.action.game.StorageAction" method="putIn">
+            <param fieldName="index" tag="1" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003E0302" alias="fetch">
+        <toServer desc="提取(从仓库放入背包)" class="com.kueem.webgame.game.action.game.StorageAction" method="fetch">
+            <param fieldName="indexes" tag="1" fieldType="int32" repeated="true"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003E0402" alias="tidy">
+        <toServer desc="整理仓库" class="com.kueem.webgame.game.action.game.StorageAction" method="tidy">
+        </toServer>
+    </protocol>
+</config>

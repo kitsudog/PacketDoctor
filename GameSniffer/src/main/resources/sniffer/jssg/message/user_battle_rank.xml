@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="user_battle_rank">
+	<protocol id="0x002D0102" alias="battleResult">
+		<toClient desc="击杀魔王BOSS排行" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserBattleRankBuff.UserBattleRankProto">
+		</toClient>
+		<toServer desc="排行"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncMoWangBossRank">
+			<param fieldName="page" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x002D0202" alias="syncRank">
+		<toClient desc="击杀阵营BOSS排行" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserBattleRankBuff.UserBattleRankProto">
+		</toClient>
+
+		<toServer desc="排行"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncCampBossRank">
+			<param fieldName="page" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x002D0302" alias="syncMessageList">
+		<toClient desc="击杀BOSS的信息" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserBattleRankBuff.UserBattleRankProto">
+		</toClient>
+
+		<toServer desc="击杀BOSS的信息"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncMessageList">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x002D0402" alias="requestRankByType">
+		<toServer desc="请求不同类型的排行"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="requestRankByType">
+			<param fieldName="page" tag="1" fieldType="int32" />
+			<param fieldName="type" tag="2" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+	<protocol id="0x002D0502" alias="syncRankByType">
+		<toClient desc="按类型同步排行的信息 特殊的单独处理" proto="true"
+			messageClass="com.kueem.webgame.game.protobuf.UserRankBuff.UserRankProto">
+		</toClient>
+	</protocol>
+
+	<protocol id="0x002D0602" alias="syncHonor">
+
+		<toClient desc="请求称号信息">
+			<param fieldName="Id" tag="1" fieldType="int32" repeated="true" />
+			<param fieldName="show" tag="2" fieldType="int32" />
+		</toClient>
+		<toServer desc="同步称号信息"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncInfo">
+		</toServer>
+
+	</protocol>
+
+	<protocol id="0x002D0702" alias="setHonor">
+		<toServer desc="设置展示称号"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="setHonor">
+			<param fieldName="type" tag="1" fieldType="int32" />
+		</toServer>
+	</protocol>
+
+
+	<protocol id="0x002D0802" alias="syncGlobalHonor">
+		<toClient desc="请求所有的称号信息">
+			<param fieldName="Id" tag="1" fieldType="string" repeated="true" />
+			<param fieldName="Name" tag="2" fieldType="string" repeated="true" />
+			<param fieldName="camp" tag="3" fieldType="int32" repeated="true" />
+		</toClient>
+
+		<toServer desc="同步所有人的称号信息"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncGlobalInfo">
+		</toServer>
+	</protocol>
+
+	<protocol id="0x002D0902" alias="syncHostRank">
+		<toClient desc="请求同步自己的排行信息">
+			<param fieldName="level_rank" tag="1" fieldType="int32" /><!-- 等级排行 -->
+			<param fieldName="fore_rank" tag="2" fieldType="int32" /><!-- 战斗力排行 -->
+			<param fieldName="arena_rank" tag="3" fieldType="int32" /><!-- 竞技排行 -->
+			<param fieldName="challenges_rank" tag="4" fieldType="int32" /><!-- 
+				挑战排行 -->
+		</toClient>
+
+		<toServer desc="同步自己的排行信息"
+			class="com.kueem.webgame.game.action.game.UsetBattleRankAction"
+			method="syncHostRank">
+		</toServer>
+	</protocol>
+
+
+
+</config>

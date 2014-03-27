@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="system">
+    <protocol id="0x00000000" alias="exception">
+        <toClient desc="系统异常">
+            <param fieldName="code" tag="1" fieldType="int32" />
+            <param fieldName="msg" tag="2" fieldType="string" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00000001" alias="login">
+        <toClient desc="登陆返回">
+            <param fieldName="state" tag="1" fieldType="int32" />
+            <param fieldName="uid" tag="2" fieldType="string" />
+        </toClient>
+        <toServer desc="登陆请求" class="com.kueem.webgame.game.action.sys.SystemAction" method="login">
+            <param fieldName="uid" tag="1" fieldType="string" />
+            <param fieldName="platform" tag="2" fieldType="string" />
+            <param fieldName="session_key" tag="3" fieldType="string" />
+            <param fieldName="my_signed_request" tag="4" fieldType="string" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00000003" alias="logout">
+        <toClient desc="登出">
+            <param fieldName="state" tag="1" fieldType="int32" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00000005" alias="heart">
+        <toServer desc="心跳" class="com.kueem.webgame.game.action.sys.SystemAction" method="heart">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00000006" alias="serverTime">
+        <toClient desc="同步服务器时间返回">
+            <param fieldName="server_time" tag="1" fieldType="string" />
+        </toClient>
+        <toServer desc="同步服务器时间" class="com.kueem.webgame.game.action.sys.SystemAction" method="serverTime">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00000007" alias="message">
+        <toClient desc="系统消息" proto="true" messageClass="com.kueem.webgame.game.protobuf.MsgBuffers.MsgProto">
+        </toClient>
+    </protocol>
+    <protocol id="0x00000010" alias="debug">
+        <toClient desc="返回结果">
+            <param tag="1" fieldType="string" desc="结果json" fieldName="result" />
+        </toClient>
+        <toServer desc="调试用的管理接口" class="com.kueem.webgame.game.action.sys.SystemAction" method="debug">
+            <param fieldName="func" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00000011" alias="logLevel">
+        <toClient desc="返回结果">
+            <param tag="1" fieldType="bool" desc="操作结果" fieldName="result" />
+        </toClient>
+        <toServer desc="调整log级别" class="com.kueem.webgame.game.action.sys.SystemAction" method="debug">
+            <param fieldName="logName" tag="1" fieldType="string" />
+            <param fieldName="level" tag="2" fieldType="string" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00000012">
+        <toServer desc="代理登陆" class="com.kueem.webgame.game.action.sys.ProxyAction" method="login">
+            <param fieldName="userid" tag="1" fieldType="string" />
+            <param fieldName="remoteAddress" tag="2" fieldType="string" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00000013">
+        <toClient desc="代理发送">
+            <param fieldName="userid" tag="1" fieldType="string" />
+            <param fieldName="messageid" tag="2" fieldType="int32" />
+            <param fieldName="body" tag="3" fieldType="bytes" />
+        </toClient>
+        <toServer desc="代理接受" class="com.kueem.webgame.game.action.sys.ProxyAction" method="receive">
+            <param fieldName="userid" tag="1" fieldType="string" />
+            <param fieldName="messageid" tag="2" fieldType="int32" />
+            <param fieldName="body" tag="3" fieldType="bytes" />
+        </toServer>
+    </protocol>
+    <protocol id="0x00000014">
+        <toClient desc="代理广播">
+            <param fieldName="userid" tag="1" fieldType="string" />
+            <param fieldName="messageid" tag="2" fieldType="int32" />
+            <param fieldName="body" tag="3" fieldType="bytes" />
+        </toClient>
+    </protocol>
+</config>

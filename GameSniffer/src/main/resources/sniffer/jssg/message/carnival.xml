@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+
+<config namespace="carnival">
+    <protocol id="0x00230102" alias="requestSync">
+        <toServer desc="请求同步幸运转盘的相关数据" class="com.kueem.webgame.game.action.game.CarnivalAction" method="syncLuck">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00230202" alias="syncLuckyRollerSelfInfo">
+        <toClient desc="返回嘉年华-幸运转盘的相关数据(和自身相关的数据)">
+            <param fieldName="freeTime" tag="1" fieldType="int32" desc="剩余免费次数" />
+            <param fieldName="jackpot" tag="2" fieldType="int32" desc="奖池累计数量" />
+            <param fieldName="recentConfigId" tag="3" fieldType="int32" repeated="true" desc="最近20次抽奖的奖励配置ID" />
+            <param fieldName="recentRewardNum" tag="4" fieldType="int32" repeated="true" desc="最近20次抽奖的的数量" />
+            <param fieldName="recentRewardId" tag="5" fieldType="int32" repeated="true" desc="最近20次抽奖的Reward ID" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00230302" alias="syncLuckyRollerRecentInfo">
+        <toClient desc="返回嘉年华-幸运转盘的相关数据(服务器最近20次珍贵奖励)">
+            <param fieldName="recentRewardConfigId" tag="1" fieldType="int32" repeated="true" desc="最近20次珍贵抽奖的奖励配置ID" />
+            <param fieldName="recentRewardNumber" tag="2" fieldType="int32" repeated="true" desc="最近20次珍贵抽奖的数量" />
+            <param fieldName="recentRewardUid" tag="3" fieldType="string" repeated="true" desc="最近20次珍贵抽奖的用户ID" />
+            <param fieldName="recentRewardName" tag="4" fieldType="string" repeated="true" desc="最近20次珍贵抽奖的用户名称" />
+            <param fieldName="recentRewardId" tag="5" fieldType="int32" repeated="true" desc="最近20次珍贵抽奖的Reward ID" />
+            <param fieldName="recentRewardCamp" tag="6" fieldType="int32" repeated="true" desc="最近20次珍贵抽奖的用户阵营" />
+        </toClient>
+    </protocol>
+
+
+    <protocol id="0x00230402" alias="syncLuckyRollerJockpot">
+        <toClient desc="返回嘉年华-幸运转盘的相关数据（抽中大奖）)">
+            <param fieldName="recentJackpot" tag="1" fieldType="int32" desc="上一次大奖奖励数量" />
+            <param fieldName="recentJackpotOwnerId" tag="2" fieldType="string" desc="上一次大奖的获得者Id" />
+            <param fieldName="recentJackpotOwnerName" tag="3" fieldType="string" desc="上一次大奖的获得者名称" />
+            <param fieldName="jackpotConfigId" tag="4" fieldType="int32" desc="至尊大奖配置的ID" />
+            <param fieldName="isNew" tag="5" fieldType="int32" desc="是否新产生的大奖" />
+            <param fieldName="recentJackpotOwnerCamp" tag="6" fieldType="int32" desc="上一次大奖的获得者的阵营" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00230502" alias="luckyLottery">
+        <toServer desc="抽奖" class="com.kueem.webgame.game.action.game.CarnivalAction" method="luckyLottery">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00230602" alias="luckyLotteryResult">
+        <toClient desc="抽奖结果">
+            <param fieldName="currentConfigId" tag="1" fieldType="int32" desc="本次次抽奖的配置ID" />
+            <param fieldName="currentRewardNum" tag="2" fieldType="int32" desc="本次抽奖的数量" />
+            <param fieldName="currentRewardId" tag="3" fieldType="int32" desc="本次抽奖的Reward ID" />
+            <param fieldName="currentRewardId" tag="4" fieldType="bool" desc="是否背包已经满了 ，并且通过邮件发送到了邮箱" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x00230702" alias="syncTradeNum">
+        <toClient desc="返回今日商品贸易次数">
+            <param fieldName="currentRewardId" tag="1" fieldType="int32" />
+        </toClient>
+        <toServer desc="获取今日商品贸易次数" class="com.kueem.webgame.game.action.game.CarnivalAction" method="syncTradeNum">
+        </toServer>
+    </protocol>
+    <protocol id="0x00230802" alias="singleTrade">
+        <toClient desc="返回结果">
+            <param fieldName="result" tag="1" fieldType="bool" desc="是否成功" />
+            <param fieldName="result" tag="2" fieldType="bool" desc="是否翻倍" />
+        </toClient>
+        <toServer desc="单次商品贸易" class="com.kueem.webgame.game.action.game.CarnivalAction" method="singleTrade">
+        </toServer>
+    </protocol>
+    <protocol id="0x00230902" alias="syncTradeRecord">
+        <toClient desc="同步所有玩家的贸易记录">
+            <param fieldName="id" tag="1" fieldType="string" repeated="true" desc="用户id" />
+            <param fieldName="name" tag="2" fieldType="string" repeated="true" desc="用户名字" />
+            <param fieldName="cash" tag="3" fieldType="int32" repeated="true" desc="获得铜钱" />
+        </toClient>
+    </protocol>
+    <protocol id="0x00230A02" alias="fastTrade">
+        <toClient desc="返回结果">
+            <param fieldName="successTime" tag="1" fieldType="int32" desc="成功次数" />
+            <param fieldName="doubleTime" tag="2" fieldType="int32" desc="翻倍次数" />
+            <param fieldName="cash" tag="3" fieldType="int32" desc="翻倍额外获得铜钱" />
+        </toClient>
+        <toServer desc="一键商品贸易" class="com.kueem.webgame.game.action.game.CarnivalAction" method="fastTrade">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x00230B02" alias="syncSelfChallengeInfo">
+        <toClient desc="同步挑战自我的信息">
+            <param fieldName="recentChallengeId" tag="1" fieldType="string" repeated="true" desc="最近20次挑战成功的ID" />
+            <param fieldName="recentChallengeName" tag="2" fieldType="string" repeated="true" desc="最近20次挑战成功的名称" />
+            <param fieldName="recentChallengeCamp" tag="3" fieldType="int32" repeated="true" desc="最近20次挑战成功的阵营" />
+            <param fieldName="totalXp" tag="4" fieldType="int32" desc="今日获取的总经验" />
+            <param fieldName="recentXp" tag="5" fieldType="int32" desc="最近一次获取的经验" />
+            <param fieldName="recentLevel" tag="6" fieldType="int32" desc="挑战等阶" />
+            <param fieldName="recentChallengeLevel" tag="7" fieldType="int32" repeated="true" desc="最近20次挑战成功的等阶" />
+        </toClient>
+        <toServer desc="请求同步挑战自我的信息" class="com.kueem.webgame.game.action.game.CarnivalAction" method="syncSelfChallenge">
+        </toServer>
+    </protocol>
+</config>

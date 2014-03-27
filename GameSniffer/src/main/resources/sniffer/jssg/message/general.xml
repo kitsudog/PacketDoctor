@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="general">
+    <protocol id="0x003A0102" alias="allGeneralInfo">
+        <toClient desc="返回全部将宠信息" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserGeneralInfoProtobuf.UserGeneralInfoProto">
+        </toClient>
+        <toServer desc="获取全部将宠信息" class="com.kueem.webgame.game.action.game.GeneralAction" method="allGeneralInfo">
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0202" alias="zhaomu">
+        <toClient desc="返回新招募的将宠信息" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserGeneralInfoProtobuf.UserGeneralInfoProto.UserGeneralProto">
+        </toClient>
+        <toServer desc="使用招兵令招募将宠" class="com.kueem.webgame.game.action.game.GeneralAction" method="zhaomu">
+            <param fieldName="gid" tag="1" fieldType="int32" desc="将宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0302" alias="changeName">
+        <toServer desc="改名字" class="com.kueem.webgame.game.action.game.GeneralAction" method="changeName">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="用户将宠id"/>
+            <param fieldName="name" tag="2" fieldType="string" desc="新名字"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0502" alias="ronghe">
+        <toServer desc="融合" class="com.kueem.webgame.game.action.game.GeneralAction" method="ronghe">
+            <param fieldName="main" tag="1" fieldType="int32" desc="主宠id"/>
+            <param fieldName="vice" tag="2" fieldType="int32" desc="副宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0602" alias="chuzhan">
+        <toServer desc="出战" class="com.kueem.webgame.game.action.game.GeneralAction" method="chuzhan">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="用户将宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0702" alias="zhaohui">
+        <toServer desc="召回" class="com.kueem.webgame.game.action.game.GeneralAction" method="zhaohui">
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0802" alias="singleGeneralInfo">
+        <toClient desc="返回单个将宠信息" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserGeneralInfoProtobuf.UserGeneralInfoProto.UserGeneralProto">
+        </toClient>
+        <toServer desc="获取单个将宠信息" class="com.kueem.webgame.game.action.game.GeneralAction" method="singleGeneralInfo">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="用户将宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0902" alias="fangsheng">
+        <toClient desc="放生结果">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="删除的用户将宠id"/>
+        </toClient>
+        <toServer desc="放生" class="com.kueem.webgame.game.action.game.GeneralAction" method="fangsheng">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="用户将宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A0A02" alias="changeState">
+        <toServer desc="切换出战将宠的战斗模式" class="com.kueem.webgame.game.action.game.GeneralAction" method="changeState">
+            <param fieldName="state" tag="1" fieldType="int32" desc="状态"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A3A02">
+        <toServer desc="将宠上阵" class="com.kueem.webgame.game.action.game.GeneralAction" method="sz">
+            <param tag="1" fieldType="int32" fieldName="arrayId" desc="阵位id : 1-5,5代表主将位置"/>
+            <param tag="2" fieldType="int32" fieldName="ugid" desc="上阵的将宠id"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A3B02">
+        <toServer desc="将宠下阵" class="com.kueem.webgame.game.action.game.GeneralAction" method="xz">
+            <param tag="1" fieldType="int32" fieldName="arrayId" desc="阵位id : 1-5,5代表主将位置"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A3F02" alias="anfu">
+        <toServer desc="安抚(补充精力" class="com.kueem.webgame.game.action.game.GeneralAction" method="anfu">
+            <param fieldName="ugid" tag="1" fieldType="int32"/>
+            <param fieldName="index" tag="2" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A4502" alias="recentZhaomu">
+        <toClient desc="同步最近玩家的招募信息">
+            <param fieldName="uid" tag="1" fieldType="string" repeated="true"/>
+            <param fieldName="uname" tag="2" fieldType="string" repeated="true"/>
+            <param fieldName="gid" tag="3" fieldType="int32" repeated="true"/>
+            <param fieldName="camp" tag="4" fieldType="int32" repeated="true"/>
+        </toClient>
+        <toServer desc="获取最近五条玩家的招募信息" class="com.kueem.webgame.game.action.game.GeneralAction" method="recentZhaomu">
+        </toServer>
+    </protocol>
+    <protocol id="0x003A4602" alias="syncGeneralInfoToUser">
+        <toClient desc="获取指定用户的指定宠物信息" proto="true" messageClass="com.kueem.webgame.game.protobuf.UserGeneralInfoProtobuf.UserGeneralInfoProto.UserGeneralProto">
+        </toClient>
+        <toServer desc="获取指定用户的指定宠物信息" class="com.kueem.webgame.game.action.game.GeneralAction" method="syncUserGeneralToUser">
+            <param fieldName="ownerId" tag="1" fieldType="string"/>
+            <param fieldName="ugid" tag="2" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A4902" alias="baiji">
+        <toClient desc="返回本次拜祭所获得的物品对应reward表的id">
+            <param fieldName="reward_id" tag="1" fieldType="int32" repeated="true"/>
+        </toClient>
+        <toServer desc="拜祭" class="com.kueem.webgame.game.action.game.GeneralAction" method="baiji">
+            <param fieldName="type" tag="1" fieldType="int32" desc="1:普通;2:高级;3:至尊"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A4A02" alias="open">
+        <toServer desc="开格子" class="com.kueem.webgame.game.action.game.GeneralAction" method="open">
+            <param fieldName="num" tag="1" fieldType="int32"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A5002" alias="tunshi">
+        <toServer desc="吞噬" class="com.kueem.webgame.game.action.game.GeneralAction" method="tunshi">
+            <param fieldName="type" tag="1" fieldType="int32" desc="1:募将令;2:宠物"/>
+            <param fieldName="id" tag="2" fieldType="int32" repeated="true" desc="类型为1时表示在背包中位置;否则代表ugid"/>
+            <param fieldName="ugid" tag="3" fieldType="int32" desc="宠物uid"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A5102" alias="upgradeWuxing">
+        <toServer desc="提升悟性等级" class="com.kueem.webgame.game.action.game.GeneralAction" method="upgradeWuxing">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="宠物uid"/>
+            <param fieldName="type" tag="2" fieldType="int32" desc="0:一次提升;1:自动提升"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A5202" alias="equip">
+        <toServer desc="装备神弩" class="com.kueem.webgame.game.action.game.GeneralAction" method="equip">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="宠物uid"/>
+            <param fieldName="index" tag="2" fieldType="int32" desc="神弩在背包中的位置"/>
+        </toServer>
+    </protocol>
+    <protocol id="0x003A5302" alias="removeEquip">
+        <toServer desc="卸下神弩" class="com.kueem.webgame.game.action.game.GeneralAction" method="removeEquip">
+            <param fieldName="ugid" tag="1" fieldType="int32" desc="宠物uid"/>
+            <param fieldName="position" tag="2" fieldType="int32" desc="要卸下的位置"/>
+        </toServer>
+    </protocol>
+</config>

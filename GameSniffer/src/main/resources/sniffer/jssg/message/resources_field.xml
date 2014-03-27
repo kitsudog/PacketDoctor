@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="resources_field">
+
+    <protocol id="0x002A0102" alias="refresh">
+        <toClient desc="返回报名数据" proto="true" messageClass="com.kueem.webgame.game.protobuf.FactionResourcesFieldBuff.FactionResourcesField">
+        </toClient>
+        <toServer desc="同步" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="refresh">
+            <param fieldName="type" tag="1" fieldType="int32" desc="1魏 2蜀 3吴 4超级金矿 " />
+            <param fieldName="page" tag="2" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0202" alias="signUp">
+        <toServer desc="报名" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="signUp">
+            <param fieldName="type" tag="1" fieldType="int32" /><!-- 1魏 2蜀 3吴 4超级金矿 -->
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0302" alias="requestPage">
+        <toServer desc="请求页面" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="requestPage">
+            <param fieldName="page" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0402" alias="giveUp">
+        <toServer desc="放弃占领" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="giveUp">
+        </toServer>
+    </protocol>
+
+
+
+    <protocol id="0x002A0502" alias="info">
+        <toClient desc="当前金矿的占领信息">
+            <param tag="1" fieldType="string" fieldName="" />
+            <param tag="2" fieldType="int32" fieldName="" />
+            <param tag="3" fieldType="int32" fieldName="" />
+            <param tag="4" fieldType="int32" fieldName="" />
+            <param tag="5" fieldType="int64" fieldName="" />
+        </toClient>
+        <toServer desc="" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="info">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0602" alias="getBindCoin">
+        <toClient desc=" 当前金矿的占领信息">
+            <param tag="1" fieldType="int32" fieldName="" />
+            <param tag="2" fieldType="int32" fieldName="" desc="0 默认 1 成功 2 失败" />
+        </toClient>
+        <toServer desc="领取绑定元宝" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="getBindCoin">
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0702" alias="getJunLing">
+        <toClient desc="当前金矿的占领信息">
+            <param tag="1" fieldType="int32" fieldName="" />
+            <param tag="2" fieldType="int32" fieldName="" desc="0 默认 1 成功 2 失败" />
+        </toClient>
+        <toServer desc="领取军令" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="getJunLing">
+        </toServer>
+    </protocol>
+
+
+
+    <protocol id="0x002A0802" alias="addRank">
+        <toServer desc="提升排名" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="addRank">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0902" alias="getWarFactionInfo">
+        <toClient desc=" 取开战防守阵营信息">
+            <param tag="1" fieldType="int32" fieldName="" />
+            <param tag="2" fieldType="string" fieldName="" />
+            <param tag="3" fieldType="int32" fieldName="" />
+            <param tag="4" fieldType="string" fieldName="" />
+        </toClient>
+        <toServer desc="取开战防守阵营信息" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="getWarFactionInfo">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+    <protocol id="0x002A0A02" alias="canEnter">
+        <toClient desc="通知可以进入的玩家">
+            <param tag="1" fieldType="bool" fieldName="" />
+        </toClient>
+        <toServer desc="用户本身是否可以进入" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="canEnter">
+        </toServer>
+    </protocol>
+    <protocol id="0x002A0B02" alias="requestCoin">
+        <toServer desc="查可领取元宝" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="requestCoin">
+        </toServer>
+    </protocol>
+    <protocol id="0x002A0C02" alias="requestJunling">
+        <toServer desc="查可领取军令" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="requestJunling">
+        </toServer>
+    </protocol>
+
+
+    <protocol id="0x002A0D02" alias="warResult">
+        <toClient desc=" 战争得分">
+            <param tag="1" fieldType="string" fieldName="" desc="帮派名称" />
+            <param tag="2" fieldType="string" fieldName="" desc="金矿名称" />
+            <param tag="3" fieldType="int32" fieldName="" desc="自己得分" />
+            <param tag="4" fieldType="int32" fieldName="" desc="自己得的经验" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x002A0E02" alias="test">
+        <toServer desc="查可领取军令" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="test">
+            <param fieldName="type" tag="1" fieldType="int32" />
+        </toServer>
+    </protocol>
+
+
+    <protocol id="0x002A1002" alias="factionScroe">
+        <toClient desc=" 战争实时得分">
+            <param tag="1" fieldType="string" fieldName="" desc="攻方名称" />
+            <param tag="2" fieldType="int32" fieldName="" desc="攻方分数" />
+            <param tag="3" fieldType="string" fieldName="" desc="守方名称" />
+            <param tag="4" fieldType="int32" fieldName="" desc="守方分数" />
+        </toClient>
+    </protocol>
+
+    <protocol id="0x002A1102" alias="occupation">
+        <toClient desc="所有金矿的占领信息">
+            <param tag="1" fieldType="string" fieldName="金矿" repeated="true" />
+        </toClient>
+        <toServer desc="所有金矿的占领信息" class="com.kueem.webgame.game.action.game.ResourcesFieldAction" method="occupation">
+        </toServer>
+    </protocol>
+</config>

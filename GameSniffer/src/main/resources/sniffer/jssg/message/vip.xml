@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config PUBLIC "//Message/" "message.dtd">
+<config namespace="user">
+    <protocol id="0x003B0102">
+        <toServer desc="购买" class="com.kueem.webgame.game.action.game.VipAction" method="buy">
+            <param tag="1" fieldName="item_id" fieldType="int32" desc="商品id" />
+            <param tag="2" fieldName="num" fieldType="int32" desc="商品数量" />
+        </toServer>
+    </protocol>
+    <protocol id="0x003B0202">
+        <toServer desc="开启vip" class="com.kueem.webgame.game.action.game.VipAction" method="apply">
+            <param tag="1" fieldName="vip_id" fieldType="int32" desc="vip类型id" />
+            <param tag="2" fieldName="autobuy" fieldType="bool" desc="购买并使用" />
+        </toServer>
+    </protocol>
+    <protocol id="0x003B0302">
+        <toClient desc="可以领取的礼包id">
+            <param tag="1" fieldName="ids" fieldType="int32" repeated="true" desc="礼包的id列表" />
+        </toClient>
+        <toServer desc="获取vip礼包状态" class="com.kueem.webgame.game.action.game.VipAction" method="lbzt">
+        </toServer>
+    </protocol>
+    <protocol id="0x003B0402">
+        <toServer desc="领取vip礼包" class="com.kueem.webgame.game.action.game.VipAction" method="lqlb">
+            <param tag="1" fieldName="ids" fieldType="int32" repeated="true" desc="礼包的id列表" />
+        </toServer>
+    </protocol>
+</config>
