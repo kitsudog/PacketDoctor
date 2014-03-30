@@ -55,8 +55,12 @@ public class PCAPFileReader
         buff.flip();
     }
 
-    public boolean hasNext()
+    synchronized public boolean hasNext()
     {
+        if (is == null)
+        {
+            throw new Error("已经关闭不能读取了");
+        }
         try
         {
             return is.available() > 0 || buff.remaining() > 0;
@@ -68,8 +72,12 @@ public class PCAPFileReader
         return false;
     }
 
-    public byte[] next() throws IOException
+    synchronized public byte[] next() throws IOException
     {
+        if (is == null)
+        {
+            throw new Error("已经关闭不能读取了");
+        }
         do
         {
             byte[] result = decodeOne();
@@ -90,8 +98,12 @@ public class PCAPFileReader
         while (true);
     }
 
-    public void skip(int num) throws IOException
+    synchronized public void skip(int num) throws IOException
     {
+        if (is == null)
+        {
+            throw new Error("已经关闭不能读取了");
+        }
         while (num-- > 0)
         {
             next();
@@ -141,4 +153,11 @@ public class PCAPFileReader
         buff.get(result);
         return result;
     }
+
+    synchronized public void clsoe() throws IOException
+    {
+        is.close();
+        is = null;
+    }
+
 }
