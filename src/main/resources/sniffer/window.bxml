@@ -1,9 +1,9 @@
-<sniffer:TreeWindow title="Tree Views" maximized="true"
+<view:GUIView title="GUIView" maximized="true"
     xmlns:bxml="http://pivot.apache.org/bxml"
-    xmlns:sniffer="sniffer"
+    xmlns:view="sniffer.view"
     xmlns="org.apache.pivot.wtk">
     <ScrollPane bxml:id="pane" horizontalScrollBarPolicy="fill_to_capacity">
         <TreeView bxml:id="tree">
         </TreeView>
     </ScrollPane>
-</sniffer:TreeWindow>
+</view:GUIView>

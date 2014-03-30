@@ -1,21 +1,65 @@
-package sniffer.game.ggsg;
+package sniffer.handler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
+import org.json.simple.JSONObject;
 
-public class HttpHandler extends AbstractPacketHandler
+import sniffer.utils.Asserts;
+import sniffer.view.IView.MessageData;
+
+public class HttpHandler extends TcpHandler
 {
 
-    private ByteArrayOutputStream raw;
+    public abstract class Http
+    {
+        public int headerLength = -2;
+
+        public int length = -1;
+
+        public byte[] content;
+
+        public String command;
+
+        public long timestamp;
+
+        public HashMap<String, String> headerMap = new HashMap<String, String>();
+
+        public String uri;
+
+        public String url;
+
+        @Override
+        public String toString()
+        {
+            String key = url;
+            if (key == null)
+            {
+                key = command;
+            }
+            return key + "\n" + headerMap + "\n" + (content == null ? "###EMPTY###" : new String(content));
+        }
+    }
+
+    public class Request extends Http
+    {
+
+    }
+
+    public class Response extends Http
+    {
+        public int status;
+    }
 
     public static Pattern REQUEST_COMMAND = Pattern.compile("(GET|POST) ([^ ]+) HTTP/[0-9.]+");
 
@@ -29,43 +73,23 @@ public class HttpHandler extends AbstractPacketHandler
 
     private Http state = null;
 
-    public abstract class Http
+    private Request request = null;
+
+    private Response response = null;
+
+    private List<byte[]> raws = null;
+
+    private int id;
+
+    private static int cnt = 0;
+
+    public HttpHandler()
     {
-        public int headerLength;
-
-        public int length = -1;
-
-        public byte[] content;
-
-        public String command;
-
-        public HashMap<String, String> headerMap = new HashMap<String, String>();
-
-        @Override
-        public String toString()
-        {
-            return command + "\n" + headerMap + "\n" + (content == null ? "###EMPTY###" : new String(content));
-        }
+        id = cnt++;
     }
-
-    public class Request extends Http
-    {
-        public String uri;
-
-        public String url;
-    }
-
-    public class Response extends Http
-    {
-        public int status;
-    }
-
-    private Request request;
-
-    private Response response;
 
     @Override
-    final public void nextPacket(Ip4 ip4, Tcp tcp, long timestamp)
+    final protected void doTcp(Ip4 ip4, Tcp tcp, long timestamp)
     {
         byte[] data = tcp.getPayload();
         if (data.length == 0)
@@ -74,64 +98,66 @@ public class HttpHandler extends AbstractPacketHandler
         }
         if (state == null)
         {
-            request = new Request();
-            response = new Response();
-            state = request;
-            raw = new ByteArrayOutputStream();
-        }
-        if (state.length < 0)
-        {
+            Asserts.isNull(request, response);
             switch (data[0])
             {
                 case 'G':
                     if (data[1] == 'E' && data[2] == 'T')
                     {
-                        break;
+                        isRequest("GET");
                     }
                     else
                     {
                         return;
                     }
+                    break;
                 case 'P':
                     if (data[1] == 'O' && data[2] == 'S' && data[3] == 'T')
                     {
-                        break;
+                        isRequest("POST");
                     }
                     else
                     {
                         return;
                     }
+                    break;
                 case 'H':
                     if (data[1] == 'T' && data[2] == 'T' && data[3] == 'P')
                     {
-                        break;
+                        isRespsone();
                     }
                     else
                     {
                         return;
                     }
+                    break;
                 default:
                     // 中间获取的不要了
                     return;
             }
+            state.timestamp = timestamp;
+        }
+        if (state.length < 0)
+        {
             try
             {
-                raw.write(data);
+                addRaw(data);
                 doHeader();
-
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
+                view.error(request.toString());
+                view.error(response.toString());
             }
         }
         else
         {
             try
             {
-                raw.write(data);
+                addRaw(data);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -140,17 +166,41 @@ public class HttpHandler extends AbstractPacketHandler
         {
             return;
         }
-        if (raw.size() >= state.length)
+
+        if (getRawSize() >= state.length)
         {
-            doHttp();
+            try
+            {
+                doHttp();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                view.error(request.toString());
+                view.error(response.toString());
+            }
         }
     }
 
     private void doHeader()
     {
-        byte[] data = raw.toByteArray();
-        state = new String(Arrays.copyOfRange(data, 0, 4)).equals("HTTP") ? response : request;
-        state.headerLength = -1;
+        byte[] data = getRaw();
+        String sign = new String(Arrays.copyOfRange(data, 0, 4));
+        if (sign.equals("HTTP"))
+        {
+            isRespsone();
+        }
+        else if (sign.startsWith("GET") || sign.startsWith("POST"))
+        {
+            isRequest(sign);
+        }
+        else
+        {
+            view.error(new String(getRaw()));
+            throw new RuntimeException("未知的类型");
+        }
+
+        state.headerLength = -3;
         for (int i = 0; i < data.length - 3; i++)
         {
             if (data[i] == '\r'//
@@ -163,7 +213,7 @@ public class HttpHandler extends AbstractPacketHandler
                 break;
             }
         }
-        if (state.headerLength == -1)
+        if (state.headerLength < 0)
         {
             // 等待后续的数据
             return;
@@ -188,12 +238,67 @@ public class HttpHandler extends AbstractPacketHandler
         {
             doRequest();
         }
+    }
 
+    private void isNull()
+    {
+        request = null;
+        response = null;
+        state = null;
+        resetRaw();
+    }
+
+    private void isRequest(String method)
+    {
+        if (state == request && request != null)
+        {
+            return;
+        }
+        view.debug(id + ":is" + method);
+        request = new Request();
+        response = new Response();
+        state = request;
+        allocateRaw();
+    }
+
+    private void isRespsone()
+    {
+        if (state == response && response != null)
+        {
+            return;
+        }
+        view.debug(id + ":isResponse");
+        if (request == null)
+        {
+            request = new Request();
+        }
+        if (response == null)
+        {
+            response = new Response();
+        }
+        state = response;
+        allocateRaw();
+    }
+
+    private void waitResponse()
+    {
+        view.debug(id + ":waitResponse");
+        Asserts.isNotNull(request, response);
+        state = response;
+        allocateRaw();
     }
 
     private void doRequest()
     {
-        state.length = state.headerLength;
+        String tmp = state.headerMap.get("Content-Length");
+        if (tmp != null)
+        {
+            state.length = state.headerLength + Integer.parseInt(tmp);
+        }
+        else
+        {
+            state.length = state.headerLength;
+        }
         Matcher matcher = REQUEST_COMMAND.matcher(request.command);
         matcher.find();
         request.uri = matcher.group(2);
@@ -203,7 +308,7 @@ public class HttpHandler extends AbstractPacketHandler
     private void doResponse()
     {
         String tmp = state.headerMap.get("Content-Length");
-        int contentLength = tmp == null ? (raw.size() - state.headerLength) : Integer.parseInt(tmp);
+        int contentLength = tmp == null ? (getRawSize() - state.headerLength) : Integer.parseInt(tmp);
         state.length = state.headerLength + contentLength;
         Matcher matcher = RESPONSE_COMMAND.matcher(response.command);
         matcher.find();
@@ -212,7 +317,12 @@ public class HttpHandler extends AbstractPacketHandler
 
     private void doHttp()
     {
-        byte[] data = raw.toByteArray();
+        if (state.headerLength < 0)
+        {// PATCH
+            doHeader();
+            view.error("出现越界错误了\n" + request);
+        }
+        byte[] data = getRaw();
         byte[] contentRaw = Arrays.copyOfRange(data, state.headerLength, data.length);
         if (contentRaw.length == 0)
         {
@@ -273,24 +383,17 @@ public class HttpHandler extends AbstractPacketHandler
                 {
                     GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(contentRaw));
                     byte[] buff = new byte[1024];
-                    try
+                    int cnt = 0;
+                    while ((cnt = gis.read(buff)) != -1)
                     {
-                        int cnt = 0;
-                        while ((cnt = gis.read(buff)) != -1)
-                        {
-                            out.write(buff, 0, cnt);
-                        }
-                        gis.close();
+                        out.write(buff, 0, cnt);
                     }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    gis.close();
                     out.close();
                 }
                 catch (Exception e)
                 {
-                    System.err.println(request.url + e.getMessage());
+                    view.error(request.url + "\n" + e.getMessage());
                     e.printStackTrace();
                 }
                 state.content = out.toByteArray();
@@ -300,61 +403,119 @@ public class HttpHandler extends AbstractPacketHandler
                 state.content = contentRaw;
             }
         }
-        try
-        {
-            raw.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        raw = null;
         if (state == request)
         {
-            state = response;
-            raw = new ByteArrayOutputStream();
+            waitResponse();
         }
         else
         {
             if (request.length == -1)
             {
-                System.err.println("不完整");
-                System.err.println(response);
+                view.error("不完整\n" + response);
             }
             else
             {
                 doHttp(request, response);
             }
-            state = null;
+            isNull();
         }
 
     }
 
+    @SuppressWarnings("unchecked")
     protected void doHttp(Request request, Response response)
     {
-        System.out.println("REQUEST: " + request.url);
-        String type = response.headerMap.get("Content-Type");
-        if (response.content != null)
+        JSONObject req = new JSONObject();
+        // req.putAll(request.headerMap);
+        String reqType = response.headerMap.get("Content-Type");
+        if (request.content != null)
         {
-            if (type != null)
+            if (reqType != null)
             {
-                if (type.startsWith("text") || type.indexOf("html") >= 0 || type.indexOf("json") >= 0 || type.indexOf("javascript") >= 0)
+                if (reqType.equals("application/x-www-form-urlencoded"))
                 {
-                    System.out.println("\t" + new String(response.content).replaceAll("\\n|\\r", "\\\\n"));
+                    req.put("content", new String(request.content));
+                }
+                else if (reqType.startsWith("text"))
+                {
+                    req.put("content", new String(request.content));
                 }
                 else
                 {
-                    System.out.println("\t" + type.toUpperCase());
+                    req.put("content", String.format("###%s###", reqType.toUpperCase()));
                 }
             }
             else
             {
-                System.out.println("\t未知\t" + new String(response.content).replaceAll("\\n|\\r", "\\\\n"));
+                req.put("content", String.format("###未指定类型###\t%s", new String(request.content)));
+            }
+        }
+        view.addNode(new MessageData(request.timestamp, request.url, MessageData.TYPE_SEND, "", req, request.content));
+
+        JSONObject res = new JSONObject();
+        req.putAll(response.headerMap);
+        String resType = response.headerMap.get("Content-Type");
+        if (response.content != null)
+        {
+            if (resType != null)
+            {
+                if (resType.startsWith("text") || resType.indexOf("html") >= 0 || resType.indexOf("json") >= 0 || resType.indexOf("javascript") >= 0)
+                {
+                    res.put("content", new String(response.content));
+                }
+                else
+                {
+                    res.put("content", String.format("###%s###", resType.toUpperCase()));
+                }
+            }
+            else
+            {
+                res.put("content", String.format("###未指定类型###\t%s", new String(response.content)));
             }
         }
         else
         {
-            System.out.println("\t空 " + response.status);
+            res.put("content", String.format("###空###\t%s", response.status));
         }
+        view.addNode(new MessageData(request.timestamp, request.url + ":" + response.status, MessageData.TYPE_RECV, "", res, response.content));
+
     }
+
+    protected void resetRaw()
+    {
+        raws = new LinkedList<byte[]>();
+    }
+
+    protected void allocateRaw()
+    {
+        raws = new LinkedList<byte[]>();
+    }
+
+    protected void addRaw(byte[] data)
+    {
+        raws.add(data);
+    }
+
+    protected byte[] getRaw()
+    {
+        byte result[] = new byte[getRawSize()];
+        int pos = 0;
+        for (byte[] i : raws)
+        {
+            System.arraycopy(i, 0, result, pos, i.length);
+            pos += i.length;
+        }
+        return result;
+    }
+
+    protected int getRawSize()
+    {
+        int size = 0;
+        for (byte[] i : raws)
+        {
+            size += i.length;
+        }
+        return size;
+    }
+
 }

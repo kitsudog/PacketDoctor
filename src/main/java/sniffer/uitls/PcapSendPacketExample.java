@@ -6,9 +6,6 @@ import java.util.List;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapHeader;
 import org.jnetpcap.PcapIf;
-import org.jnetpcap.nio.JBuffer;
-import org.jnetpcap.packet.PcapPacket;
-import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.winpcap.WinPcap;
 import org.jnetpcap.winpcap.WinPcapSendQueue;
 

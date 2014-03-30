@@ -1,4 +1,4 @@
-package sniffer;
+package sniffer.uitls;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+@SuppressWarnings("unused")
 public class PCAPFileReader
 {
     public static final int BUFF_SIZE = 10240;

@@ -1,4 +1,4 @@
-package sniffer;
+package sniffer.uitls;
 
 import java.io.File;
 import java.io.FileInputStream;

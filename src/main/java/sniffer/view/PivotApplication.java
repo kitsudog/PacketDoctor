@@ -1,4 +1,4 @@
-package sniffer;
+package sniffer.view;
 
 import java.awt.Font;
 
@@ -17,9 +17,10 @@ public class PivotApplication implements Application
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception
     {
+        // 此处要使用等宽字体比较好
         Theme.getTheme().setFont(new Font("新宋体", Font.PLAIN, 12));
         BXMLSerializer bxmlSerializer = new BXMLSerializer();
-        window = (Window) bxmlSerializer.readObject(TreeWindow.class, "window.bxml");
+        window = (Window) bxmlSerializer.readObject(GUIView.class, "/sniffer/window.bxml");
         window.open(display);
     }
 

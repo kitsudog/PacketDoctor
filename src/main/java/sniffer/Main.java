@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.pivot.wtk.Alert;
@@ -29,13 +27,24 @@ import org.jnetpcap.protocol.JProtocol;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import sniffer.game.ggsg.HandlerGenerator;
-import sniffer.game.ggsg.HttpHandler;
+import sniffer.filter.BaseFilter;
+import sniffer.handler.HandlerGenerator;
+import sniffer.handler.HttpHandler;
+import sniffer.uitls.CommandLineHelper;
+import sniffer.uitls.EndlessFileInputStream;
 import sniffer.uitls.IpUtils;
+import sniffer.uitls.PCAPFileReader;
+import sniffer.view.ConsoleView;
+import sniffer.view.GUIView;
+import sniffer.view.IView;
+import sniffer.view.PivotApplication;
 
+@SuppressWarnings("static-access")
 public class Main
 {
     private static HashMap<String, String> defaultMap;
+
+    private static IView console = new ConsoleView();
 
     private static Options options;
 
@@ -57,12 +66,16 @@ public class Main
 
     private Integer host;
 
+    private int skip;
+
+    private IView view;
+
     private Main()
     {
         int r = Pcap.findAllDevs(alldevs, errbuf);
         if (r == Pcap.NOT_OK || alldevs.isEmpty())
         {
-            output(String.format("无法读取网卡列表, error is %s", errbuf.toString()));
+            console.alert(String.format("无法读取网卡列表, error is %s", errbuf.toString()));
             throw new Error();
         }
     }
@@ -71,6 +84,14 @@ public class Main
     {
         defaultMap = new HashMap<String, String>();
         options = new Options();
+        options.addOption(OptionBuilder.isRequired(false) //
+                .withLongOpt("gui")//
+                .withDescription("使用图形化界面")//
+                .create("g"));
+        options.addOption(OptionBuilder.isRequired(false) //
+                .withLongOpt("debug")//
+                .withDescription("只显示调试信息")//
+                .create("d"));
         options.addOption(OptionBuilder.isRequired(false) //
                 .withLongOpt("file")//
                 .withDescription("指定文件")//
@@ -94,6 +115,12 @@ public class Main
                 .withType(CommandLineHelper.OPTION_HOST)//
                 .hasArg()//
                 .create("h"));
+        options.addOption(OptionBuilder.isRequired(false) //
+                .withLongOpt("skip")//
+                .withDescription("指定跳过的帧数(与file接口配合有意义)")//
+                .withType(CommandLineHelper.OPTION_INT)//
+                .hasArg()//
+                .create("s"));
     }
 
     /**
@@ -154,22 +181,22 @@ public class Main
                     outputStream.flush();
                     outputStream.close();
                     libStream.close();
-                    info("释放jnetpacp到目录 " + path);
+                    console.info("释放jnetpacp到目录 " + path);
                     try
                     {
                         System.load(temporaryLib.getPath());
-                        info("使用临时目录的库 " + path);
+                        console.info("使用临时目录的库 " + path);
                         break;
                     }
                     catch (Throwable e2)
                     {
-                        info("无法使用库" + path + " " + e2.getMessage());
+                        console.info("无法使用库" + path + " " + e2.getMessage());
                     }
                 }
                 catch (Throwable e1)
                 {
                     // 尝试下一个
-                    info("无法释放库到目录" + path + " " + e1.getMessage());
+                    console.info("无法释放库到目录" + path + " " + e1.getMessage());
                     if (temporaryLib.exists())
                     {
                         temporaryLib.delete();
@@ -181,34 +208,23 @@ public class Main
 
     private void showDeviceSelector()
     {
-        String msg = "";
-        msg += ("找到的网卡:") + "\n";
-        int cnt = 0;
+        String options[] = new String[alldevs.size() + 1];
+        options[0] = "Loop [127.0.0.1]";
+        int cnt = 1;
         for (PcapIf device : alldevs)
         {
             String description = (device.getDescription() != null) ? device.getDescription() : "没有合法的描述";
-            msg += (String.format("#%d: %s [%s]\n", cnt++, device.getName(), description)) + "\n";
+            options[cnt++] = (String.format("%s [%s]", device.getName(), description));
         }
-        msg += "#999: Loop [127.0.0.1]\n";
-        int id = 0;
-        while (!((id < alldevs.size() || id == 999) && id >= 0))
+        int result = view.confirm("输入目标网卡序号", options);
+        if (result == 0)
         {
-            try
-            {
-                // Prompt.prompt("123", Window.getActiveWindow());
-                String line = JOptionPane.showInputDialog(msg + "\n" + "输入目标网卡序号");
-                if (line == null)
-                {
-                    System.exit(1);
-                }
-                id = Integer.parseInt(line);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            device = LOOP;
         }
-        device = alldevs.get(id);
+        else
+        {
+            device = alldevs.get(result - 1);
+        }
     }
 
     private void startWithLoop() throws IOException
@@ -224,7 +240,16 @@ public class Main
         outputStream.flush();
         outputStream.close();
         exeStream.close();
-        Process proc = Runtime.getRuntime().exec(temporaryExe.getAbsolutePath() + " -h");
+        Process proc = null;
+        try
+        {
+            proc = Runtime.getRuntime().exec(temporaryExe.getAbsolutePath() + " -h");
+        }
+        catch (IOException e)
+        {
+            System.err.println("请确认用管理员身份打开");
+            System.exit(1);
+        }
         BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
         String line;
         int devid = -1;
@@ -238,7 +263,7 @@ public class Main
         }
         if (devid == -1)
         {
-            output("无法挂载loop");
+            view.alert("无法挂载loop");
             System.exit(1);
         }
         File tempFile = File.createTempFile("dump", ".pcap");
@@ -254,6 +279,7 @@ public class Main
                     subproc.destroy();
                 }
             }));
+            skip = 0;
             startWithFile(tempFile, true);
             subproc.destroy();
             tempFile.delete();
@@ -268,7 +294,8 @@ public class Main
     private void startWithFile(File file, boolean manualStop) throws IOException
     {
         PCAPFileReader reader = new PCAPFileReader(new EndlessFileInputStream(file));
-        int cnt = 0;
+        int cnt = skip;
+        reader.skip(skip);
         while (true)
         {
             if (!manualStop && !reader.hasNext())
@@ -276,17 +303,16 @@ public class Main
                 break;
             }
             byte[] buffer = reader.next();
-            cnt++;
             try
             {
-                JMemoryPacket packet = new JMemoryPacket(JProtocol.IP4_ID, Arrays.copyOfRange(buffer, 16, buffer.length));
-                Tcp tcp = packet.getHeader(new Tcp());
-                Ip4 ip4 = packet.getHeader(new Ip4());
-                handlerGenerator.getHandler(ip4, tcp).nextPacket(ip4, tcp, System.currentTimeMillis());
-                if (cnt > 1000000)
+                if (++cnt > 1000000)
                 {
                     break;
                 }
+                JMemoryPacket packet = new JMemoryPacket(JProtocol.ETHERNET_ID, Arrays.copyOfRange(buffer, 16, buffer.length));
+                Tcp tcp = packet.getHeader(new Tcp());
+                Ip4 ip4 = packet.getHeader(new Ip4());
+                handlerGenerator.nextPacket(ip4, tcp);
             }
             catch (Throwable e)
             {
@@ -315,7 +341,7 @@ public class Main
         int cnt = 0;
         while (cnt < 1000000)
         {
-            pcap.loop(1, handlerGenerator, "jNetPcap rocks!");
+            pcap.loop(1000, handlerGenerator, "jNetPcap rocks!");
         }
         pcap.close();
     }
@@ -333,16 +359,26 @@ public class Main
         {
             main.useConsole();
         }
+        
+        if (paramMap.containsKey("debug"))
+        {
+            main.view.setDebug(true);
+        }
+
         if (paramMap.containsKey("file"))
         {
             main.device = main.FILE;
             main.pcapFile = new File(paramMap.get("file"));
+            if (paramMap.containsKey("skip"))
+            {
+                main.skip = Integer.parseInt(paramMap.get("skip"));
+            }
         }
-        if (paramMap.containsKey("loop"))
+        else if (paramMap.containsKey("loop"))
         {
             main.device = main.LOOP;
         }
-        if (paramMap.containsKey("if"))
+        else if (paramMap.containsKey("if"))
         {
             main.device = main.getDeviceByName(paramMap.get("if"));
         }
@@ -352,12 +388,13 @@ public class Main
         }
         if (paramMap.containsKey("host"))
         {
-            main.host = IpUtils.string2int(paramMap.get("host"));
+            main.host = IpUtils.bytes2int(Inet4Address.getByName(paramMap.get("host")).getAddress());
         }
         if (paramMap.containsKey("port"))
         {
             main.port = Integer.parseInt(paramMap.get("port"));
         }
+
         main.start();
     }
 
@@ -395,30 +432,30 @@ public class Main
 
     private void useConsole()
     {
-
+        view = new ConsoleView();
     }
 
     private void useGui()
     {
-
-    }
-
-    private void start() throws IOException
-    {
-        info(String.format("WATCH: %20s %s", device.getAddresses().get(0).getAddr(), device.getName()));
         DesktopApplicationContext.main(PivotApplication.class, new String[] {});
         while (PivotApplication.window == null)
         {
             try
             {
-                Thread.sleep(1000);
+                Thread.sleep(10);
             }
             catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
         }
-        handlerGenerator = new HandlerGenerator(HttpHandler.class, (IOut) PivotApplication.window);
+        view = (GUIView) PivotApplication.window;
+        view.info("GUI Ready");
+    }
+
+    private void start() throws IOException
+    {
+        handlerGenerator = new HandlerGenerator(HttpHandler.class, view);
         BaseFilter filter = new BaseFilter();
         if (host != null)
         {
@@ -429,31 +466,22 @@ public class Main
             filter.setPort(port);
         }
         handlerGenerator.addFilter(filter);
-        info("GUI Ready");
         if (device == LOOP)
         {
+            view.info(String.format("WATCH: LOOP"));
             startWithLoop();
         }
         else if (device == FILE)
         {
+            view.info(String.format("WATCH: %s", pcapFile.getPath()));
             startWithFile(pcapFile, false);
         }
         else
         {
+            view.info(String.format("WATCH: %20s %s", device.getAddresses().get(0).getAddr(), device.getName()));
             startWithPcap();
         }
-
-        JOptionPane.showMessageDialog(null, "捕获结束");
+        view.alert("捕获结束");
     }
 
-    private static void info(String msg)
-    {
-        System.out.println(msg);
-    }
-
-    private static void output(String msg)
-    {
-        System.err.println(msg);
-        Alert.alert(msg, PivotApplication.window);
-    }
 }

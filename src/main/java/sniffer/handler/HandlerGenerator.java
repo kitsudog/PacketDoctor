@@ -1,4 +1,4 @@
-package sniffer.game.ggsg;
+package sniffer.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +9,10 @@ import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import sniffer.IOut;
-import sniffer.PacketHandler;
+import sniffer.GiveupException;
+import sniffer.StopException;
+import sniffer.filter.IFilter;
+import sniffer.view.IView;
 
 public class HandlerGenerator implements PcapPacketHandler<String>
 {
@@ -19,15 +21,40 @@ public class HandlerGenerator implements PcapPacketHandler<String>
 
     private HashMap<String, PacketHandler> pool = new HashMap<String, PacketHandler>();
 
-    private IOut out;
+    private IView view;
 
     private List<IFilter> filters;
 
-    public HandlerGenerator(Class<? extends PacketHandler> handlerClass, IOut out)
+    public HandlerGenerator(Class<? extends PacketHandler> handlerClass, IView view)
     {
         this.handlerClass = handlerClass;
-        this.out = out;
+        this.view = view;
         this.filters = new ArrayList<IFilter>();
+    }
+
+    public void nextPacket(Ip4 ip4, Tcp tcp)
+    {
+        if (tcp == null || ip4 == null)
+        {
+            return;
+        }
+        try
+        {
+            getHandler(ip4, tcp).nextPacket(ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
+        }
+        catch (GiveupException e)
+        {
+            removeHandler(ip4, tcp);
+        }
+        catch (StopException e)
+        {
+            // Pass
+        }
+        catch (Exception e)
+        {
+            removeHandler(ip4, tcp);
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -39,7 +66,6 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         {
             return;
         }
-        long time = packet.getCaptureHeader().timestampInMillis();
         for (IFilter filter : filters)
         {
             if (!filter.doFilter(ip4, tcp))
@@ -48,25 +74,29 @@ public class HandlerGenerator implements PcapPacketHandler<String>
                 return;
             }
         }
-        try
-        {
-            getHandler(ip4, tcp).nextPacket(ip4, tcp, time);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        nextPacket(ip4, tcp);
     }
 
-    public PacketHandler getHandler(Ip4 ip4, Tcp tcp)
+    private void removeHandler(Ip4 ip4, Tcp tcp)
     {
-        byte[] sourceHost = ip4.source();
-        byte[] destinationHost = ip4.destination();
+        int sourceHost = ip4.sourceToInt();
+        int destinationHost = ip4.destinationToInt();
         int sourcePort = tcp.source();
         int destinationPort = tcp.destination();
-        String sourceKey = String.format("%d.%d.%d.%d:%d", sourceHost[0], sourceHost[1], sourceHost[2], sourceHost[3], sourcePort);
-        String destinationKey = String
-                .format("%d.%d.%d.%d:%d", destinationHost[0], destinationHost[1], destinationHost[2], destinationHost[3], destinationPort);
+        String sourceKey = String.format("%d:%d", sourceHost, sourcePort);
+        String destinationKey = String.format("%d:%d", destinationHost, destinationPort);
+        pool.remove(sourceKey + "=>" + destinationKey);
+        pool.remove(destinationKey + "=>" + sourceKey);
+    }
+
+    private PacketHandler getHandler(Ip4 ip4, Tcp tcp)
+    {
+        int sourceHost = ip4.sourceToInt();
+        int destinationHost = ip4.destinationToInt();
+        int sourcePort = tcp.source();
+        int destinationPort = tcp.destination();
+        String sourceKey = String.format("%d:%d", sourceHost, sourcePort);
+        String destinationKey = String.format("%d:%d", destinationHost, destinationPort);
         PacketHandler handler = pool.get(sourceKey + "=>" + destinationKey);
         if (handler == null)
         {
@@ -76,7 +106,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
                 try
                 {
                     handler = handlerClass.newInstance();
-                    handler.setOut(out);
+                    handler.setView(view);
                     pool.put(sourceKey + "=>" + destinationKey, handler);
                     pool.put(destinationKey + "=>" + sourceKey, handler);
                 }
@@ -97,4 +127,5 @@ public class HandlerGenerator implements PcapPacketHandler<String>
     {
         filters.add(filter);
     }
+
 }
