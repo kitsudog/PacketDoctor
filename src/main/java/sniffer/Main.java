@@ -359,7 +359,7 @@ public class Main
         {
             main.useConsole();
         }
-        
+
         if (paramMap.containsKey("debug"))
         {
             main.view.setDebug(true);
@@ -420,8 +420,8 @@ public class Main
                         return dev;
                     }
                 }
-                throw new Error("没有找到指定ip的设备");
             }
+            throw new Error("没有找到指定ip的设备");
         }
         else if (name.matches("\\d+"))
         {
