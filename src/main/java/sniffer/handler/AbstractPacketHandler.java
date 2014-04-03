@@ -1,16 +1,19 @@
 package sniffer.handler;
 
-import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.tcpip.Tcp;
-
-import sniffer.GiveupException;
-import sniffer.HandlerException;
 import sniffer.view.IView;
 
 public abstract class AbstractPacketHandler implements PacketHandler
 {
 
     protected IView view;
+
+    public int sourceHost;
+
+    public int sourcePort;
+
+    public int destinationHost;
+
+    public int destinationPort;
 
     @Override
     public void setView(IView view)
@@ -19,21 +22,12 @@ public abstract class AbstractPacketHandler implements PacketHandler
     }
 
     @Override
-    public void nextPacket(Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException
+    public void setInfo(int sourceHost, int sourcePort, int destinationHost, int destinationPort)
     {
-        if (isDisconect(tcp))
-        {
-            throw new GiveupException();
-        }
-    }
+        this.sourceHost = sourceHost;
+        this.sourcePort = sourcePort;
+        this.destinationHost = destinationHost;
+        this.destinationPort = destinationPort;
 
-    private boolean isDisconect(Tcp tcp)
-    {
-        if (tcp.flags_FIN())
-        {
-            return true;
-        }
-        return false;
     }
-
 }

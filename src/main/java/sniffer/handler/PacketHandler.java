@@ -8,8 +8,12 @@ import sniffer.view.IView;
 
 public interface PacketHandler
 {
-    public void nextPacket(Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
+    public void recvPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
+
+    public void sendPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
 
     public void setView(IView view);
+
+    public void setInfo(int sourceHost, int sourcePort, int destinationHost, int destinationPort);
 
 }

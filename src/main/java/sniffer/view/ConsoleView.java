@@ -20,7 +20,7 @@ public class ConsoleView implements IView
         {
             sb.append(parse(data.content, "   +"));
         }
-        // System.out.println(sb.toString());
+        System.out.println(sb.toString());
     }
 
     private String parse(JSONObject content, String prefix)

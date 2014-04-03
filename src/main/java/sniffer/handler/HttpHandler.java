@@ -89,9 +89,19 @@ public class HttpHandler extends TcpHandler
     }
 
     @Override
-    final protected void doTcp(Ip4 ip4, Tcp tcp, long timestamp)
+    protected void sendTcp(Ip4 ip4, Tcp tcp, byte[] payload, long timestamp)
     {
-        byte[] data = tcp.getPayload();
+        doTcp(ip4, tcp, payload, timestamp);
+    }
+
+    @Override
+    protected void recvTcp(Ip4 ip4, Tcp tcp, byte[] payload, long timestamp)
+    {
+        doTcp(ip4, tcp, payload, timestamp);
+    }
+
+    private void doTcp(Ip4 ip4, Tcp tcp, byte[] data, long timestamp)
+    {
         if (data.length == 0)
         {
             return;

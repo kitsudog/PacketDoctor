@@ -31,6 +31,7 @@ import sniffer.filter.BaseFilter;
 import sniffer.handler.HandlerGenerator;
 import sniffer.handler.HttpHandler;
 import sniffer.uitls.CommandLineHelper;
+import sniffer.uitls.CommandLineHelper.ExOpt;
 import sniffer.uitls.EndlessFileInputStream;
 import sniffer.uitls.IpUtils;
 import sniffer.uitls.PCAPFileReader;
@@ -70,6 +71,8 @@ public class Main
 
     private IView view;
 
+    private int deviceIp;
+
     private Main()
     {
         int r = Pcap.findAllDevs(alldevs, errbuf);
@@ -96,7 +99,7 @@ public class Main
                 .withLongOpt("file")//
                 .withDescription("指定文件")//
                 .hasArg()//
-                .withType(CommandLineHelper.OPTION_FILE_EXIST)//
+                .withType(ExOpt.newOne(CommandLineHelper.OPTION_FILE_EXIST).partner("source"))//
                 .create("f"));
         options.addOption(OptionBuilder.isRequired(false) //
                 .withLongOpt("if")//
@@ -121,6 +124,12 @@ public class Main
                 .withType(CommandLineHelper.OPTION_INT)//
                 .hasArg()//
                 .create("s"));
+        options.addOption(OptionBuilder.isRequired(false) //
+                .withLongOpt("source")//
+                .withDescription("指定本机ip(仅与文件配合)")//
+                .withType(CommandLineHelper.OPTION_IP)//
+                .hasArg()//
+                .create("S"));
     }
 
     /**
@@ -312,7 +321,7 @@ public class Main
                 JMemoryPacket packet = new JMemoryPacket(JProtocol.ETHERNET_ID, Arrays.copyOfRange(buffer, 16, buffer.length));
                 Tcp tcp = packet.getHeader(new Tcp());
                 Ip4 ip4 = packet.getHeader(new Ip4());
-                handlerGenerator.nextPacket(ip4, tcp);
+                handlerGenerator.nextPacket(cnt, ip4, tcp);
             }
             catch (Throwable e)
             {
@@ -373,14 +382,17 @@ public class Main
             {
                 main.skip = Integer.parseInt(paramMap.get("skip"));
             }
+            main.deviceIp = IpUtils.string2int(paramMap.get("source"));
         }
         else if (paramMap.containsKey("loop"))
         {
             main.device = main.LOOP;
+            main.deviceIp = IpUtils.string2int("127.0.0.1");
         }
         else if (paramMap.containsKey("if"))
         {
             main.device = main.getDeviceByName(paramMap.get("if"));
+            main.deviceIp = IpUtils.bytes2int(main.device.getAddresses().get(0).getAddr().getData());
         }
         if (main.device == null)
         {
@@ -466,6 +478,7 @@ public class Main
             filter.setPort(port);
         }
         handlerGenerator.addFilter(filter);
+        handlerGenerator.setSource(deviceIp);
         if (device == LOOP)
         {
             view.info(String.format("WATCH: LOOP"));
