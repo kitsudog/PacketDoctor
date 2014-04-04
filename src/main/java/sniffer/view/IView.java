@@ -2,7 +2,7 @@ package sniffer.view;
 
 import java.text.SimpleDateFormat;
 
-import org.json.simple.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public interface IView
 {

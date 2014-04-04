@@ -28,8 +28,9 @@ import org.apache.pivot.wtk.TreeView.SelectMode;
 import org.apache.pivot.wtk.Window;
 import org.apache.pivot.wtk.content.TreeBranch;
 import org.apache.pivot.wtk.content.TreeNode;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class GUIView extends Window implements IView, Bindable
 {
@@ -212,7 +213,6 @@ public class GUIView extends Window implements IView, Bindable
         }
     }
 
-    @SuppressWarnings("unchecked")
     private TreeNode newJsonNode(JSONObject json, Object title)
     {
         TreeBranch node = new TreeBranch(title.toString());

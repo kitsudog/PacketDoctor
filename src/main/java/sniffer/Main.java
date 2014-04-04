@@ -35,6 +35,7 @@ import sniffer.uitls.CommandLineHelper.ExOpt;
 import sniffer.uitls.EndlessFileInputStream;
 import sniffer.uitls.IpUtils;
 import sniffer.uitls.PCAPFileReader;
+import sniffer.utils.Profiles;
 import sniffer.view.ConsoleView;
 import sniffer.view.GUIView;
 import sniffer.view.IView;

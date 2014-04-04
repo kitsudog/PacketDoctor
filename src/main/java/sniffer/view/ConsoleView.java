@@ -3,13 +3,22 @@ package sniffer.view;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class ConsoleView implements IView
 {
 
     private boolean debug;
+
+    @Override
+    public void info(String msg)
+    {
+        if (!debug)
+        {
+            System.out.println(msg);
+        }
+    }
 
     @Override
     public void addNode(MessageData data)
@@ -82,15 +91,6 @@ public class ConsoleView implements IView
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public void info(String msg)
-    {
-        if (!debug)
-        {
-            System.out.println(msg);
-        }
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 @SuppressWarnings("unused")
 public class PCAPFileReader
 {
-    public static final int BUFF_SIZE = 10240;
+    public static final int BUFF_SIZE = 102400;
 
     private InputStream is;
 
@@ -56,21 +56,13 @@ public class PCAPFileReader
         buff.flip();
     }
 
-    synchronized public boolean hasNext()
+    synchronized public boolean hasNext() throws IOException
     {
         if (is == null)
         {
             throw new Error("已经关闭不能读取了");
         }
-        try
-        {
-            return is.available() > 0 || buff.remaining() > 0;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
+        return buff.remaining() > 0 || is.available() > 0;
     }
 
     synchronized public byte[] next() throws IOException

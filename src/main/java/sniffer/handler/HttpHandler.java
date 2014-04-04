@@ -13,10 +13,11 @@ import java.util.zip.GZIPInputStream;
 
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
-import org.json.simple.JSONObject;
 
 import sniffer.utils.Asserts;
 import sniffer.view.IView.MessageData;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class HttpHandler extends TcpHandler
 {
@@ -426,13 +427,11 @@ public class HttpHandler extends TcpHandler
             }
             isNull();
         }
-
     }
 
-    @SuppressWarnings("unchecked")
     protected void doHttp(Request request, Response response)
     {
-        JSONObject req = new JSONObject();
+        JSONObject req = new JSONObject(true);
         // req.putAll(request.headerMap);
         String reqType = response.headerMap.get("Content-Type");
         if (request.content != null)
@@ -459,7 +458,7 @@ public class HttpHandler extends TcpHandler
         }
         view.addNode(new MessageData(request.timestamp, request.url, MessageData.TYPE_SEND, "", req, request.content));
 
-        JSONObject res = new JSONObject();
+        JSONObject res = new JSONObject(true);
         req.putAll(response.headerMap);
         String resType = response.headerMap.get("Content-Type");
         if (response.content != null)
