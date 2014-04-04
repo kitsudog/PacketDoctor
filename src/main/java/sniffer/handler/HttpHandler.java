@@ -264,7 +264,6 @@ public class HttpHandler extends TcpHandler
         {
             return;
         }
-        view.debug(id + ":is" + method);
         request = new Request();
         response = new Response();
         state = request;
@@ -277,7 +276,6 @@ public class HttpHandler extends TcpHandler
         {
             return;
         }
-        view.debug(id + ":isResponse");
         if (request == null)
         {
             request = new Request();
@@ -292,7 +290,6 @@ public class HttpHandler extends TcpHandler
 
     private void waitResponse()
     {
-        view.debug(id + ":waitResponse");
         Asserts.isNotNull(request, response);
         state = response;
         allocateRaw();

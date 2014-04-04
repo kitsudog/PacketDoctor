@@ -6,9 +6,9 @@ import java.util.Map;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import sniffer.GiveupException;
+import sniffer.DisconnectException;
 import sniffer.HandlerException;
-import sniffer.StopException;
+import sniffer.uitls.IpUtils;
 import sniffer.utils.Asserts;
 
 public class TcpHandler extends AbstractPacketHandler
@@ -75,6 +75,13 @@ public class TcpHandler extends AbstractPacketHandler
         public Map<Long, PacketData> recvBuff = new HashMap<Long, TcpHandler.PacketData>();
 
         public long lastAck;
+
+        public long win;
+
+        /**
+         * 基于窗口计算的最大序列值
+         */
+        public long maxSeq;
     }
 
     private TcpState local = new TcpState();
@@ -92,27 +99,61 @@ public class TcpHandler extends AbstractPacketHandler
     @Override
     final public void recvPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException
     {
-        if (local.state == STATE.CLOSED)
+        if (tcp.flags_RST())
         {
-            // TODO: 当前为服务端的
+            // 当作是关闭处理了
+            throw new DisconnectException("链接被重置了");
         }
-        else if (local.state == STATE.SYN_SENT)
+        if (local.state == STATE.CLOSED || local.state == STATE.LISTEN) // Server
         {
-            Asserts.isTrue("不正常的状态", tcp.flags() == 0x012);// SYN,ACK
+            if (tcp.flags() == 0x002)
+            // SYN
+            {
+                // 明确为服务端
+                local.state = STATE.LISTEN;
+            }
+            else
+            {
+                // 默认处理为ESTABLISHED
+                local.state = STATE.ESTABLISHED;
+                local.ack = tcp.seq();
+                local.nextSeq = tcp.ack();
+            }
+        }
+        else if (local.state == STATE.SYNC_RCVD) // Server
+        {
+            if (tcp.flags() == 0x040) // RST
+            {
+                local.state = STATE.LISTEN;
+            }
+            else if (tcp.flags() == 0x010) // ACK
+            {
+                Asserts.isTrue("握手第三步", tcp.ack() == local.nextSeq);
+                local.state = STATE.ESTABLISHED;
+            }
+            else
+            {
+                throw new RuntimeException("未知的状态");
+            }
+        }
+        else if (local.state == STATE.SYN_SENT) // Client
+        {
+            Asserts.isTrue("不正常的状态", tcp.flags() == 0x012);// SYN, ACK
             Asserts.isEquals(tcp.ack() == local.nextSeq);
             local.ack = tcp.seq() + 1;
-            local.state = STATE.SYNC_RCVD;
         }
         else if (local.state == STATE.ESTABLISHED)
         {
-            if (tcp.flags() == 0x010 || tcp.flags() == 0x018)// ACK|ACK, PSH
+            if (tcp.seq() < local.ack)
             {
-                if (tcp.seq() < local.ack)
+                view.debug("Repeat: " + frameId);
+            }
+            else if (tcp.flags() == 0x010 || tcp.flags() == 0x018)
+            // ACK|ACK, PSH
+            {
+                if (tcp.seq() > local.ack)
                 {
-                    view.debug("Repeat: " + frameId);
-                }
-                else if (tcp.seq() > local.ack)
-                {
+                    // TODO: 考虑窗口的因素来确认是包丢失还是乱序
                     view.debug("Out-of-order: " + frameId);
                     local.recvBuff.put(tcp.seq(), new PacketData(frameId, ip4, tcp, timestamp));
                 }
@@ -131,58 +172,90 @@ public class TcpHandler extends AbstractPacketHandler
                     }
                 }
             }
-            else if (tcp.flags() == 0x011 || tcp.flags() == 0x019)// FIN,ACK|FIN,PSH,ACK
+            else if (tcp.flags() == 0x011 || tcp.flags() == 0x019)
+            // FIN,ACK|FIN, PSH, ACK
             {
-                local.state = STATE.FIN_WAIT_1;
-                local.lastAck = tcp.seq() + tcp.getPayloadLength() + 1;
+                local.state = STATE.CLOSE_WAIT;
+                local.ack = tcp.seq() + tcp.getPayloadLength() + 1;
+                local.lastAck = local.ack;
             }
-            else if (tcp.flags() == 0x010)// ACK
+            else if (tcp.flags() == 0x010)
+            // ACK
             {
-                Asserts.isTrue("状态不正确", local.nextSeq == tcp.seq());
-                local.state = STATE.CLOSED;
-                throw new StopException();
+                // TODO: 滑动窗口的判断
             }
             else
             {
                 throw new RuntimeException("状态不对");
             }
         }
-        else if (local.state == STATE.CLOSE_WAIT)
+        else if (local.state == STATE.FIN_WAIT_1)// Client
         {
-            if (tcp.flags() == 0x011 || tcp.flags() == 0x019)
-            // FIN, ACK |FIN, PSH, ACK
+            if (tcp.flags_FIN())
             {
-                Asserts.isTrue("状态不对", tcp.ack() == local.nextSeq);
-                local.state = STATE.LAST_ACK;
-                local.lastAck = tcp.seq() + tcp.getPayloadLength() + 1;
+                // 等待发送 ACK
             }
             else
             {
-                // 只能是单纯的确认了
-                Asserts.isTrue("状态不对", tcp.flags() == 0x010); // ACK
+                if (tcp.ack() == local.nextSeq)
+                {
+                    local.state = STATE.FIN_WAIT_2;
+                }
+                else
+                {
+                    // 单纯的确认之前的包而已
+                }
             }
         }
-        else if (local.state == STATE.FIN_WAIT_2)
+        else if (local.state == STATE.FIN_WAIT_2)// Client
         {
-            // TODO: 这里的校验还没做
-            // Asserts.isTrue("状态不对", tcp.ack() == local.lastAck);
+            Asserts.isTrue("状态不对", tcp.flags() == 0x011 || tcp.flags() == 0x019);
+            // FIN, ACK |FIN, PSH, ACK
+            Asserts.isTrue("状态不对", tcp.ack() == local.nextSeq);
+            local.state = STATE.TIME_WAIT;
+            // sleep 什么的就算了
             local.state = STATE.CLOSED;
+            throw new DisconnectException("主动断线");
+        }
+        else if (local.state == STATE.LAST_ACK)
+        {
+            Asserts.isTrue("断线前最后的包了", tcp.flags() == 0x010);// ACK
+            local.state = STATE.CLOSED;
+            throw new DisconnectException("完成断线请求");
         }
         else
         {
-            throw new RuntimeException("状态不对");
+            if (tcp.seq() < local.ack)
+            {
+                view.debug("Repeat: " + frameId);
+            }
+            else
+            {
+                throw new RuntimeException("状态不对");
+            }
         }
     }
 
     @Override
     final public void sendPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException
     {
+        if (tcp.flags_RST())
+        {
+            // 当作是关闭处理了
+            throw new DisconnectException("链接要重置了");
+        }
         if (local.nextSeq > tcp.seq() && local.state != STATE.CLOSED)
         {
+            // TODO: 滑动窗口
             view.debug("Retransmission: " + frameId);
             return;
         }
-        if (local.state == STATE.CLOSED)
+        if (local.state == STATE.LISTEN) // Server
+        {
+            Asserts.isTrue("发送握手包SYN, ACK", tcp.flags() == 0x012); // SYN, ACK
+            local.state = STATE.SYNC_RCVD;
+        }
+        else if (local.state == STATE.CLOSED) // Client
         {
             if (tcp.flags() == 0x002)// SYN
             {
@@ -193,35 +266,37 @@ public class TcpHandler extends AbstractPacketHandler
             }
             else
             {
-                throw new GiveupException();
+                // 默认当前状态为Establish的
+                view.debug(String.format("发现一个已经存在的链接 %s", IpUtils.toServerDesc(ip4, tcp)));
+                local.state = STATE.ESTABLISHED;
+                local.nextSeq = tcp.seq() + tcp.getPayloadLength();
+                local.ack = tcp.ack();
             }
         }
-        else if (local.state == STATE.SYNC_RCVD)
+        else if (local.state == STATE.SYN_SENT) // Client
         {
             Asserts.isTrue("不正常的状态", tcp.flags() == 0x010);// ACK
             Asserts.isTrue(local.ack == tcp.ack());
             Asserts.isTrue(tcp.getPayloadLength() == 0);
             local.state = STATE.ESTABLISHED;
         }
-        else if (local.state == STATE.ESTABLISHED)
+        else if (local.state == STATE.ESTABLISHED) // Client
         {
-            if (tcp.flags() == 0x010 || tcp.flags() == 0x018)// ACK|ACK, PSH
+            if (tcp.seq() < local.nextSeq)
             {
-                // 发送数据以及确认
-                if (tcp.seq() < local.nextSeq)
-                {
-                    view.debug("Retransmission: " + frameId);
-                }
-                else
-                {
-                    local.nextSeq = tcp.seq() + tcp.getPayloadLength();
-                    local.ack = tcp.ack();
-                    sendTcp(ip4, tcp, tcp.getPayload(), timestamp);
-                }
+                view.debug("Retransmission: " + frameId);
             }
-            else if (tcp.flags() == 0x011)// FIN, ACK
+            else if (tcp.flags() == 0x010 || tcp.flags() == 0x018)
+            // ACK | ACK, PSH
             {
-                local.state = STATE.CLOSE_WAIT;
+                local.nextSeq = tcp.seq() + tcp.getPayloadLength();
+                local.ack = tcp.ack();
+                sendTcp(ip4, tcp, tcp.getPayload(), timestamp);
+            }
+            else if (tcp.flags() == 0x011 || tcp.flags() == 0x001)
+            // FIN, ACK | FIN
+            {
+                local.state = STATE.FIN_WAIT_1;
                 local.nextSeq = tcp.seq() + 1;
             }
             else
@@ -231,38 +306,40 @@ public class TcpHandler extends AbstractPacketHandler
         }
         else if (local.state == STATE.FIN_WAIT_1)
         {
-            // 此后应该不在发送任何数据了(只有确认包)
             Asserts.isTrue("状态不对", tcp.flags() == 0x010);// ACK
-            Asserts.isTrue("状态不对", tcp.seq() == local.nextSeq);
-            if (tcp.ack() == local.lastAck)
-            {
-                local.state = STATE.FIN_WAIT_2;
-                // local.lastAck = tcp.seq() + 1;
-            }
-            else
-            {
-                // 单纯的发送数据确认而已
-            }
+            local.state = STATE.TIME_WAIT;
+            // sleep 什么的就算了
+            local.state = STATE.CLOSED;
+            throw new DisconnectException("主动断线");
+        }
+        else if (local.state == STATE.TIME_WAIT)
+        {
+            Asserts.isTrue("状态不对", tcp.ack() == local.lastAck);
         }
         else if (local.state == STATE.FIN_WAIT_2)
         {
             Asserts.isTrue("状态不对", tcp.flags() == 0x011);// FIN, ACK
             Asserts.isTrue("状态不对", tcp.ack() == local.lastAck);
         }
-        else if (local.state == STATE.CLOSE_WAIT)
+        else if (local.state == STATE.CLOSE_WAIT) // Server
         {
-            // 不应该有任何发送了
-            // TODO:重传应该被处理
-            throw new RuntimeException("状态不对");
-        }
-        else if (local.state == STATE.LAST_ACK)
-        {
-            Asserts.isTrue("状态不对", tcp.ack() == local.lastAck);
+            Asserts.isTrue("断线前必须发ACK", tcp.flags_ACK());
+            if (tcp.flags_FIN())
+            {
+                local.state = STATE.LAST_ACK;
+            }
         }
         else
         {
-            // 未知的状态
-            throw new RuntimeException("状态不对");
+            if (tcp.seq() <= local.nextSeq)
+            {
+                view.debug("Retransmission: " + frameId);
+            }
+            else
+            {
+                // 未知的状态
+                throw new RuntimeException("状态不对");
+            }
         }
     }
 }

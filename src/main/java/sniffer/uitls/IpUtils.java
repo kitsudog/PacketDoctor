@@ -1,5 +1,8 @@
 package sniffer.uitls;
 
+import org.jnetpcap.protocol.network.Ip4;
+import org.jnetpcap.protocol.tcpip.Tcp;
+
 public class IpUtils
 {
     public final static int bytes2int(byte[] ip)
@@ -77,5 +80,15 @@ public class IpUtils
             }
         }
         return result;
+    }
+
+    public static String toServerDesc(Ip4 ip4, Tcp tcp)
+    {
+        return String.format("%s:%d => %s:%d", int2string(ip4.sourceToInt()), tcp.source(), int2string(ip4.destinationToInt()), tcp.destination());
+    }
+
+    public static String fromClientDesc(Ip4 ip4, Tcp tcp)
+    {
+        return String.format("%s:%d => %s:%d", int2string(ip4.destinationToInt()), tcp.destination(), int2string(ip4.sourceToInt()), tcp.source());
     }
 }

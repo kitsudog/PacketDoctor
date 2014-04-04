@@ -10,8 +10,8 @@ import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
+import sniffer.DisconnectException;
 import sniffer.GiveupException;
-import sniffer.StopException;
 import sniffer.filter.IFilter;
 import sniffer.uitls.IpUtils;
 import sniffer.view.IView;
@@ -41,7 +41,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         source = ip;
     }
 
-    public void nextPacket(int frameId, Ip4 ip4, Tcp tcp)
+    public void nextPacket(int frameNum, Ip4 ip4, Tcp tcp)
     {
         if (tcp == null || ip4 == null)
         {
@@ -60,52 +60,58 @@ public class HandlerGenerator implements PcapPacketHandler<String>
             PacketHandler handler = getHandler(ip4, tcp);
             if (ip4.sourceToInt() == source)
             {
-                handler.sendPacket(frameId, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
+                handler.sendPacket(frameNum, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
             }
             else if (ip4.destinationToInt() == source)
             {
-                handler.recvPacket(frameId, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
+                handler.recvPacket(frameNum, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
             }
         }
         catch (GiveupException e)
         {
-            int source = 0;
-            int sourcePort = 0;
-            int destination = 0;
-            int destinationPort = 0;
-            if (ip4.sourceToInt() == this.source)
-            {
-                source = ip4.sourceToInt();
-                sourcePort = tcp.source();
-                destination = ip4.destinationToInt();
-                destinationPort = tcp.destination();
-            }
-            else if (ip4.destinationToInt() == source)
-            {
-                source = ip4.destinationToInt();
-                sourcePort = tcp.destination();
-                destination = ip4.sourceToInt();
-                destinationPort = tcp.source();
-            }
-            view.debug(String.format("无法识别的中间态的链接 %s:%d => %s:%d", IpUtils.int2string(source), sourcePort, IpUtils.int2string(destination), destinationPort));
+            dump("无法识别的中间态的链接", frameNum, ip4.getPacket());
             removeHandler(ip4, tcp);
         }
-        catch (StopException e)
+        catch (DisconnectException e)
         {
-            // Pass
+            view.info(String.format("断开一个连接 %s", ip4.sourceToInt() == source ? IpUtils.toServerDesc(ip4, tcp) : IpUtils.fromClientDesc(ip4, tcp)));
         }
         catch (Exception e)
         {
-            removeHandler(ip4, tcp);
-            view.error("解析出现异常: " + frameId);
-            view.error(dump(tcp.getPacket()));
+            dump("解析出现异常", frameNum, tcp.getPacket());
             e.printStackTrace();
+            removeHandler(ip4, tcp);
         }
     }
 
-    private String dump(JPacket packet)
+    private void dump(String msg, int frameNum, JPacket packet)
     {
-        return packet.toHexdump();
+        Ip4 ip4 = packet.getHeader(new Ip4());
+        Tcp tcp = packet.getHeader(new Tcp());
+        int source = 0;
+        int sourcePort = 0;
+        int destination = 0;
+        int destinationPort = 0;
+        if (ip4.sourceToInt() == this.source)
+        {
+            source = ip4.sourceToInt();
+            sourcePort = tcp.source();
+            destination = ip4.destinationToInt();
+            destinationPort = tcp.destination();
+        }
+        else if (ip4.destinationToInt() == this.source)
+        {
+            source = ip4.destinationToInt();
+            sourcePort = tcp.destination();
+            destination = ip4.sourceToInt();
+            destinationPort = tcp.source();
+        }
+        view.error(msg
+                + "\n"
+                + String.format("frame: %d\t%s:%d => %s:%d\n", frameNum, IpUtils.int2string(source), sourcePort, IpUtils.int2string(destination),
+                        destinationPort)//
+                + String.format("tcp.port == %d && tcp.port == %d && ip.host == %s\n", sourcePort, destinationPort, IpUtils.int2string(destination))//
+                + packet.toHexdump());
     }
 
     private int cnt = 1;
@@ -120,20 +126,17 @@ public class HandlerGenerator implements PcapPacketHandler<String>
 
     private void removeHandler(Ip4 ip4, Tcp tcp)
     {
-        int sourceHost;
         int destinationHost;
         int sourcePort;
         int destinationPort;
         if (ip4.sourceToInt() == source)
         {
-            sourceHost = ip4.sourceToInt();
             destinationHost = ip4.destinationToInt();
             sourcePort = tcp.source();
             destinationPort = tcp.destination();
         }
         else if (ip4.destinationToInt() == source)
         {
-            sourceHost = ip4.destinationToInt();
             destinationHost = ip4.sourceToInt();
             sourcePort = tcp.destination();
             destinationPort = tcp.source();
