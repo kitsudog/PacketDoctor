@@ -35,7 +35,6 @@ import sniffer.uitls.CommandLineHelper.ExOpt;
 import sniffer.uitls.EndlessFileInputStream;
 import sniffer.uitls.IpUtils;
 import sniffer.uitls.PCAPFileReader;
-import sniffer.utils.Profiles;
 import sniffer.view.ConsoleView;
 import sniffer.view.GUIView;
 import sniffer.view.IView;
@@ -131,6 +130,12 @@ public class Main
                 .withType(CommandLineHelper.OPTION_IP)//
                 .hasArg()//
                 .create("S"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("conf")//
+                .withDescription("指定配置文件")//
+                .withType(CommandLineHelper.OPTION_FILE_EXIST)//
+                .hasArg()//
+                .create("c"));
     }
 
     /**

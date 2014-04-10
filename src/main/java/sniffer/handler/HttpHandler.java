@@ -80,15 +80,6 @@ public class HttpHandler extends TcpHandler
 
     private List<byte[]> raws = null;
 
-    private int id;
-
-    private static int cnt = 0;
-
-    public HttpHandler()
-    {
-        id = cnt++;
-    }
-
     @Override
     protected void sendTcp(Ip4 ip4, Tcp tcp, byte[] payload, long timestamp)
     {
