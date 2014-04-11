@@ -20,7 +20,7 @@ public class PivotApplication implements Application
         // 此处要使用等宽字体比较好
         Theme.getTheme().setFont(new Font("新宋体", Font.PLAIN, 12));
         BXMLSerializer bxmlSerializer = new BXMLSerializer();
-        window = (Window) bxmlSerializer.readObject(GUIView.class, "/resources/window.bxml");
+        window = (Window) bxmlSerializer.readObject(GUIView.class, "/pd/window.bxml");
         window.open(display);
     }
 

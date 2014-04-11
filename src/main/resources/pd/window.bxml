@@ -1,6 +1,6 @@
 <view:GUIView title="GUIView" maximized="true"
     xmlns:bxml="http://pivot.apache.org/bxml"
-    xmlns:view="sniffer.view"
+    xmlns:view="pd.view"
     xmlns="org.apache.pivot.wtk">
     <ScrollPane bxml:id="pane" horizontalScrollBarPolicy="fill_to_capacity">
         <TreeView bxml:id="tree">

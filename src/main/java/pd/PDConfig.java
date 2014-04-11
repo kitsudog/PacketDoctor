@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,7 +80,7 @@ public class PDConfig
         return (Class<? extends PacketHandler>) Class.forName(config.handlerClassName);
     }
 
-    public static PDConfig parse(String configStr) throws Exception
+	public static PDConfig parse(String configStr) throws Exception
     {
         PDConfig config = new PDConfig();
         Properties properties = new Properties();
@@ -88,7 +89,8 @@ public class PDConfig
         while (keys.hasMoreElements())
         {
             String key = (String) keys.nextElement();
-            String value = properties.getProperty(key);
+            String value = new String(properties.getProperty(key).getBytes("ISO8859-1"), Charset.forName("utf-8"));
+
             String[] tmp = key.split("\\.");
             if (key.startsWith("handler."))
             {
