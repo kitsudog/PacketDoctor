@@ -80,7 +80,7 @@ public class PDConfig
         return (Class<? extends PacketHandler>) Class.forName(config.handlerClassName);
     }
 
-	public static PDConfig parse(String configStr) throws Exception
+    public static PDConfig parse(String configStr) throws Exception
     {
         PDConfig config = new PDConfig();
         Properties properties = new Properties();

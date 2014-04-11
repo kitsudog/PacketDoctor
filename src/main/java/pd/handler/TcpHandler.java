@@ -32,12 +32,13 @@ public class TcpHandler extends AbstractPacketHandler
     class PacketData
     {
 
-        public PacketData(int frameId, Ip4 ip4, Tcp tcp, long timestamp)
+        public PacketData(int frameNum, Ip4 ip4, Tcp tcp, long timestamp)
         {
-            this.frameId = frameId;
+            this.frameNum = frameNum;
             this.ip4 = ip4;
             this.tcp = tcp;
             this.seq = tcp.seq();
+            // PATCH: 此处必须保留一份否则滞后再调用会导致lib中的代码出现异常
             this.payload = tcp.getPayload();
             this.timestamp = timestamp;
             length = tcp.getPayloadLength();
@@ -45,7 +46,7 @@ public class TcpHandler extends AbstractPacketHandler
 
         byte[] payload;
 
-        long frameId;
+        long frameNum;
 
         long seq;
 
@@ -97,7 +98,7 @@ public class TcpHandler extends AbstractPacketHandler
     }
 
     @Override
-    final public void recvPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException
+    final public void recvPacket(int frameNum, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException
     {
         if (tcp.flags_RST())
         {
@@ -146,7 +147,7 @@ public class TcpHandler extends AbstractPacketHandler
         {
             if (tcp.seq() < local.ack)
             {
-                view.debug("Repeat: " + frameId);
+                view.debug("Repeat: " + frameNum);
             }
             else if (tcp.flags() == 0x010 || tcp.flags() == 0x018)
             // ACK|ACK, PSH
@@ -154,12 +155,12 @@ public class TcpHandler extends AbstractPacketHandler
                 if (tcp.seq() > local.ack)
                 {
                     // TODO: 考虑窗口的因素来确认是包丢失还是乱序
-                    view.debug("Out-of-order: " + frameId);
-                    local.recvBuff.put(tcp.seq(), new PacketData(frameId, ip4, tcp, timestamp));
+                    view.debug("Out-of-order: " + frameNum);
+                    local.recvBuff.put(tcp.seq(), new PacketData(frameNum, ip4, tcp, timestamp));
                 }
                 else
                 {
-                    local.recvBuff.put(tcp.seq(), new PacketData(frameId, ip4, tcp, timestamp));
+                    local.recvBuff.put(tcp.seq(), new PacketData(frameNum, ip4, tcp, timestamp));
                     while (local.recvBuff.size() > 0)
                     {
                         PacketData packet = local.recvBuff.remove(local.ack);
@@ -209,13 +210,19 @@ public class TcpHandler extends AbstractPacketHandler
         }
         else if (local.state == STATE.FIN_WAIT_2)// Client
         {
-            Asserts.isTrue("状态不对", tcp.flags() == 0x011 || tcp.flags() == 0x019);
-            // FIN, ACK |FIN, PSH, ACK
-            Asserts.isTrue("状态不对", tcp.ack() == local.nextSeq);
-            local.state = STATE.TIME_WAIT;
-            // sleep 什么的就算了
-            local.state = STATE.CLOSED;
-            throw new DisconnectException("主动断线");
+            Asserts.isTrue("ack状态不对", tcp.ack() == local.nextSeq);
+            if (tcp.flags() == 0x011 || tcp.flags() == 0x019)
+            {
+                // FIN, ACK |FIN, PSH, ACK
+                local.state = STATE.TIME_WAIT;
+                // sleep 什么的就算了
+                local.state = STATE.CLOSED;
+                throw new DisconnectException("主动断线");
+            }
+            else if (tcp.flags() == 0x010)
+            {
+                view.debug("Repeat: " + frameNum);
+            }
         }
         else if (local.state == STATE.LAST_ACK)
         {
@@ -227,7 +234,7 @@ public class TcpHandler extends AbstractPacketHandler
         {
             if (tcp.seq() < local.ack)
             {
-                view.debug("Repeat: " + frameId);
+                view.debug("Repeat: " + frameNum);
             }
             else
             {

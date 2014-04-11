@@ -8,12 +8,12 @@ import pd.view.IView;
 
 public interface PacketHandler
 {
-    public void recvPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
+    void recvPacket(int frameNum, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
 
-    public void sendPacket(int frameId, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
+    void sendPacket(int frameNum, Ip4 ip4, Tcp tcp, long timestamp) throws HandlerException;
 
-    public void setView(IView view);
+    void setView(IView view);
 
-    public void setInfo(int sourceHost, int sourcePort, int destinationHost, int destinationPort);
+    void setInfo(int sourceHost, int sourcePort, int destinationHost, int destinationPort);
 
 }
