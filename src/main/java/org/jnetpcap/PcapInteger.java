@@ -31,54 +31,58 @@ import org.jnetpcap.nio.JNumber;
  * @deprecated replaced by JNumber
  * @see JNumber
  */
-public final class PcapInteger {
+public final class PcapInteger
+{
 
-	/** Modified from JNI methods. */
-	private volatile int value;
+    /** Modified from JNI methods. */
+    private volatile int value;
 
-	/**
-	 * Initializes the object with int value.
-	 * 
-	 * @param value
-	 *          value to initialize the object with
-	 */
-	public PcapInteger(int value) {
-		this.value = value;
-	}
+    /**
+     * Initializes the object with int value.
+     * 
+     * @param value value to initialize the object with
+     */
+    public PcapInteger(int value)
+    {
+        this.value = value;
+    }
 
-	/**
-	 * Creates an 0 initialized integer object.
-	 */
-	public PcapInteger() {
-		this.value = 0;
-	}
+    /**
+     * Creates an 0 initialized integer object.
+     */
+    public PcapInteger()
+    {
+        this.value = 0;
+    }
 
-	/**
-	 * Gets the current value
-	 * 
-	 * @return the value
-	 */
-	public final int getValue() {
-		return this.value;
-	}
+    /**
+     * Gets the current value
+     * 
+     * @return the value
+     */
+    public final int getValue()
+    {
+        return this.value;
+    }
 
-	/**
-	 * Sets a new value
-	 * 
-	 * @param value
-	 *          the value to set
-	 */
-	public final void setValue(int value) {
-		this.value = value;
-	}
+    /**
+     * Sets a new value
+     * 
+     * @param value the value to set
+     */
+    public final void setValue(int value)
+    {
+        this.value = value;
+    }
 
-	/**
-	 * Returns string representation of the integer.
-	 * 
-	 * @return integer as a string
-	 */
-	@Override
-  public String toString() {
-		return Integer.toString(value);
-	}
+    /**
+     * Returns string representation of the integer.
+     * 
+     * @return integer as a string
+     */
+    @Override
+    public String toString()
+    {
+        return Integer.toString(value);
+    }
 }

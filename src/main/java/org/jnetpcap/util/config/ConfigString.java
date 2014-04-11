@@ -31,229 +31,226 @@ import org.jnetpcap.util.ExpandableString;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class ConfigString
-    extends ExpandableString {
-	
-	/** The Constant VO. */
-	private final static String VO = "${"; // Variable Open
+public class ConfigString extends ExpandableString
+{
 
-	/** The Constant VC. */
-	private final static String VC = "}"; // Variable Close
+    /** The Constant VO. */
+    private final static String VO = "${"; // Variable Open
 
-	/** The Constant PO. */
-	private final static String PO = "@{"; // Property Open
+    /** The Constant VC. */
+    private final static String VC = "}"; // Variable Close
 
-	/** The Constant PC. */
-	private final static String PC = "}"; // Property Close
+    /** The Constant PO. */
+    private final static String PO = "@{"; // Property Open
 
-	/** The variables. */
-	private final Map<String, String> variables;
+    /** The Constant PC. */
+    private final static String PC = "}"; // Property Close
 
-	/** The properties. */
-	private final Properties properties;
+    /** The variables. */
+    private final Map<String, String> variables;
 
-	// private final static String VO =
-	// JConfig.getProperty("config.syntax.variable.open", "${");
-	//
-	// private final static String VC =
-	// JConfig.getProperty("config.syntax.variable.close", "}");
-	//
-	// private final static String PO =
-	// JConfig.getProperty("config.syntax.property.open", "@{");
-	//
-	// private final static String PC =
-	// JConfig.getProperty("config.syntax.property.close", "}");
+    /** The properties. */
+    private final Properties properties;
 
-	/**
-	 * Instantiates a new config string.
-	 * 
-	 * @param template
-	 *          the template
-	 * @param variables
-	 *          the variables
-	 * @param properties
-	 *          the properties
-	 */
-	public ConfigString(String template, Map<String, String> variables,
-	    Properties properties) {
-		super(template);
-		this.variables = variables;
-		this.properties = properties;
-	}
+    // private final static String VO =
+    // JConfig.getProperty("config.syntax.variable.open", "${");
+    //
+    // private final static String VC =
+    // JConfig.getProperty("config.syntax.variable.close", "}");
+    //
+    // private final static String PO =
+    // JConfig.getProperty("config.syntax.property.open", "@{");
+    //
+    // private final static String PC =
+    // JConfig.getProperty("config.syntax.property.close", "}");
 
-	/**
-	 * Expand.
-	 * 
-	 * @param name
-	 *          the name
-	 * @return true, if successful
-	 */
-	public boolean expand(String name) {
-		return expand(name, variables, properties);
-	}
+    /**
+     * Instantiates a new config string.
+     * 
+     * @param template the template
+     * @param variables the variables
+     * @param properties the properties
+     */
+    public ConfigString(String template, Map<String, String> variables, Properties properties)
+    {
+        super(template);
+        this.variables = variables;
+        this.properties = properties;
+    }
 
-	/**
-	 * Expand.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param variables
-	 *          the variables
-	 * @return true, if successful
-	 */
-	public boolean expand(String name, Map<String, String> variables) {
-		return expand(name, variables, properties);
-	}
+    /**
+     * Expand.
+     * 
+     * @param name the name
+     * @return true, if successful
+     */
+    public boolean expand(String name)
+    {
+        return expand(name, variables, properties);
+    }
 
-	/**
-	 * Expand.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param variables
-	 *          the variables
-	 * @param properties
-	 *          the properties
-	 * @return true, if successful
-	 */
-	public boolean expand(
-	    String name,
-	    Map<String, String> variables,
-	    Properties properties) {
-		if (saveQuotes() == false) {
-			return false;
-		}
+    /**
+     * Expand.
+     * 
+     * @param name the name
+     * @param variables the variables
+     * @return true, if successful
+     */
+    public boolean expand(String name, Map<String, String> variables)
+    {
+        return expand(name, variables, properties);
+    }
 
-		count = 0;
+    /**
+     * Expand.
+     * 
+     * @param name the name
+     * @param variables the variables
+     * @param properties the properties
+     * @return true, if successful
+     */
+    public boolean expand(String name, Map<String, String> variables, Properties properties)
+    {
+        if (saveQuotes() == false)
+        {
+            return false;
+        }
 
-		while (expandVariables(name, variables, properties)
-		    && expandProperties(name, variables, properties)) {
+        count = 0;
 
-			/*
-			 * count keeps track of how many expansions happened. When it stays at 0
-			 * after calling expand* that means that there was nothing in the string
-			 * to expand and there were no failures.
-			 */
-			if (count == 0) {
-				restoreQuotes();
-				return true;
-			}
+        while (expandVariables(name, variables, properties) && expandProperties(name, variables, properties))
+        {
 
-			count = 0;
-		}
+            /*
+             * count keeps track of how many expansions happened. When it stays
+             * at 0 after calling expand* that means that there was nothing in
+             * the string to expand and there were no failures.
+             */
+            if (count == 0)
+            {
+                restoreQuotes();
+                return true;
+            }
 
-		restoreQuotes();
-		/*
-		 * Any failure, unmatched, @ or $ sign, property or variable not found, will
-		 * break us out of the loop and we report failure.
-		 */
-		return false;
-	}
+            count = 0;
+        }
 
-	/**
-	 * Expand.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param properties
-	 *          the properties
-	 * @return true, if successful
-	 */
-	public boolean expand(String name, Properties properties) {
-		return expand(name, null, properties);
-	}
+        restoreQuotes();
+        /*
+         * Any failure, unmatched, @ or $ sign, property or variable not found,
+         * will break us out of the loop and we report failure.
+         */
+        return false;
+    }
 
-	/**
-	 * Expand properties.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param variables
-	 *          the variables
-	 * @param properties
-	 *          the properties
-	 * @return true, if successful
-	 */
-	public boolean expandProperties(
-	    String name,
-	    Map<String, String> variables, Properties properties) {
+    /**
+     * Expand.
+     * 
+     * @param name the name
+     * @param properties the properties
+     * @return true, if successful
+     */
+    public boolean expand(String name, Properties properties)
+    {
+        return expand(name, null, properties);
+    }
 
-		while (scanNext(PO, PC) && start != -1) {
-			if (properties == null) {
-				return false;
-			}
+    /**
+     * Expand properties.
+     * 
+     * @param name the name
+     * @param variables the variables
+     * @param properties the properties
+     * @return true, if successful
+     */
+    public boolean expandProperties(String name, Map<String, String> variables, Properties properties)
+    {
 
-			String property = super.substring(start + PO.length(), end);
-			String value = properties.getProperty(property);
-			if (value != null) {
-				super.replace(start, end + VC.length(), value);
-			} else {
-				return false;
-			}
-			
-			if (saveQuotes() == false) {
-				return false;
-			}
-			
-			if (expandVariables(name, variables, properties) == false) {
-				return false;
-			}
-		}
+        while (scanNext(PO, PC) && start != -1)
+        {
+            if (properties == null)
+            {
+                return false;
+            }
 
-		return (start == -1) ? true : false;
-	}
+            String property = super.substring(start + PO.length(), end);
+            String value = properties.getProperty(property);
+            if (value != null)
+            {
+                super.replace(start, end + VC.length(), value);
+            }
+            else
+            {
+                return false;
+            }
 
-	/**
-	 * Replaces variables and properties with their values, and null if anything
-	 * is not defined.
-	 * 
-	 * @param name
-	 *          special name variable that will replace $name$ in the string
-	 * @param variables
-	 *          the variables
-	 * @param properties
-	 *          properties
-	 * @return resulting string with all substitutions complete or null if any
-	 *         substitution failed such as undefined referenced property
-	 */
-	public boolean expandVariables(
-	    String name,
-	    Map<String, String> variables,
-	    Properties properties) {
+            if (saveQuotes() == false)
+            {
+                return false;
+            }
 
-		while (scanNext(VO, VC) && start != -1) {
+            if (expandVariables(name, variables, properties) == false)
+            {
+                return false;
+            }
+        }
 
-			String variable = super.substring(start + VO.length(), end);
-			if (variable.equals("name")) {
-				super.replace(start, end + VC.length(), name);
+        return (start == -1) ? true : false;
+    }
 
-			} else if (variables != null && variables.containsKey(variable)) {
-				super.replace(start, end + 1, variables.get(variable));
+    /**
+     * Replaces variables and properties with their values, and null if anything
+     * is not defined.
+     * 
+     * @param name special name variable that will replace $name$ in the string
+     * @param variables the variables
+     * @param properties properties
+     * @return resulting string with all substitutions complete or null if any
+     *         substitution failed such as undefined referenced property
+     */
+    public boolean expandVariables(String name, Map<String, String> variables, Properties properties)
+    {
 
-			} else {
-				return false;
-			}
-		}
+        while (scanNext(VO, VC) && start != -1)
+        {
 
-		return (start == -1) ? true : false;
-	}
+            String variable = super.substring(start + VO.length(), end);
+            if (variable.equals("name"))
+            {
+                super.replace(start, end + VC.length(), name);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.util.config.ExpandableString#reset()
-	 */
-	/**
-	 * Reset.
-	 * 
-	 * @return the config string
-	 * @see org.jnetpcap.util.ExpandableString#reset()
-	 */
-	@Override
-	public ConfigString reset() {
-		super.reset();
+            }
+            else if (variables != null && variables.containsKey(variable))
+            {
+                super.replace(start, end + 1, variables.get(variable));
 
-		return this;
-	}
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return (start == -1) ? true : false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.util.config.ExpandableString#reset()
+     */
+    /**
+     * Reset.
+     * 
+     * @return the config string
+     * @see org.jnetpcap.util.ExpandableString#reset()
+     */
+    @Override
+    public ConfigString reset()
+    {
+        super.reset();
+
+        return this;
+    }
 
 }

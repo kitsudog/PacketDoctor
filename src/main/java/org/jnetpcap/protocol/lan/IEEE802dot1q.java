@@ -32,60 +32,64 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header(length = 4, nicname = "vlan")
-public class IEEE802dot1q
-    extends JHeader {
+public class IEEE802dot1q extends JHeader
+{
 
-	/** The Constant ID. */
-	public static final int ID = JProtocol.IEEE_802DOT1Q_ID;
+    /** The Constant ID. */
+    public static final int ID = JProtocol.IEEE_802DOT1Q_ID;
 
+    /**
+     * Priority.
+     * 
+     * @return the int
+     */
+    @Field(offset = 0, length = 3, format = "%d")
+    public int priority()
+    {
+        return (getUByte(0) & 0xE0) >> 5;
+    }
 
-	/**
-	 * Priority.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 0, length = 3, format = "%d")
-	public int priority() {
-		return (getUByte(0) & 0xE0) >> 5;
-	}
+    /**
+     * Cfi.
+     * 
+     * @return the int
+     */
+    @Field(offset = 3, length = 1, format = "%x")
+    public int cfi()
+    {
+        return (getUByte(0) & 0x10) >> 4;
+    }
 
-	/**
-	 * Cfi.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 3, length = 1, format = "%x")
-	public int cfi() {
-		return (getUByte(0) & 0x10) >> 4;
-	}
+    /**
+     * Id.
+     * 
+     * @return the int
+     */
+    @Field(offset = 4, length = 12, format = "%x")
+    public int id()
+    {
+        return getUShort(0) & 0x0FFF;
+    }
 
-	/**
-	 * Id.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 4, length = 12, format = "%x")
-	public int id() {
-		return getUShort(0) & 0x0FFF;
-	}
-	
-	/**
-	 * Type description.
-	 * 
-	 * @return the string
-	 */
-	@Dynamic(Field.Property.DESCRIPTION)
-	public String typeDescription() {
-		return Ethernet.EthernetType.toString(type());
-	}
+    /**
+     * Type description.
+     * 
+     * @return the string
+     */
+    @Dynamic(Field.Property.DESCRIPTION)
+    public String typeDescription()
+    {
+        return Ethernet.EthernetType.toString(type());
+    }
 
-	/**
-	 * Type.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 16, length = 16, format = "%x")
-	public int type() {
-		return getUShort(2);
-	}
+    /**
+     * Type.
+     * 
+     * @return the int
+     */
+    @Field(offset = 16, length = 16, format = "%x")
+    public int type()
+    {
+        return getUShort(2);
+    }
 }

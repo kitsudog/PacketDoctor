@@ -31,24 +31,23 @@ import java.lang.annotation.Target;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-@Target( {
-    ElementType.METHOD,
-    ElementType.FIELD })
+@Target(
+{ ElementType.METHOD, ElementType.FIELD })
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dynamic {
-	
-	/**
-	 * Field.
-	 * 
-	 * @return the string
-	 */
-	String field() default "";
 
-	/**
-	 * Value.
-	 * 
-	 * @return the field. property
-	 */
-	Field.Property value();
+    /**
+     * Field.
+     * 
+     * @return the string
+     */
+    String field() default "";
+
+    /**
+     * Value.
+     * 
+     * @return the field. property
+     */
+    Field.Property value();
 }

@@ -30,93 +30,95 @@ import org.jnetpcap.util.JLogger;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class IpResolver
-    extends AbstractResolver {
+public class IpResolver extends AbstractResolver
+{
 
-	/**
-	 * Instantiates a new ip resolver.
-	 * 
-	 */
-	public IpResolver() {
-		super(JLogger.getLogger(IpResolver.class), "IP");
-	}
+    /**
+     * Instantiates a new ip resolver.
+     * 
+     */
+    public IpResolver()
+    {
+        super(JLogger.getLogger(IpResolver.class), "IP");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.format.JFormatter.AbstractResolver#resolveToName(byte[],
-	 *      int)
-	 */
-	/**
-	 * Resolve to name.
-	 * 
-	 * @param address
-	 *          the address
-	 * @param hash
-	 *          the hash
-	 * @return the string
-	 * @see org.jnetpcap.util.resolver.AbstractResolver#resolveToName(byte[],
-	 *      long)
-	 */
-	@Override
-	public String resolveToName(byte[] address, long hash) {
-		try {
-			InetAddress i = InetAddress.getByAddress(address);
-			String host = i.getHostName();
-			if (Character.isDigit(host.charAt(0)) == false) {
-				return host;
-			}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter.AbstractResolver#resolveToName(
+     * byte[], int)
+     */
+    /**
+     * Resolve to name.
+     * 
+     * @param address the address
+     * @param hash the hash
+     * @return the string
+     * @see org.jnetpcap.util.resolver.AbstractResolver#resolveToName(byte[],
+     *      long)
+     */
+    @Override
+    public String resolveToName(byte[] address, long hash)
+    {
+        try
+        {
+            InetAddress i = InetAddress.getByAddress(address);
+            String host = i.getHostName();
+            if (Character.isDigit(host.charAt(0)) == false)
+            {
+                return host;
+            }
 
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		return null;
+        }
+        catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.format.JFormatter.AbstractResolver#toHashCode(byte[])
-	 */
-	/**
-	 * To hash code.
-	 * 
-	 * @param address
-	 *          the address
-	 * @return the long
-	 * @see org.jnetpcap.util.resolver.AbstractResolver#toHashCode(byte[])
-	 */
-	@Override
-	public long toHashCode(byte[] address) {
-		long hash =
-		    ((address[3] < 0) ? address[3] + 256 : address[3])
-		        | ((address[2] < 0) ? address[2] + 256 : address[2]) << 8
-		        | ((address[1] < 0) ? address[1] + 256 : address[1]) << 16
-		        | ((address[0] < 0) ? address[0] + 256 : address[0]) << 24;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter.AbstractResolver#toHashCode(byte[])
+     */
+    /**
+     * To hash code.
+     * 
+     * @param address the address
+     * @return the long
+     * @see org.jnetpcap.util.resolver.AbstractResolver#toHashCode(byte[])
+     */
+    @Override
+    public long toHashCode(byte[] address)
+    {
+        long hash = ((address[3] < 0) ? address[3] + 256 : address[3]) | ((address[2] < 0) ? address[2] + 256 : address[2]) << 8
+                | ((address[1] < 0) ? address[1] + 256 : address[1]) << 16 | ((address[0] < 0) ? address[0] + 256 : address[0]) << 24;
 
-		return hash;
-	}
+        return hash;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.util.AbstractResolver#resolveToName(long, long)
-	 */
-	/**
-	 * Resolve to name.
-	 * 
-	 * @param number
-	 *          the number
-	 * @param hash
-	 *          the hash
-	 * @return the string
-	 * @see org.jnetpcap.util.resolver.AbstractResolver#resolveToName(long, long)
-	 */
-	@Override
-	protected String resolveToName(long number, long hash) {
-		throw new UnsupportedOperationException(
-		    "this resolver only resolves addresses in byte[] form");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.util.AbstractResolver#resolveToName(long, long)
+     */
+    /**
+     * Resolve to name.
+     * 
+     * @param number the number
+     * @param hash the hash
+     * @return the string
+     * @see org.jnetpcap.util.resolver.AbstractResolver#resolveToName(long,
+     *      long)
+     */
+    @Override
+    protected String resolveToName(long number, long hash)
+    {
+        throw new UnsupportedOperationException("this resolver only resolves addresses in byte[] form");
+    }
 
 }

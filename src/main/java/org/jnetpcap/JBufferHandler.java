@@ -33,22 +33,20 @@ import org.jnetpcap.nio.JBuffer;
  * PcapHeader is simply an extension to JBuffer which hard codes the structure
  * of the pcap_pkthdr structure into Java.
  * 
- * @param <T>
- *          User specific type
+ * @param <T> User specific type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JBufferHandler<T> {
+public interface JBufferHandler<T>
+{
 
-	/**
-	 * Callback method that will called by libpcap when a new packet is captured.
-	 * 
-	 * @param header
-	 *          pcap capture header
-	 * @param buffer
-	 *          buffer containing packet data
-	 * @param user
-	 *          user supplied object
-	 */
-	public void nextPacket(PcapHeader header, JBuffer buffer, T user);
+    /**
+     * Callback method that will called by libpcap when a new packet is
+     * captured.
+     * 
+     * @param header pcap capture header
+     * @param buffer buffer containing packet data
+     * @param user user supplied object
+     */
+    public void nextPacket(PcapHeader header, JBuffer buffer, T user);
 }

@@ -26,141 +26,148 @@ import org.jnetpcap.packet.structure.HeaderDefinitionError;
 /**
  * The Class AbstractBinding.
  * 
- * @param <H>
- *          the generic type
+ * @param <H> the generic type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public abstract class AbstractBinding<H extends JHeader> implements JBinding {
+public abstract class AbstractBinding<H extends JHeader> implements JBinding
+{
 
-	/** The target id. */
-	private final int targetId;
+    /** The target id. */
+    private final int targetId;
 
-	/** The source id. */
-	private final int sourceId;
+    /** The source id. */
+    private final int sourceId;
 
-	/** The header. */
-	private final H header;
+    /** The header. */
+    private final H header;
 
-	/** The length methods. */
-	private AnnotatedHeaderLengthMethod[] lengthMethods;
+    /** The length methods. */
+    private AnnotatedHeaderLengthMethod[] lengthMethods;
 
-	/**
-	 * Instantiates a new abstract binding.
-	 * 
-	 * @param sourceClass
-	 *          the source class
-	 * @param targetClass
-	 *          the target class
-	 */
-	public AbstractBinding(
-	    Class<? extends JHeader> sourceClass,
-	    Class<H> targetClass) {
+    /**
+     * Instantiates a new abstract binding.
+     * 
+     * @param sourceClass the source class
+     * @param targetClass the target class
+     */
+    public AbstractBinding(Class<? extends JHeader> sourceClass, Class<H> targetClass)
+    {
 
-		this.sourceId = JRegistry.lookupId(sourceClass);
-		this.targetId = JRegistry.lookupId(targetClass);
+        this.sourceId = JRegistry.lookupId(sourceClass);
+        this.targetId = JRegistry.lookupId(targetClass);
 
-		try {
-			this.header = targetClass.newInstance();
-		} catch (InstantiationException e) {
-			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
+        try
+        {
+            this.header = targetClass.newInstance();
+        }
+        catch (InstantiationException e)
+        {
+            throw new IllegalStateException(e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new IllegalStateException(e);
+        }
 
-		try {
-			this.lengthMethods =
-			    AnnotatedHeaderLengthMethod.inspectClass(targetClass);
-		} catch (HeaderDefinitionError e) {
-			this.lengthMethods = null;
-		}
-	}
+        try
+        {
+            this.lengthMethods = AnnotatedHeaderLengthMethod.inspectClass(targetClass);
+        }
+        catch (HeaderDefinitionError e)
+        {
+            this.lengthMethods = null;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JBinding#getSourceId()
-	 */
-	/**
-	 * Gets the source id.
-	 * 
-	 * @return the source id
-	 * @see org.jnetpcap.packet.JBinding#getSourceId()
-	 */
-	public int getSourceId() {
-		return this.sourceId;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JBinding#getSourceId()
+     */
+    /**
+     * Gets the source id.
+     * 
+     * @return the source id
+     * @see org.jnetpcap.packet.JBinding#getSourceId()
+     */
+    public int getSourceId()
+    {
+        return this.sourceId;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JBinding#getTargetId()
-	 */
-	/**
-	 * Gets the target id.
-	 * 
-	 * @return the target id
-	 * @see org.jnetpcap.packet.JBinding#getTargetId()
-	 */
-	public int getTargetId() {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JBinding#getTargetId()
+     */
+    /**
+     * Gets the target id.
+     * 
+     * @return the target id
+     * @see org.jnetpcap.packet.JBinding#getTargetId()
+     */
+    public int getTargetId()
+    {
 
-		return this.targetId;
-	}
+        return this.targetId;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JBinding#isBound(org.jnetpcap.packet.JPacket, int)
-	 */
-	/**
-	 * Checks if is bound.
-	 * 
-	 * @param packet
-	 *          the packet
-	 * @param offset
-	 *          the offset
-	 * @return true, if is bound
-	 * @see org.jnetpcap.packet.JBinding#isBound(org.jnetpcap.packet.JPacket, int)
-	 */
-	public boolean isBound(JPacket packet, int offset) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JBinding#isBound(org.jnetpcap.packet.JPacket,
+     * int)
+     */
+    /**
+     * Checks if is bound.
+     * 
+     * @param packet the packet
+     * @param offset the offset
+     * @return true, if is bound
+     * @see org.jnetpcap.packet.JBinding#isBound(org.jnetpcap.packet.JPacket,
+     *      int)
+     */
+    public boolean isBound(JPacket packet, int offset)
+    {
 
-		if (this.lengthMethods != null) {
-			final int prefix =
-			    lengthMethods[HeaderLength.Type.PREFIX.ordinal()].getHeaderLength(
-			        packet, offset);
-			
-			packet.peer(header, offset + prefix, lengthMethods[HeaderLength.Type.HEADER
-			    .ordinal()].getHeaderLength(packet, offset));
-		} else {
-			packet.peer(header, offset, packet.remaining(offset));
-		}
-		return isBound(packet, header);
-	}
+        if (this.lengthMethods != null)
+        {
+            final int prefix = lengthMethods[HeaderLength.Type.PREFIX.ordinal()].getHeaderLength(packet, offset);
 
-	/**
-	 * Checks if is bound.
-	 * 
-	 * @param packet
-	 *          the packet
-	 * @param header
-	 *          the header
-	 * @return true, if is bound
-	 */
-	public abstract boolean isBound(JPacket packet, H header);
+            packet.peer(header, offset + prefix, lengthMethods[HeaderLength.Type.HEADER.ordinal()].getHeaderLength(packet, offset));
+        }
+        else
+        {
+            packet.peer(header, offset, packet.remaining(offset));
+        }
+        return isBound(packet, header);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JBinding#listDependencies()
-	 */
-	/**
-	 * List dependencies.
-	 * 
-	 * @return the int[]
-	 * @see org.jnetpcap.packet.JBinding#listDependencies()
-	 */
-	public int[] listDependencies() {
-		return new int[] { targetId };
-	}
+    /**
+     * Checks if is bound.
+     * 
+     * @param packet the packet
+     * @param header the header
+     * @return true, if is bound
+     */
+    public abstract boolean isBound(JPacket packet, H header);
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JBinding#listDependencies()
+     */
+    /**
+     * List dependencies.
+     * 
+     * @return the int[]
+     * @see org.jnetpcap.packet.JBinding#listDependencies()
+     */
+    public int[] listDependencies()
+    {
+        return new int[]
+        { targetId };
+    }
 
 }

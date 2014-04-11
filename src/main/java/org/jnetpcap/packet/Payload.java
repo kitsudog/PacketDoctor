@@ -34,44 +34,45 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header(nicname = "Data")
-public class Payload
-    extends JHeader {
-	
-	/**
-	 * Header length.
-	 * 
-	 * @param buffer
-	 *          the buffer
-	 * @param offset
-	 *          the offset
-	 * @return the int
-	 */
-	@HeaderLength
-	public static int headerLength(JBuffer buffer, int offset) {
-		return buffer.size() - offset;
-	}
+public class Payload extends JHeader
+{
 
-	/** The Constant ID. */
-	public final static int ID = JProtocol.PAYLOAD.getId();
-	
-	/**
-	 * Data length.
-	 * 
-	 * @return the int
-	 */
-	@Dynamic(Field.Property.LENGTH) 
-	public int dataLength() {
-		return size() * 8;
-	}
-	
-	/**
-	 * Data.
-	 * 
-	 * @return the byte[]
-	 */
-	@Field(offset = 0, format="#hexdump#")
-	public byte[] data() {
-		return super.getByteArray(0, size());
-	}
+    /**
+     * Header length.
+     * 
+     * @param buffer the buffer
+     * @param offset the offset
+     * @return the int
+     */
+    @HeaderLength
+    public static int headerLength(JBuffer buffer, int offset)
+    {
+        return buffer.size() - offset;
+    }
+
+    /** The Constant ID. */
+    public final static int ID = JProtocol.PAYLOAD.getId();
+
+    /**
+     * Data length.
+     * 
+     * @return the int
+     */
+    @Dynamic(Field.Property.LENGTH)
+    public int dataLength()
+    {
+        return size() * 8;
+    }
+
+    /**
+     * Data.
+     * 
+     * @return the byte[]
+     */
+    @Field(offset = 0, format = "#hexdump#")
+    public byte[] data()
+    {
+        return super.getByteArray(0, size());
+    }
 
 }

@@ -31,133 +31,135 @@ import java.util.List;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public abstract class AnnotatedMethod {
+public abstract class AnnotatedMethod
+{
 
-	/** The method. */
-	protected final Method method;
-	
-	/** The is mapped. */
-	protected boolean isMapped = false;
-	
-	/**
-	 * Sets the checks if is mapped.
-	 * 
-	 * @param state
-	 *          the new checks if is mapped
-	 */
-	public void setIsMapped(boolean state) {
-		this.isMapped = state;
-	}
+    /** The method. */
+    protected final Method method;
 
-	/** The declaring class. */
-	protected final Class<?> declaringClass;
+    /** The is mapped. */
+    protected boolean isMapped = false;
 
-	/** The object. */
-	protected final Object object;
+    /**
+     * Sets the checks if is mapped.
+     * 
+     * @param state the new checks if is mapped
+     */
+    public void setIsMapped(boolean state)
+    {
+        this.isMapped = state;
+    }
 
-	/** The cache. */
-	private static HashMap<Integer, Method[]> cache =
-	    new HashMap<Integer, Method[]>(20);
+    /** The declaring class. */
+    protected final Class<?> declaringClass;
 
-	/**
-	 * Instantiates a new annotated method.
-	 */
-	public AnnotatedMethod() {
-		this.method = null;
-		this.declaringClass = null;
-		this.object = null;
-		this.isMapped = false;
-	}
+    /** The object. */
+    protected final Object object;
 
-	/**
-	 * Instantiates a new annotated method.
-	 * 
-	 * @param method
-	 *          the method
-	 * @param object
-	 *          the object
-	 */
-	public AnnotatedMethod(Method method, Object object) {
-		this.object = object;
-		this.method = method;
-		this.declaringClass = method.getDeclaringClass();
+    /** The cache. */
+    private static HashMap<Integer, Method[]> cache = new HashMap<Integer, Method[]>(20);
 
-	}
+    /**
+     * Instantiates a new annotated method.
+     */
+    public AnnotatedMethod()
+    {
+        this.method = null;
+        this.declaringClass = null;
+        this.object = null;
+        this.isMapped = false;
+    }
 
-	/**
-	 * Instantiates a new annotated method.
-	 * 
-	 * @param method
-	 *          the method
-	 */
-	public AnnotatedMethod(Method method) {
-		this.method = method;
-		this.declaringClass = method.getDeclaringClass();
-		this.object = null;
+    /**
+     * Instantiates a new annotated method.
+     * 
+     * @param method the method
+     * @param object the object
+     */
+    public AnnotatedMethod(Method method, Object object)
+    {
+        this.object = object;
+        this.method = method;
+        this.declaringClass = method.getDeclaringClass();
 
-		validateSignature(method);
-	}
+    }
 
-	/**
-	 * Gets the method.
-	 * 
-	 * @return the method
-	 */
-	public Method getMethod() {
-		return this.method;
-	}
+    /**
+     * Instantiates a new annotated method.
+     * 
+     * @param method the method
+     */
+    public AnnotatedMethod(Method method)
+    {
+        this.method = method;
+        this.declaringClass = method.getDeclaringClass();
+        this.object = null;
 
-	/**
-	 * Validate signature.
-	 * 
-	 * @param method
-	 *          the method
-	 */
-	protected abstract void validateSignature(Method method);
+        validateSignature(method);
+    }
 
-	/**
-	 * To string.
-	 * 
-	 * @return the string
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		if (method == null) {
-			return "";
-		} else {
-			return declaringClass.getSimpleName() + "." + method.getName() + "()";
-		}
-	}
+    /**
+     * Gets the method.
+     * 
+     * @return the method
+     */
+    public Method getMethod()
+    {
+        return this.method;
+    }
 
+    /**
+     * Validate signature.
+     * 
+     * @param method the method
+     */
+    protected abstract void validateSignature(Method method);
 
-	/**
-	 * Gets the methods.
-	 * 
-	 * @param c
-	 *          the c
-	 * @param annotation
-	 *          the annotation
-	 * @return the methods
-	 */
-	public static Method[] getMethods(
-	    Class<?> c,
-	    Class<? extends Annotation> annotation) {
+    /**
+     * To string.
+     * 
+     * @return the string
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        if (method == null)
+        {
+            return "";
+        }
+        else
+        {
+            return declaringClass.getSimpleName() + "." + method.getName() + "()";
+        }
+    }
 
-		final int hash = c.hashCode() + annotation.hashCode();
-		if (cache.containsKey(hash)) {
-			return cache.get(hash);
-		}
+    /**
+     * Gets the methods.
+     * 
+     * @param c the c
+     * @param annotation the annotation
+     * @return the methods
+     */
+    public static Method[] getMethods(Class<?> c, Class<? extends Annotation> annotation)
+    {
 
-		List<Method> methods = new ArrayList<Method>(50);
-		for (Method method : c.getMethods()) {
-			if (method.isAnnotationPresent(annotation)) {
-				methods.add(method);
-			}
-		}
+        final int hash = c.hashCode() + annotation.hashCode();
+        if (cache.containsKey(hash))
+        {
+            return cache.get(hash);
+        }
 
+        List<Method> methods = new ArrayList<Method>(50);
+        for (Method method : c.getMethods())
+        {
+            if (method.isAnnotationPresent(annotation))
+            {
+                methods.add(method);
+            }
+        }
 
-		Method[] m =  methods.toArray(new Method[methods.size()]);
-		cache.put(hash, m);
-		return m;
-	}
+        Method[] m = methods.toArray(new Method[methods.size()]);
+        cache.put(hash, m);
+        return m;
+    }
 }

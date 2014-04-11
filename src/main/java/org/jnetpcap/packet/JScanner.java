@@ -107,359 +107,373 @@ import org.jnetpcap.nio.JStruct;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JScanner extends JStruct {
+public class JScanner extends JStruct
+{
 
-	/** The count. */
-	private static int count = 0;
+    /** The count. */
+    private static int count = 0;
 
-	/** Default allocation for memory block/buffer. */
-	public static final int DEFAULT_BLOCKSIZE = 100 * 1024; // 100K
+    /** Default allocation for memory block/buffer. */
+    public static final int DEFAULT_BLOCKSIZE = 100 * 1024; // 100K
 
-	/** The local scanners. */
-	private static ThreadLocal<JScanner> localScanners =
-			new ThreadLocal<JScanner>() {
+    /** The local scanners. */
+    private static ThreadLocal<JScanner> localScanners = new ThreadLocal<JScanner>()
+    {
 
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see java.lang.ThreadLocal#initialValue()
-				 */
-				@Override
-				protected JScanner initialValue() {
-					return new JScanner();
-				}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.ThreadLocal#initialValue()
+         */
+        @Override
+        protected JScanner initialValue()
+        {
+            return new JScanner();
+        }
 
-			};
+    };
 
-	/** Maximum number of header entries allowed per packet buffer by the scanner. */
-	public static final int MAX_ENTRY_COUNT = 64;
+    /**
+     * Maximum number of header entries allowed per packet buffer by the
+     * scanner.
+     */
+    public static final int MAX_ENTRY_COUNT = 64;
 
-	/** Maximum number of ID entries allowed by the scanner. */
-	public static final int MAX_ID_COUNT = 64;
+    /** Maximum number of ID entries allowed by the scanner. */
+    public static final int MAX_ID_COUNT = 64;
 
-	/** Name of the peered native structure. */
-	public final static String STRUCT_NAME = "scanner_t";
+    /** Name of the peered native structure. */
+    public final static String STRUCT_NAME = "scanner_t";
 
-	static {
-		try {
-			initIds();
-		} catch (Exception e) {
-		    System.err.println("JScanner.static: error=" + e.toString());
-			throw new ExceptionInInitializerError(e);
-		}
-	}
+    static
+    {
+        try
+        {
+            initIds();
+        }
+        catch (Exception e)
+        {
+            System.err.println("JScanner.static: error=" + e.toString());
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
-	/**
-	 * Binding override.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param enable
-	 *          the enable
-	 */
-	public static void bindingOverride(int id, boolean enable) {
-		if (enable) {
-			JRegistry.setFlags(id, JRegistry.FLAG_OVERRIDE_BINDING);
-		} else {
-			JRegistry.clearFlags(id, JRegistry.FLAG_OVERRIDE_BINDING);
-		}
+    /**
+     * Binding override.
+     * 
+     * @param id the id
+     * @param enable the enable
+     */
+    public static void bindingOverride(int id, boolean enable)
+    {
+        if (enable)
+        {
+            JRegistry.setFlags(id, JRegistry.FLAG_OVERRIDE_BINDING);
+        }
+        else
+        {
+            JRegistry.clearFlags(id, JRegistry.FLAG_OVERRIDE_BINDING);
+        }
 
-		JPacket.getDefaultScanner().reloadAll();
-	}
+        JPacket.getDefaultScanner().reloadAll();
+    }
 
-	/**
-	 * Maintains and allocates a pool of packet scanners.
-	 * 
-	 * @return a thread local global scanner
-	 */
-	public static JScanner getThreadLocal() {
-		// JScanner s = localScanners.get();
-		// s.reloadAll();
+    /**
+     * Maintains and allocates a pool of packet scanners.
+     * 
+     * @return a thread local global scanner
+     */
+    public static JScanner getThreadLocal()
+    {
+        // JScanner s = localScanners.get();
+        // s.reloadAll();
 
-		JScanner s = JPacket.getDefaultScanner();
-		return s;
-	}
+        JScanner s = JPacket.getDefaultScanner();
+        return s;
+    }
 
-	/**
-	 * Shutdown.
-	 */
-	public static void shutdown() {
+    /**
+     * Shutdown.
+     */
+    public static void shutdown()
+    {
 
-		localScanners.remove();
-		localScanners = null;
-	}
+        localScanners.remove();
+        localScanners = null;
+    }
 
-	/**
-	 * Heuristic check.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param enable
-	 *          the enable
-	 */
-	public static void heuristicCheck(int id, boolean enable) {
-		if (enable) {
-			JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-		} else {
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-		}
+    /**
+     * Heuristic check.
+     * 
+     * @param id the id
+     * @param enable the enable
+     */
+    public static void heuristicCheck(int id, boolean enable)
+    {
+        if (enable)
+        {
+            JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+        }
+        else
+        {
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+        }
 
-		JPacket.getDefaultScanner().reloadAll();
-	}
+        JPacket.getDefaultScanner().reloadAll();
+    }
 
-	/**
-	 * Heuristic post check.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param enable
-	 *          the enable
-	 */
-	public static void heuristicPostCheck(int id, boolean enable) {
-		if (enable) {
-			JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
-		} else {
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
-		}
+    /**
+     * Heuristic post check.
+     * 
+     * @param id the id
+     * @param enable the enable
+     */
+    public static void heuristicPostCheck(int id, boolean enable)
+    {
+        if (enable)
+        {
+            JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
+        }
+        else
+        {
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
+        }
 
-		JPacket.getDefaultScanner().reloadAll();
-	}
+        JPacket.getDefaultScanner().reloadAll();
+    }
 
-	/**
-	 * Heuristic pre check.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param enable
-	 *          the enable
-	 */
-	public static void heuristicPreCheck(int id, boolean enable) {
-		if (enable) {
-			JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-			JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
-		} else {
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
-			JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
-		}
+    /**
+     * Heuristic pre check.
+     * 
+     * @param id the id
+     * @param enable the enable
+     */
+    public static void heuristicPreCheck(int id, boolean enable)
+    {
+        if (enable)
+        {
+            JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+            JRegistry.setFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
+        }
+        else
+        {
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_BINDING);
+            JRegistry.clearFlags(id, JRegistry.FLAG_HEURISTIC_PRE_BINDING);
+        }
 
-		JPacket.getDefaultScanner().reloadAll();
-	}
+        JPacket.getDefaultScanner().reloadAll();
+    }
 
-	/**
-	 * Initialized JNI method and fields IDs.
-	 */
-	private native static void initIds();
+    /**
+     * Initialized JNI method and fields IDs.
+     */
+    private native static void initIds();
 
-	/**
-	 * Reset to defaults.
-	 */
-	public static void resetToDefaults() {
-		for (int id = 0; id < JRegistry.MAX_ID_COUNT; id++) {
-			JRegistry.clearFlags(id, 0xFFFFFFFF);
-		}
-	}
+    /**
+     * Reset to defaults.
+     */
+    public static void resetToDefaults()
+    {
+        for (int id = 0; id < JRegistry.MAX_ID_COUNT; id++)
+        {
+            JRegistry.clearFlags(id, 0xFFFFFFFF);
+        }
+    }
 
-	/**
-	 * Size of the entire scanner_t structure. Does not include the entire
-	 * allocated memory block managed by this object.
-	 * 
-	 * @return result from sizeof(scanner_t) statement
-	 */
-	native static int sizeof();
+    /**
+     * Size of the entire scanner_t structure. Does not include the entire
+     * allocated memory block managed by this object.
+     * 
+     * @return result from sizeof(scanner_t) statement
+     */
+    native static int sizeof();
 
-	/**
-	 * To bit mask.
-	 * 
-	 * @param ids
-	 *          the ids
-	 * @return the long
-	 */
-	private static long toBitMask(int... ids) {
-		long o = 0L;
-		for (int i = 0; i < ids.length; i++) {
-			o |= (1L << i);
-		}
+    /**
+     * To bit mask.
+     * 
+     * @param ids the ids
+     * @return the long
+     */
+    private static long toBitMask(int... ids)
+    {
+        long o = 0L;
+        for (int i = 0; i < ids.length; i++)
+        {
+            o |= (1L << i);
+        }
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Allocates a default scanner using {@literal #DEFAULT_BLOCKSIZE} buffer
-	 * size.
-	 */
-	public JScanner() {
-		this(DEFAULT_BLOCKSIZE);
+    /**
+     * Allocates a default scanner using {@literal #DEFAULT_BLOCKSIZE} buffer
+     * size.
+     */
+    public JScanner()
+    {
+        this(DEFAULT_BLOCKSIZE);
 
-		/*
-		 * List<StackTraceElement> list = new
-		 * ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread()
-		 * .getStackTrace())); list.remove(0); list.remove(0);
-		 * System.out.printf("%s:%s%n", toString(), list);
-		 */
-	}
+        /*
+         * List<StackTraceElement> list = new
+         * ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread()
+         * .getStackTrace())); list.remove(0); list.remove(0);
+         * System.out.printf("%s:%s%n", toString(), list);
+         */
+    }
 
-	/**
-	 * Allocates the requested blocksize of memory + the sizeof(scanner_t).
-	 * 
-	 * @param blocksize
-	 *          the blocksize
-	 */
-	public JScanner(int blocksize) {
-		super(STRUCT_NAME + "#" + count++, blocksize + sizeof()); // Allocate memory
+    /**
+     * Allocates the requested blocksize of memory + the sizeof(scanner_t).
+     * 
+     * @param blocksize the blocksize
+     */
+    public JScanner(int blocksize)
+    {
+        super(STRUCT_NAME + "#" + count++, blocksize + sizeof()); // Allocate
+                                                                  // memory
 
-		init(new JScan());
-		reloadAll();
+        init(new JScan());
+        reloadAll();
 
-		/*
-		 * List<StackTraceElement> list = new
-		 * ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread()
-		 * .getStackTrace())); list.remove(0); list.remove(0);
-		 * System.out.printf("%s:%s%n", toString(), list);
-		 */
-	}
+        /*
+         * List<StackTraceElement> list = new
+         * ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread()
+         * .getStackTrace())); list.remove(0); list.remove(0);
+         * System.out.printf("%s:%s%n", toString(), list);
+         */
+    }
 
-	/**
-	 * Retrieves the current frame number assigned by this scanner.
-	 * 
-	 * @return current frame counter value
-	 */
-	public native long getFrameNumber();
+    /**
+     * Retrieves the current frame number assigned by this scanner.
+     * 
+     * @return current frame counter value
+     */
+    public native long getFrameNumber();
 
-	/**
-	 * Initializes the scanner_t structure within the allocated block.
-	 * 
-	 * @param scan
-	 *          a uninitialized JScan object to be used internally by JScanner for
-	 *          its interaction with java space.
-	 */
-	private native void init(JScan scan);
+    /**
+     * Initializes the scanner_t structure within the allocated block.
+     * 
+     * @param scan a uninitialized JScan object to be used internally by
+     *        JScanner for its interaction with java space.
+     */
+    private native void init(JScan scan);
 
-	/**
-	 * Downloads flags for each protocol to the scanner's native implementation.
-	 * 
-	 * @param flags
-	 *          array of flags, one for each protocol ID
-	 */
-	private native void loadFlags(int[] flags);
+    /**
+     * Downloads flags for each protocol to the scanner's native implementation.
+     * 
+     * @param flags array of flags, one for each protocol ID
+     */
+    private native void loadFlags(int[] flags);
 
-	/**
-	 * Load scanners.
-	 * 
-	 * @param scanners
-	 *          the scanners
-	 */
-	private native void loadScanners(JHeaderScanner[] scanners);
+    /**
+     * Load scanners.
+     * 
+     * @param scanners the scanners
+     */
+    private native void loadScanners(JHeaderScanner[] scanners);
 
-	/**
-	 * Reloads the scanner and bindings table from JRegistry down to native
-	 * scanner structures.
-	 */
-	public void reloadAll() {
-		JHeaderScanner[] scanners = JRegistry.getHeaderScanners();
+    /**
+     * Reloads the scanner and bindings table from JRegistry down to native
+     * scanner structures.
+     */
+    public void reloadAll()
+    {
+        JHeaderScanner[] scanners = JRegistry.getHeaderScanners();
 
-		for (int i = 0; i < scanners.length; i++) {
-			if (scanners[i] == null) {
-				continue;
-			}
+        for (int i = 0; i < scanners.length; i++)
+        {
+            if (scanners[i] == null)
+            {
+                continue;
+            }
 
-			if (scanners[i].hasBindings() || scanners[i].hasScanMethod()
-					|| scanners[i].isDirect() == false) {
-				// System.out.printf("%s, Downloading scanner [%s]\n", this,
-				// scanners[i]);
-			} else {
-				scanners[i] = null;
-			}
-		}
+            if (scanners[i].hasBindings() || scanners[i].hasScanMethod() || scanners[i].isDirect() == false)
+            {
+                // System.out.printf("%s, Downloading scanner [%s]\n", this,
+                // scanners[i]);
+            }
+            else
+            {
+                scanners[i] = null;
+            }
+        }
 
-		loadScanners(scanners);
+        loadScanners(scanners);
 
-		int[] flags = JRegistry.getAllFlags();
-		loadFlags(flags);
-	}
+        int[] flags = JRegistry.getAllFlags();
+        loadFlags(flags);
+    }
 
-	/**
-	 * Performs a scan on a packet that has been peered with a packet data buffer.
-	 * The state structure o the packet is filled in and peered at the time of the
-	 * packet scan.
-	 * 
-	 * @param packet
-	 *          packet to process
-	 * @param id
-	 *          numerical ID of the data link protocol, or first header within the
-	 *          data buffer
-	 * @return number of bytes processed
-	 */
-	public int scan(JPacket packet, int id) {
-		return scan(packet, id, packet.getPacketWirelen());
-	}
+    /**
+     * Performs a scan on a packet that has been peered with a packet data
+     * buffer. The state structure o the packet is filled in and peered at the
+     * time of the packet scan.
+     * 
+     * @param packet packet to process
+     * @param id numerical ID of the data link protocol, or first header within
+     *        the data buffer
+     * @return number of bytes processed
+     */
+    public int scan(JPacket packet, int id)
+    {
+        return scan(packet, id, packet.getPacketWirelen());
+    }
 
-	/**
-	 * Performs a scan on a packet that has been peered with a packet data buffer.
-	 * The state structure o the packet is filled in and peered at the time of the
-	 * packet scan.
-	 * 
-	 * @param packet
-	 *          packet to process
-	 * @param id
-	 *          numerical ID of the data link protocol, or first header within the
-	 *          data buffer
-	 * @param wirelen
-	 *          original packet length
-	 * @return number of bytes processed
-	 */
-	public int scan(JPacket packet, int id, int wirelen) {
-		final JPacket.State state = packet.getState();
+    /**
+     * Performs a scan on a packet that has been peered with a packet data
+     * buffer. The state structure o the packet is filled in and peered at the
+     * time of the packet scan.
+     * 
+     * @param packet packet to process
+     * @param id numerical ID of the data link protocol, or first header within
+     *        the data buffer
+     * @param wirelen original packet length
+     * @return number of bytes processed
+     */
+    public int scan(JPacket packet, int id, int wirelen)
+    {
+        final JPacket.State state = packet.getState();
 
-		return scan(packet, state, id, wirelen);
-	}
+        return scan(packet, state, id, wirelen);
+    }
 
-	/**
-	 * Performs the actual scan.
-	 * 
-	 * @param packet
-	 *          packet to scan
-	 * @param state
-	 *          the state
-	 * @param id
-	 *          id of dlt protocol
-	 * @param wirelen
-	 *          the wirelen
-	 * @return number of bytes processed
-	 */
-	private native int scan(JPacket packet,
-			JPacket.State state,
-			int id,
-			int wirelen);
+    /**
+     * Performs the actual scan.
+     * 
+     * @param packet packet to scan
+     * @param state the state
+     * @param id id of dlt protocol
+     * @param wirelen the wirelen
+     * @return number of bytes processed
+     */
+    private native int scan(JPacket packet, JPacket.State state, int id, int wirelen);
 
-	/**
-	 * Sets the scanner's current frame number to user specified value. This
-	 * allows scanner's frame numbers it assigns and keeps track of to be reset
-	 * back to 0 or some other value if needed.
-	 * 
-	 * @param frameNo
-	 *          new frame number
-	 */
-	public native void setFrameNumber(long frameNo);
+    /**
+     * Sets the scanner's current frame number to user specified value. This
+     * allows scanner's frame numbers it assigns and keeps track of to be reset
+     * back to 0 or some other value if needed.
+     * 
+     * @param frameNo new frame number
+     */
+    public native void setFrameNumber(long frameNo);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.nio.JMemory#createReference(long)
-	 */
-	/**
-	 * Creates the reference.
-	 * 
-	 * @param address
-	 *          the address
-	 * @param size
-	 *          the size
-	 * @return the j memory reference
-	 * @see org.jnetpcap.nio.JMemory#createReference(long, long)
-	 */
-	@Override
-	protected JMemoryReference createReference(long address, long size) {
-		return new JScannerReference(this, address, size);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.nio.JMemory#createReference(long)
+     */
+    /**
+     * Creates the reference.
+     * 
+     * @param address the address
+     * @param size the size
+     * @return the j memory reference
+     * @see org.jnetpcap.nio.JMemory#createReference(long, long)
+     */
+    @Override
+    protected JMemoryReference createReference(long address, long size)
+    {
+        return new JScannerReference(this, address, size);
+    }
 }

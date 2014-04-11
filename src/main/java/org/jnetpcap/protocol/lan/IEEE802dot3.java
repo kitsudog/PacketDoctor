@@ -37,157 +37,169 @@ import org.jnetpcap.util.checksum.Checksum;
  * @author Sly Technologies, Inc.
  */
 @Header(length = 14, dlt = PcapDLT.IEEE802)
-public class IEEE802dot3
-    extends JHeader {
+public class IEEE802dot3 extends JHeader
+{
 
-	/** The Constant ID. */
-	public static final int ID = JProtocol.IEEE_802DOT3_ID;
+    /** The Constant ID. */
+    public static final int ID = JProtocol.IEEE_802DOT3_ID;
 
-	/**
-	 * Destination.
-	 * 
-	 * @return the byte[]
-	 */
-	@Field(offset = 0, length = 48, format = "#mac#")
-	public byte[] destination() {
-		return getByteArray(0, 6);
-	}
+    /**
+     * Destination.
+     * 
+     * @return the byte[]
+     */
+    @Field(offset = 0, length = 48, format = "#mac#")
+    public byte[] destination()
+    {
+        return getByteArray(0, 6);
+    }
 
-	/**
-	 * Destination to byte array.
-	 * 
-	 * @param array
-	 *          the array
-	 * @return the byte[]
-	 */
-	public byte[] destinationToByteArray(byte[] array) {
-		return getByteArray(0, array);
-	}
+    /**
+     * Destination to byte array.
+     * 
+     * @param array the array
+     * @return the byte[]
+     */
+    public byte[] destinationToByteArray(byte[] array)
+    {
+        return getByteArray(0, array);
+    }
 
-	/**
-	 * Destination.
-	 * 
-	 * @param array
-	 *          the array
-	 */
-	public void destination(byte[] array) {
-		setByteArray(0, array);
-	}
+    /**
+     * Destination.
+     * 
+     * @param array the array
+     */
+    public void destination(byte[] array)
+    {
+        setByteArray(0, array);
+    }
 
-	/**
-	 * Source.
-	 * 
-	 * @return the byte[]
-	 */
-	@Field(offset = 48, length = 48, format = "#mac#")
-	public byte[] source() {
-		return getByteArray(0 + 6, 6);
-	}
+    /**
+     * Source.
+     * 
+     * @return the byte[]
+     */
+    @Field(offset = 48, length = 48, format = "#mac#")
+    public byte[] source()
+    {
+        return getByteArray(0 + 6, 6);
+    }
 
-	/**
-	 * Source.
-	 * 
-	 * @param array
-	 *          the array
-	 */
-	public void source(byte[] array) {
-		setByteArray(0 + 6, array);
-	}
+    /**
+     * Source.
+     * 
+     * @param array the array
+     */
+    public void source(byte[] array)
+    {
+        setByteArray(0 + 6, array);
+    }
 
-	/**
-	 * Source to byte array.
-	 * 
-	 * @param array
-	 *          the array
-	 * @return the byte[]
-	 */
-	public byte[] sourceToByteArray(byte[] array) {
-		return getByteArray(0 + 6, array);
-	}
+    /**
+     * Source to byte array.
+     * 
+     * @param array the array
+     * @return the byte[]
+     */
+    public byte[] sourceToByteArray(byte[] array)
+    {
+        return getByteArray(0 + 6, array);
+    }
 
-	/**
-	 * Length.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 96, length = 16, format = "%d")
-	public int length() {
-		return getUShort(0 + 12);
-	}
+    /**
+     * Length.
+     * 
+     * @return the int
+     */
+    @Field(offset = 96, length = 16, format = "%d")
+    public int length()
+    {
+        return getUShort(0 + 12);
+    }
 
-	/**
-	 * Length.
-	 * 
-	 * @param len
-	 *          the len
-	 */
-	public void length(int len) {
-		setUShort(0 + 12, len);
-	}
-	
-	/**
-	 * Checks if FCS is available for this Ethernet frame. FCS is typically
-	 * stripped by the OS and not provided to Libpcap/jNetPcap on most platforms.
-	 * 
-	 * @return true if FCS is present, otherwise false
-	 */
-	@Dynamic(field = "checksum", value = Field.Property.CHECK)
-	public boolean checksumCheck() {
-		return getPostfixLength() >= 4;
-	}
+    /**
+     * Length.
+     * 
+     * @param len the len
+     */
+    public void length(int len)
+    {
+        setUShort(0 + 12, len);
+    }
 
-	/**
-	 * Calculates the offset of the FCS field within the Ethernet frame.
-	 * 
-	 * @return offset, in bits, from the start of the packet buffer
-	 */
-	@Dynamic(Field.Property.OFFSET)
-	public int checksumOffset() {
-		return getPostfixOffset() * BYTE;
-	}
+    /**
+     * Checks if FCS is available for this Ethernet frame. FCS is typically
+     * stripped by the OS and not provided to Libpcap/jNetPcap on most
+     * platforms.
+     * 
+     * @return true if FCS is present, otherwise false
+     */
+    @Dynamic(field = "checksum", value = Field.Property.CHECK)
+    public boolean checksumCheck()
+    {
+        return getPostfixLength() >= 4;
+    }
 
-	/**
-	 * Checksum description.
-	 * 
-	 * @return the string
-	 */
-	@Dynamic(Field.Property.DESCRIPTION)
-	public String checksumDescription() {
-		final long crc32 = calculateChecksum();
-		if (checksum() == crc32) {
-			return "correct";
-		} else {
-			return "incorrect: 0x" + Long.toHexString(crc32).toUpperCase();
-		}
-	}
+    /**
+     * Calculates the offset of the FCS field within the Ethernet frame.
+     * 
+     * @return offset, in bits, from the start of the packet buffer
+     */
+    @Dynamic(Field.Property.OFFSET)
+    public int checksumOffset()
+    {
+        return getPostfixOffset() * BYTE;
+    }
 
-	/**
-	 * Retrieves the header's checksum.
-	 * 
-	 * @return header's stored checksum
-	 */
-	@Field(length = 4 * BYTE, format = "%x", display = "FCS")
-	public long checksum() {
-		final JPacket packet = getPacket();
-		packet.order(ByteOrder.BIG_ENDIAN);
-		return packet.getUInt(getPostfixOffset());
-	}
+    /**
+     * Checksum description.
+     * 
+     * @return the string
+     */
+    @Dynamic(Field.Property.DESCRIPTION)
+    public String checksumDescription()
+    {
+        final long crc32 = calculateChecksum();
+        if (checksum() == crc32)
+        {
+            return "correct";
+        }
+        else
+        {
+            return "incorrect: 0x" + Long.toHexString(crc32).toUpperCase();
+        }
+    }
 
-	/**
-	 * Calculates a checksum using protocol specification for a header. Checksums
-	 * for partial headers or fragmented packets (unless the protocol allows it)
-	 * are not calculated.
-	 * 
-	 * @return header's calculated checksum
-	 */
-	public long calculateChecksum() {
-		if (getPostfixLength() < 4) {
-			return 0L;
-		}
-		
-		final JPacket packet = getPacket();
-		return Checksum.crc32IEEE802(packet, 0, packet.size() - 4);
-	}
+    /**
+     * Retrieves the header's checksum.
+     * 
+     * @return header's stored checksum
+     */
+    @Field(length = 4 * BYTE, format = "%x", display = "FCS")
+    public long checksum()
+    {
+        final JPacket packet = getPacket();
+        packet.order(ByteOrder.BIG_ENDIAN);
+        return packet.getUInt(getPostfixOffset());
+    }
 
+    /**
+     * Calculates a checksum using protocol specification for a header.
+     * Checksums for partial headers or fragmented packets (unless the protocol
+     * allows it) are not calculated.
+     * 
+     * @return header's calculated checksum
+     */
+    public long calculateChecksum()
+    {
+        if (getPostfixLength() < 4)
+        {
+            return 0L;
+        }
+
+        final JPacket packet = getPacket();
+        return Checksum.crc32IEEE802(packet, 0, packet.size() - 4);
+    }
 
 }

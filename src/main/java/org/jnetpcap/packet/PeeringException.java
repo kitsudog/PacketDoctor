@@ -25,48 +25,48 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PeeringException
-    extends Exception {
+public class PeeringException extends Exception
+{
 
-	/** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 7136151191443182266L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 7136151191443182266L;
 
-	/**
-	 * Instantiates a new peering exception.
-	 */
-	public PeeringException() {
-	}
+    /**
+     * Instantiates a new peering exception.
+     */
+    public PeeringException()
+    {
+    }
 
-	/**
-	 * Instantiates a new peering exception.
-	 * 
-	 * @param message
-	 *          the message
-	 */
-	public PeeringException(String message) {
-		super(message);
-	}
+    /**
+     * Instantiates a new peering exception.
+     * 
+     * @param message the message
+     */
+    public PeeringException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 * Instantiates a new peering exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-	public PeeringException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new peering exception.
+     * 
+     * @param cause the cause
+     */
+    public PeeringException(Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 * Instantiates a new peering exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public PeeringException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Instantiates a new peering exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public PeeringException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 
 }

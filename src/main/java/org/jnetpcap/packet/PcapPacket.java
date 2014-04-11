@@ -63,12 +63,14 @@ import org.jnetpcap.nio.JMemoryPool;
  * Here is an example of how to use an accessor form a PcapPacketHandler:
  * 
  * <pre>
- * public void nextPacket(PcapPacket packet, Object user) {
- * 	if (packet.hasHeader(Ethernet.ID)) {
- * 		Ethernet eth = packet.getHeader(new Ethernet());
+ * public void nextPacket(PcapPacket packet, Object user)
+ * {
+ *     if (packet.hasHeader(Ethernet.ID))
+ *     {
+ *         Ethernet eth = packet.getHeader(new Ethernet());
  * 
- * 		System.out.printf(&quot;ethernet.type=%X\n&quot;, eth.type());
- * 	}
+ *         System.out.printf(&quot;ethernet.type=%X\n&quot;, eth.type());
+ *     }
  * }
  * </pre>
  * 
@@ -79,14 +81,17 @@ import org.jnetpcap.nio.JMemoryPool;
  * 
  * private Ip4 ip = new Ip4(); // Preallocat IP version 4 header
  * 
- * public void nextPacket(PcapPacket packet, Object user) {
- * 	if (packet.hasHeader(eth)) {
- * 		System.out.printf(&quot;ethernet.type=%X\n&quot;, eth.type());
- * 	}
+ * public void nextPacket(PcapPacket packet, Object user)
+ * {
+ *     if (packet.hasHeader(eth))
+ *     {
+ *         System.out.printf(&quot;ethernet.type=%X\n&quot;, eth.type());
+ *     }
  * 
- * 	if (packet.hasHeader(ip)) {
- * 		System.out.println(&quot;ip.version=%d\n&quot;, ip.version());
- * 	}
+ *     if (packet.hasHeader(ip))
+ *     {
+ *         System.out.println(&quot;ip.version=%d\n&quot;, ip.version());
+ *     }
  * }
  * </pre>
  * 
@@ -349,722 +354,721 @@ import org.jnetpcap.nio.JMemoryPool;
  * @author Sly Technologies, Inc.
  * @see JMemoryPool
  */
-public class PcapPacket extends JPacket {
+public class PcapPacket extends JPacket
+{
 
-	/** The Constant STATE_SIZE. */
-	private final static int STATE_SIZE = PcapHeader.sizeof()
-			+ JPacket.State.sizeof(DEFAULT_STATE_HEADER_COUNT);
+    /** The Constant STATE_SIZE. */
+    private final static int STATE_SIZE = PcapHeader.sizeof() + JPacket.State.sizeof(DEFAULT_STATE_HEADER_COUNT);
 
-	/**
+    /**
 	 * 
 	 */
-	static {
-		try {
-			initIds();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    static
+    {
+        try
+        {
+            initIds();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * JNI Ids.
-	 */
-	private native static void initIds();
+    /**
+     * JNI Ids.
+     */
+    private native static void initIds();
 
-	/** The header. */
-	private final PcapHeader header = new PcapHeader(Type.POINTER);
+    /** The header. */
+    private final PcapHeader header = new PcapHeader(Type.POINTER);
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 */
-    public PcapPacket(byte[] buffer) {
-		super(Type.POINTER);
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     */
+    public PcapPacket(byte[] buffer)
+    {
+        super(Type.POINTER);
 
-		transferStateAndDataFrom(buffer);
-	}
+        transferStateAndDataFrom(buffer);
+    }
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 */
-	public PcapPacket(ByteBuffer buffer) {
-		super(Type.POINTER);
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     */
+    public PcapPacket(ByteBuffer buffer)
+    {
+        super(Type.POINTER);
 
-		transferStateAndDataFrom(buffer);
-	}
+        transferStateAndDataFrom(buffer);
+    }
 
-	/**
-	 * Allocates a memory buffer large enough to hold atleast size bytes of data
-	 * and the decoded packet state. The size of the the state structure is
-	 * estimated to contain maximum of {@literal DEFAULT_STATE_HEADER_COUNT}
-	 * headers.
-	 * 
-	 * @param size
-	 *          amount of memory to allocate to hold packet data
-	 */
-	public PcapPacket(int size) {
-		super(size, STATE_SIZE);
-	}
+    /**
+     * Allocates a memory buffer large enough to hold atleast size bytes of data
+     * and the decoded packet state. The size of the the state structure is
+     * estimated to contain maximum of {@literal DEFAULT_STATE_HEADER_COUNT}
+     * headers.
+     * 
+     * @param size amount of memory to allocate to hold packet data
+     */
+    public PcapPacket(int size)
+    {
+        super(size, STATE_SIZE);
+    }
 
-	/**
-	 * Allocates memory for packet data and certain amount of state and headers.
-	 * 
-	 * @param size
-	 *          number of bytes for packet data
-	 * @param headerCount
-	 *          maximum number of header to allocate space for
-	 */
-	public PcapPacket(int size, int headerCount) {
-		super(size, PcapHeader.sizeof() + JPacket.State.sizeof(headerCount));
-	}
+    /**
+     * Allocates memory for packet data and certain amount of state and headers.
+     * 
+     * @param size number of bytes for packet data
+     * @param headerCount maximum number of header to allocate space for
+     */
+    public PcapPacket(int size, int headerCount)
+    {
+        super(size, PcapHeader.sizeof() + JPacket.State.sizeof(headerCount));
+    }
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 */
-	public PcapPacket(JBuffer buffer) {
-		super(Type.POINTER);
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     */
+    public PcapPacket(JBuffer buffer)
+    {
+        super(Type.POINTER);
 
-		transferStateAndDataFrom(buffer);
-	}
+        transferStateAndDataFrom(buffer);
+    }
 
-	/**
-	 * Does a deep copy of the source packet into newly allocated native memory
-	 * location.
-	 * 
-	 * @param src
-	 *          source packet
-	 */
-	public PcapPacket(JPacket src) {
-		super(Type.POINTER);
+    /**
+     * Does a deep copy of the source packet into newly allocated native memory
+     * location.
+     * 
+     * @param src source packet
+     */
+    public PcapPacket(JPacket src)
+    {
+        super(Type.POINTER);
 
-		if (src instanceof PcapPacket) {
-			((PcapPacket) src).transferStateAndDataTo(this);
-		} else {
-			throw new UnsupportedOperationException(
-					"Unsupported packet type for this constructor");
-		}
-	}
+        if (src instanceof PcapPacket)
+        {
+            ((PcapPacket) src).transferStateAndDataTo(this);
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Unsupported packet type for this constructor");
+        }
+    }
 
-	/**
-	 * Allocates memory for new packet and copies both the header and packet
-	 * buffer to newly allocated memory. Packet state is uninitialized and needs
-	 * to be decoded.
-	 * 
-	 * @param header
-	 *          capture header
-	 * @param buffer
-	 *          packet data buffer
-	 */
-	public PcapPacket(PcapHeader header, ByteBuffer buffer) {
-		super(Type.POINTER);
+    /**
+     * Allocates memory for new packet and copies both the header and packet
+     * buffer to newly allocated memory. Packet state is uninitialized and needs
+     * to be decoded.
+     * 
+     * @param header capture header
+     * @param buffer packet data buffer
+     */
+    public PcapPacket(PcapHeader header, ByteBuffer buffer)
+    {
+        super(Type.POINTER);
 
-		transferHeaderAndDataFrom0(header, buffer);
-	}
+        transferHeaderAndDataFrom0(header, buffer);
+    }
 
-	/**
-	 * Allocates memory for new packet and copies both the header and packet
-	 * buffer to newly allocated memory. Packet state is uninitialized and needs
-	 * to be decoded.
-	 * 
-	 * @param header
-	 *          capture header
-	 * @param buffer
-	 *          packet data buffer
-	 */
-	public PcapPacket(PcapHeader header, JBuffer buffer) {
-		super(Type.POINTER);
+    /**
+     * Allocates memory for new packet and copies both the header and packet
+     * buffer to newly allocated memory. Packet state is uninitialized and needs
+     * to be decoded.
+     * 
+     * @param header capture header
+     * @param buffer packet data buffer
+     */
+    public PcapPacket(PcapHeader header, JBuffer buffer)
+    {
+        super(Type.POINTER);
 
-		transferHeaderAndDataFrom0(header, buffer);
-	}
+        transferHeaderAndDataFrom0(header, buffer);
+    }
 
-	/**
-	 * Does a deep copy of the source packet into newly allocated native memory
-	 * location.
-	 * 
-	 * @param src
-	 *          source packet
-	 */
-	public PcapPacket(PcapPacket src) {
-		super(Type.POINTER);
+    /**
+     * Does a deep copy of the source packet into newly allocated native memory
+     * location.
+     * 
+     * @param src source packet
+     */
+    public PcapPacket(PcapPacket src)
+    {
+        super(Type.POINTER);
 
-		src.transferStateAndDataTo(this);
-	}
+        src.transferStateAndDataTo(this);
+    }
 
-	/**
-	 * Special type of instantiation that allows an empty packet to be peered, or
-	 * in C terms its a packet pointer with no actual memory allocated. Accessing
-	 * most methods in this packet object before its initialized will throw
-	 * NullPointerException as the object has not been initialized yet.
-	 * 
-	 * @param type
-	 *          state of the object to create
-	 */
-	public PcapPacket(Type type) {
-		super(type);
-	}
+    /**
+     * Special type of instantiation that allows an empty packet to be peered,
+     * or in C terms its a packet pointer with no actual memory allocated.
+     * Accessing most methods in this packet object before its initialized will
+     * throw NullPointerException as the object has not been initialized yet.
+     * 
+     * @param type state of the object to create
+     */
+    public PcapPacket(Type type)
+    {
+        super(type);
+    }
 
-	/**
-	 * Retrieves the PcapHeader, capture header provided by libpcap.
-	 * 
-	 * @return capture header
-	 */
-	@Override
-	public PcapHeader getCaptureHeader() {
-		return header;
-	}
+    /**
+     * Retrieves the PcapHeader, capture header provided by libpcap.
+     * 
+     * @return capture header
+     */
+    @Override
+    public PcapHeader getCaptureHeader()
+    {
+        return header;
+    }
 
-	/**
-	 * Gets the total size of the packet including pcap header, decoded state and
-	 * data buffer.
-	 * 
-	 * @return total size of the packet in bytes
-	 */
-	@Override
-	public int getTotalSize() {
-		return super.size() + state.size() + header.size();
-	}
+    /**
+     * Gets the total size of the packet including pcap header, decoded state
+     * and data buffer.
+     * 
+     * @return total size of the packet in bytes
+     */
+    @Override
+    public int getTotalSize()
+    {
+        return super.size() + state.size() + header.size();
+    }
 
-	/**
-	 * Peers both header and data to buffer. The buffer must contain first header
-	 * then packet data layout in its memory. Packet state is uninitialized.
-	 * 
-	 * @param buffer
-	 *          the buffer
-	 * @return number of bytes peered
-	 */
-	public int peerHeaderAndData(JBuffer buffer) {
-		int o = header.peer(buffer, 0);
-		o += super.peer(buffer, o, buffer.size() - header.size());
+    /**
+     * Peers both header and data to buffer. The buffer must contain first
+     * header then packet data layout in its memory. Packet state is
+     * uninitialized.
+     * 
+     * @param buffer the buffer
+     * @return number of bytes peered
+     */
+    public int peerHeaderAndData(JBuffer buffer)
+    {
+        int o = header.peer(buffer, 0);
+        o += super.peer(buffer, o, buffer.size() - header.size());
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Peer.
-	 * 
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 */
-	public int peer(PcapHeader header, JBuffer buffer) {
-		int o = this.header.peerTo(header, 0);
-		o += this.peer(buffer);
+    /**
+     * Peer.
+     * 
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     */
+    public int peer(PcapHeader header, JBuffer buffer)
+    {
+        int o = this.header.peerTo(header, 0);
+        o += this.peer(buffer);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Peer and scan.
-	 * 
-	 * @param dlt
-	 *          the dlt
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 */
-	public int peerAndScan(int dlt, PcapHeader header, JBuffer buffer) {
-		int o = this.header.peerTo(header, 0);
-		o += this.peer(buffer);
+    /**
+     * Peer and scan.
+     * 
+     * @param dlt the dlt
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     */
+    public int peerAndScan(int dlt, PcapHeader header, JBuffer buffer)
+    {
+        int o = this.header.peerTo(header, 0);
+        o += this.peer(buffer);
 
-		scan(dlt);
+        scan(dlt);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Peer header and data.
-	 * 
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 * @throws PeeringException
-	 *           the peering exception
-	 */
-	public int peerHeaderAndData(PcapHeader header, ByteBuffer buffer)
-			throws PeeringException {
-		int o = this.header.peerTo(header, 0);
-		o += super.peer(buffer);
+    /**
+     * Peer header and data.
+     * 
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     * @throws PeeringException the peering exception
+     */
+    public int peerHeaderAndData(PcapHeader header, ByteBuffer buffer) throws PeeringException
+    {
+        int o = this.header.peerTo(header, 0);
+        o += super.peer(buffer);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Peer header and data.
-	 * 
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 */
-	public int peerHeaderAndData(PcapHeader header, JBuffer buffer) {
-		int o = this.header.peerTo(header, 0);
-		o += super.peer(buffer);
+    /**
+     * Peer header and data.
+     * 
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     */
+    public int peerHeaderAndData(PcapHeader header, JBuffer buffer)
+    {
+        int o = this.header.peerTo(header, 0);
+        o += super.peer(buffer);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Peers the contents of the buffer directly with this packet. No copies are
-	 * performed but the capture header, packet state and data are expected to be
-	 * contained within the buffer with a certain layout as described below:
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          Buffer containing packet header, state and data. Position property
-	 *          specifies that start within the buffer where to peer the first
-	 *          byte.
-	 * @return number of bytes that were peered out of the buffer
-	 * @throws PeeringException
-	 *           thrown if ByteBuffer is not direct byte buffer type
-	 */
-	public int peerStateAndData(ByteBuffer buffer) throws PeeringException {
-		if (buffer.isDirect() == false) {
-			throw new PeeringException("unable to peer a non-direct ByteBuffer");
-		}
-		return peerStateAndData(getMemoryBuffer(buffer), 0);
-	}
+    /**
+     * Peers the contents of the buffer directly with this packet. No copies are
+     * performed but the capture header, packet state and data are expected to
+     * be contained within the buffer with a certain layout as described below:
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer Buffer containing packet header, state and data. Position
+     *        property specifies that start within the buffer where to peer the
+     *        first byte.
+     * @return number of bytes that were peered out of the buffer
+     * @throws PeeringException thrown if ByteBuffer is not direct byte buffer
+     *         type
+     */
+    public int peerStateAndData(ByteBuffer buffer) throws PeeringException
+    {
+        if (buffer.isDirect() == false)
+        {
+            throw new PeeringException("unable to peer a non-direct ByteBuffer");
+        }
+        return peerStateAndData(getMemoryBuffer(buffer), 0);
+    }
 
-	/**
-	 * Peers the contents of the buffer directly with this packet. No copies are
-	 * performed but the capture header, packet state and data are expected to be
-	 * contained within the buffer with a certain layout as described below:
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing packet header, state and data
-	 * @return number of bytes that were peered out of the buffer
-	 */
-	public int peerStateAndData(JBuffer buffer) {
-		return peerStateAndData(getMemoryBuffer(buffer), 0);
-	}
+    /**
+     * Peers the contents of the buffer directly with this packet. No copies are
+     * performed but the capture header, packet state and data are expected to
+     * be contained within the buffer with a certain layout as described below:
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing packet header, state and data
+     * @return number of bytes that were peered out of the buffer
+     */
+    public int peerStateAndData(JBuffer buffer)
+    {
+        return peerStateAndData(getMemoryBuffer(buffer), 0);
+    }
 
-	/**
-	 * Peer state and data.
-	 * 
-	 * @param memory
-	 *          the memory
-	 * @param offset
-	 *          the offset
-	 * @return the int
-	 */
-    private int peerStateAndData(JBuffer memory, int offset) {
+    /**
+     * Peer state and data.
+     * 
+     * @param memory the memory
+     * @param offset the offset
+     * @return the int
+     */
+    private int peerStateAndData(JBuffer memory, int offset)
+    {
 
-		int o = header.peer(memory, offset);
-		state.peerTo(memory, offset + o, State.sizeof(0));
-		o += state.peerTo(memory, offset + o, State.sizeof(state.getHeaderCount()));
-		o += super.peer(memory, offset + o, header.caplen());
+        int o = header.peer(memory, offset);
+        state.peerTo(memory, offset + o, State.sizeof(0));
+        o += state.peerTo(memory, offset + o, State.sizeof(state.getHeaderCount()));
+        o += super.peer(memory, offset + o, header.caplen());
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Copies contents of header and packet buffer to a single newly allocated
-	 * buffer. State is uninitialized. The packet's header and buffer's are peered
-	 * with newly allocated buffer.
-	 * 
-	 * @param header
-	 *          source header
-	 * @param buffer
-	 *          source packet data buffer
-	 * @return number of bytes copied.
-	 */
-	public int transferHeaderAndDataFrom(PcapHeader header, ByteBuffer buffer) {
-		return transferHeaderAndDataFrom0(header, buffer);
-	}
+    /**
+     * Copies contents of header and packet buffer to a single newly allocated
+     * buffer. State is uninitialized. The packet's header and buffer's are
+     * peered with newly allocated buffer.
+     * 
+     * @param header source header
+     * @param buffer source packet data buffer
+     * @return number of bytes copied.
+     */
+    public int transferHeaderAndDataFrom(PcapHeader header, ByteBuffer buffer)
+    {
+        return transferHeaderAndDataFrom0(header, buffer);
+    }
 
-	/**
-	 * Transfer header and data from0.
-	 * 
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 */
-	private int transferHeaderAndDataFrom0(PcapHeader header, ByteBuffer buffer) {
-		return getMemoryPool().duplicate2(header, buffer, this.header, this);
-	}
+    /**
+     * Transfer header and data from0.
+     * 
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     */
+    private int transferHeaderAndDataFrom0(PcapHeader header, ByteBuffer buffer)
+    {
+        return getMemoryPool().duplicate2(header, buffer, this.header, this);
+    }
 
-	/**
-	 * Copies contents of header and packet buffer to a single newly allocated
-	 * buffer. State is uninitialized. The packet's header and buffer's are peered
-	 * with newly allocated buffer.
-	 * 
-	 * @param header
-	 *          source header
-	 * @param buffer
-	 *          source packet data buffer
-	 * @return number of bytes copied.
-	 */
-	public int transferHeaderAndDataFrom(PcapHeader header, JBuffer buffer) {
-		return transferHeaderAndDataFrom0(header, buffer);
-	}
+    /**
+     * Copies contents of header and packet buffer to a single newly allocated
+     * buffer. State is uninitialized. The packet's header and buffer's are
+     * peered with newly allocated buffer.
+     * 
+     * @param header source header
+     * @param buffer source packet data buffer
+     * @return number of bytes copied.
+     */
+    public int transferHeaderAndDataFrom(PcapHeader header, JBuffer buffer)
+    {
+        return transferHeaderAndDataFrom0(header, buffer);
+    }
 
-	/**
-	 * Transfer header and data from0.
-	 * 
-	 * @param header
-	 *          the header
-	 * @param buffer
-	 *          the buffer
-	 * @return the int
-	 */
-	private int transferHeaderAndDataFrom0(PcapHeader header, JBuffer buffer) {
-		return getMemoryPool().duplicate2(header, buffer, this.header, this);
-	}
+    /**
+     * Transfer header and data from0.
+     * 
+     * @param header the header
+     * @param buffer the buffer
+     * @return the int
+     */
+    private int transferHeaderAndDataFrom0(PcapHeader header, JBuffer buffer)
+    {
+        return getMemoryPool().duplicate2(header, buffer, this.header, this);
+    }
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @return number of bytes copied
-	 */
-	public int transferStateAndDataFrom(byte[] buffer) {
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @return number of bytes copied
+     */
+    public int transferStateAndDataFrom(byte[] buffer)
+    {
 
-		JBuffer b = getMemoryBuffer(buffer);
+        JBuffer b = getMemoryBuffer(buffer);
 
-		return peerStateAndData(b, 0);
-	}
+        return peerStateAndData(b, 0);
+    }
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          Buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer. Current buffer position points at the
-	 *          start of pcap header.
-	 * @return number of bytes copied
-	 */
-	public int transferStateAndDataFrom(ByteBuffer buffer) {
-		final int len = buffer.limit() - buffer.position();
-		JBuffer b = getMemoryBuffer(len);
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer Buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer. Current buffer position points
+     *        at the start of pcap header.
+     * @return number of bytes copied
+     */
+    public int transferStateAndDataFrom(ByteBuffer buffer)
+    {
+        final int len = buffer.limit() - buffer.position();
+        JBuffer b = getMemoryBuffer(len);
 
-		b.transferFrom(buffer, 0);
+        b.transferFrom(buffer, 0);
 
-		return peerStateAndData(b, 0);
-	}
+        return peerStateAndData(b, 0);
+    }
 
-	/**
-	 * Copies contents of the buffer to new packet. All of the contents of the
-	 * buffer are deep copied to new packet. The new packet allocates new memory
-	 * for the packet contents, state and header if existing memory buffer is not
-	 * large enough. Otherwise the existing memory buffer is overriden and reused.
-	 * Existing buffers are not cleared before hand and may contain old data
-	 * outside of the new header, state and packet data areas that are being
-	 * overriden.
-	 * <p>
-	 * Supplied buffer layout expected:
-	 * 
-	 * <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @return number of bytes copied
-	 */
-	public int transferStateAndDataFrom(JBuffer buffer) {
-		final int len = buffer.size();
-		JBuffer b = getMemoryBuffer(len);
+    /**
+     * Copies contents of the buffer to new packet. All of the contents of the
+     * buffer are deep copied to new packet. The new packet allocates new memory
+     * for the packet contents, state and header if existing memory buffer is
+     * not large enough. Otherwise the existing memory buffer is overriden and
+     * reused. Existing buffers are not cleared before hand and may contain old
+     * data outside of the new header, state and packet data areas that are
+     * being overriden.
+     * <p>
+     * Supplied buffer layout expected:
+     * 
+     * <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @return number of bytes copied
+     */
+    public int transferStateAndDataFrom(JBuffer buffer)
+    {
+        final int len = buffer.size();
+        JBuffer b = getMemoryBuffer(len);
 
-		buffer.transferTo(b);
+        buffer.transferTo(b);
 
-		return peerStateAndData(b, 0);
-	}
+        return peerStateAndData(b, 0);
+    }
 
-	/**
-	 * Deep copy of the supplied packet to this packet. Contents of the supplied
-	 * packet such as pcap header, packet state and packet data are deep copied
-	 * into newly allocated memory if necessary or existing memory buffer if it is
-	 * large enough to hold the new packet with its complete state. In either
-	 * case, the new packet will be stored with its header and state in a single
-	 * contigues buffer.
-	 * 
-	 * @param packet
-	 *          source packet from which to copy from
-	 * @return number of bytes copied
-	 */
-	public int transferStateAndDataFrom(PcapPacket packet) {
-		return packet.transferStateAndDataTo(this);
-	}
+    /**
+     * Deep copy of the supplied packet to this packet. Contents of the supplied
+     * packet such as pcap header, packet state and packet data are deep copied
+     * into newly allocated memory if necessary or existing memory buffer if it
+     * is large enough to hold the new packet with its complete state. In either
+     * case, the new packet will be stored with its header and state in a single
+     * contigues buffer.
+     * 
+     * @param packet source packet from which to copy from
+     * @return number of bytes copied
+     */
+    public int transferStateAndDataFrom(PcapPacket packet)
+    {
+        return packet.transferStateAndDataTo(this);
+    }
 
-	/**
-	 * Copies contents of this packet to buffer. The packets capture header, state
-	 * and packet data are copied to new buffer. After completion of this
-	 * operation the complete contents and state of the packet will be transfered
-	 * to the buffer. The layout of the buffer data will be as described below. A
-	 * buffer with this type of layout is suitable for any transferStateAndData or
-	 * peer methods for any buffers that are JMemory based. The buffer has to be
-	 * large enough to hold all of the packet content as returned by method
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
-	 *         too small and a runtime exception may be thrown.
-	 *         <p>
-	 *         The buffer layout will look like the following:
-	 * 
-	 *         <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 *         </p>
-	 */
-	public int transferStateAndDataTo(byte[] buffer) {
-		int o = header.transferTo(buffer, 0);
-		o += state.transferTo(buffer, o);
-		o += super.transferTo(buffer, 0, size(), o);
+    /**
+     * Copies contents of this packet to buffer. The packets capture header,
+     * state and packet data are copied to new buffer. After completion of this
+     * operation the complete contents and state of the packet will be
+     * transfered to the buffer. The layout of the buffer data will be as
+     * described below. A buffer with this type of layout is suitable for any
+     * transferStateAndData or peer methods for any buffers that are JMemory
+     * based. The buffer has to be large enough to hold all of the packet
+     * content as returned by method
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
+     *         too small and a runtime exception may be thrown.
+     *         <p>
+     *         The buffer layout will look like the following:
+     * 
+     *         <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     *         </p>
+     */
+    public int transferStateAndDataTo(byte[] buffer)
+    {
+        int o = header.transferTo(buffer, 0);
+        o += state.transferTo(buffer, o);
+        o += super.transferTo(buffer, 0, size(), o);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Copies contents of this packet to buffer. The packets capture header, state
-	 * and packet data are copied to new buffer. After completion of this
-	 * operation the complete contents and state of the packet will be transfered
-	 * to the buffer. The layout of the buffer data will be as described below. A
-	 * buffer with this type of layout is suitable for any transferStateAndData or
-	 * peer methods for any buffers that are JMemory based. The buffer has to be
-	 * large enough to hold all of the packet content as returned by method
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
-	 *         too small and a runtime exception may be thrown.
-	 *         <p>
-	 *         The buffer layout will look like the following:
-	 * 
-	 *         <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 *         </p>
-	 */
-	public int transferStateAndDataTo(ByteBuffer buffer) {
-		int o = header.transferTo(buffer);
-		o += state.transferTo(buffer);
-		o += super.transferTo(buffer);
+    /**
+     * Copies contents of this packet to buffer. The packets capture header,
+     * state and packet data are copied to new buffer. After completion of this
+     * operation the complete contents and state of the packet will be
+     * transfered to the buffer. The layout of the buffer data will be as
+     * described below. A buffer with this type of layout is suitable for any
+     * transferStateAndData or peer methods for any buffers that are JMemory
+     * based. The buffer has to be large enough to hold all of the packet
+     * content as returned by method
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
+     *         too small and a runtime exception may be thrown.
+     *         <p>
+     *         The buffer layout will look like the following:
+     * 
+     *         <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     *         </p>
+     */
+    public int transferStateAndDataTo(ByteBuffer buffer)
+    {
+        int o = header.transferTo(buffer);
+        o += state.transferTo(buffer);
+        o += super.transferTo(buffer);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Copies contents of this packet to buffer. The packets capture header, state
-	 * and packet data are copied to new buffer. After completion of this
-	 * operation the complete contents and state of the packet will be transfered
-	 * to the buffer. The layout of the buffer data will be as described below. A
-	 * buffer with this type of layout is suitable for any transferStateAndData or
-	 * peer methods for any buffers that are JMemory based. The buffer has to be
-	 * large enough to hold all of the packet content as returned by method
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
-	 *         too small and a runtime exception may be thrown.
-	 *         <p>
-	 *         The buffer layout will look like the following:
-	 * 
-	 *         <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 *         </p>
-	 */
-	public int transferStateAndDataTo(JBuffer buffer) {
-		return transferStateAndDataTo(buffer, 0);
-	}
+    /**
+     * Copies contents of this packet to buffer. The packets capture header,
+     * state and packet data are copied to new buffer. After completion of this
+     * operation the complete contents and state of the packet will be
+     * transfered to the buffer. The layout of the buffer data will be as
+     * described below. A buffer with this type of layout is suitable for any
+     * transferStateAndData or peer methods for any buffers that are JMemory
+     * based. The buffer has to be large enough to hold all of the packet
+     * content as returned by method
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
+     *         too small and a runtime exception may be thrown.
+     *         <p>
+     *         The buffer layout will look like the following:
+     * 
+     *         <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     *         </p>
+     */
+    public int transferStateAndDataTo(JBuffer buffer)
+    {
+        return transferStateAndDataTo(buffer, 0);
+    }
 
-	/**
-	 * Copies contents of this packet to buffer. The packets capture header, state
-	 * and packet data are copied to new buffer. After completion of this
-	 * operation the complete contents and state of the packet will be transfered
-	 * to the buffer. The layout of the buffer data will be as described below. A
-	 * buffer with this type of layout is suitable for any transferStateAndData or
-	 * peer methods for any buffers that are JMemory based. The buffer has to be
-	 * large enough to hold all of the packet content as returned by method
-	 * 
-	 * @param buffer
-	 *          buffer containing capture header, packet state and data buffer
-	 *          sequentially in the buffer
-	 * @param offset
-	 *          the offset
-	 * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
-	 *         too small and a runtime exception may be thrown.
-	 *         <p>
-	 *         The buffer layout will look like the following:
-	 * 
-	 *         <pre>
-	 * +----------+-----+----+
-	 * |PcapHeader|State|Data|
-	 * +----------+-----+----+
-	 * </pre>
-	 * 
-	 *         </p>
-	 */
-	public int transferStateAndDataTo(JBuffer buffer, int offset) {
-		int o = header.transferTo(buffer, offset);
-		o += state.transferTo(buffer, 0, state.size(), offset + o);
-		o += super.transferTo(buffer, 0, size(), offset + o);
+    /**
+     * Copies contents of this packet to buffer. The packets capture header,
+     * state and packet data are copied to new buffer. After completion of this
+     * operation the complete contents and state of the packet will be
+     * transfered to the buffer. The layout of the buffer data will be as
+     * described below. A buffer with this type of layout is suitable for any
+     * transferStateAndData or peer methods for any buffers that are JMemory
+     * based. The buffer has to be large enough to hold all of the packet
+     * content as returned by method
+     * 
+     * @param buffer buffer containing capture header, packet state and data
+     *        buffer sequentially in the buffer
+     * @param offset the offset
+     * @return number of bytes copied {@link #getTotalSize()}. If the buffer is
+     *         too small and a runtime exception may be thrown.
+     *         <p>
+     *         The buffer layout will look like the following:
+     * 
+     *         <pre>
+     * +----------+-----+----+
+     * |PcapHeader|State|Data|
+     * +----------+-----+----+
+     * </pre>
+     * 
+     *         </p>
+     */
+    public int transferStateAndDataTo(JBuffer buffer, int offset)
+    {
+        int o = header.transferTo(buffer, offset);
+        o += state.transferTo(buffer, 0, state.size(), offset + o);
+        o += super.transferTo(buffer, 0, size(), offset + o);
 
-		return o;
-	}
+        return o;
+    }
 
-	/**
-	 * Deep copy of the this packet to the supplied packet. Contents of the this
-	 * packet such as pcap header, packet state and packet data are deep copied
-	 * into the suppliedpacket, allocating memory if necessary or existing memory
-	 * buffer if it is large enough to hold the new packet with its complete
-	 * state. In either case, the packet will be stored with its header and state
-	 * in a single contigues buffer in the supplied packet.
-	 * 
-	 * @param packet
-	 *          destination packet to which to copy header, state and packet data
-	 * @return number of bytes copied
-	 */
-	public int transferStateAndDataTo(PcapPacket packet) {
-		JBuffer buffer = packet.getMemoryBuffer(this.getTotalSize());
+    /**
+     * Deep copy of the this packet to the supplied packet. Contents of the this
+     * packet such as pcap header, packet state and packet data are deep copied
+     * into the suppliedpacket, allocating memory if necessary or existing
+     * memory buffer if it is large enough to hold the new packet with its
+     * complete state. In either case, the packet will be stored with its header
+     * and state in a single contigues buffer in the supplied packet.
+     * 
+     * @param packet destination packet to which to copy header, state and
+     *        packet data
+     * @return number of bytes copied
+     */
+    public int transferStateAndDataTo(PcapPacket packet)
+    {
+        JBuffer buffer = packet.getMemoryBuffer(this.getTotalSize());
 
-		int o = header.transferTo(buffer, 0);
-		packet.header.peerTo(buffer, 0);
+        int o = header.transferTo(buffer, 0);
+        packet.header.peerTo(buffer, 0);
 
-		packet.state.peerTo(buffer, o, state.size());
-		o += state.transferTo(packet.state);
+        packet.state.peerTo(buffer, o, state.size());
+        o += state.transferTo(packet.state);
 
-		packet.peer(buffer, o, size());
-		o += this.transferTo(buffer, 0, size(), o);
+        packet.peer(buffer, o, size());
+        o += this.transferTo(buffer, 0, size(), o);
 
-		return o;
-	}
+        return o;
+    }
 }

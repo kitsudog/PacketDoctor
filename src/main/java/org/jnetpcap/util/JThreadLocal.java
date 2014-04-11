@@ -24,56 +24,66 @@ import java.lang.reflect.Constructor;
 /**
  * The Class JThreadLocal.
  * 
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JThreadLocal<T>
-    extends ThreadLocal<T> {
+public class JThreadLocal<T> extends ThreadLocal<T>
+{
 
-	/** The constructor. */
-	private final Constructor<T> constructor;
+    /** The constructor. */
+    private final Constructor<T> constructor;
 
-	/**
-	 * Instantiates a new j thread local.
-	 */
-	public JThreadLocal() {
-		super();
-		constructor = null;
-	}
-	
-	/**
-	 * Instantiates a new j thread local.
-	 * 
-	 * @param c
-	 *          the c
-	 */
-	public JThreadLocal(Class<T> c) {
-		try {
-	    constructor = c.getConstructor();
-    } catch (Exception e) {
-    	throw new IllegalArgumentException(e);
-    } 
-	}
+    /**
+     * Instantiates a new j thread local.
+     */
+    public JThreadLocal()
+    {
+        super();
+        constructor = null;
+    }
 
-	/**
-	 * Initial value.
-	 * 
-	 * @return the t
-	 * @see java.lang.ThreadLocal#initialValue()
-	 */
-	@Override
-  protected T initialValue() {
-		if (constructor == null) {
-			return super.initialValue();
-		} else {
-			try {
-	      return constructor.newInstance();
-      } catch (Exception e) {
-      	throw new IllegalStateException(e);
-      }
-		}
-  }
+    /**
+     * Instantiates a new j thread local.
+     * 
+     * @param c the c
+     */
+    public JThreadLocal(Class<T> c)
+    {
+        try
+        {
+            constructor = c.getConstructor();
+        }
+        catch (Exception e)
+        {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
+     * Initial value.
+     * 
+     * @return the t
+     * @see java.lang.ThreadLocal#initialValue()
+     */
+    @Override
+    protected T initialValue()
+    {
+        if (constructor == null)
+        {
+            return super.initialValue();
+        }
+        else
+        {
+            try
+            {
+                return constructor.newInstance();
+            }
+            catch (Exception e)
+            {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
 
 }

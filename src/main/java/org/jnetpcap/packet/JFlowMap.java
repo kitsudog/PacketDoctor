@@ -28,111 +28,118 @@ import java.util.Map;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JFlowMap
-    extends HashMap<JFlowKey, JFlow> implements PcapPacketHandler<Object> {
+public class JFlowMap extends HashMap<JFlowKey, JFlow> implements PcapPacketHandler<Object>
+{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -5590314946675005059L;
-	
-	/**
-	 * Total packet count added.
-	 */
-	private int count = 0;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = -5590314946675005059L;
 
-	/**
-	 * Instantiates a new j flow map.
-	 */
-	public JFlowMap() {
-	}
+    /**
+     * Total packet count added.
+     */
+    private int count = 0;
 
-	/**
-	 * Instantiates a new j flow map.
-	 * 
-	 * @param initialCapacity
-	 *          the initial capacity
-	 */
-	public JFlowMap(int initialCapacity) {
-		super(initialCapacity);
-	}
+    /**
+     * Instantiates a new j flow map.
+     */
+    public JFlowMap()
+    {
+    }
 
-	/**
-	 * Instantiates a new j flow map.
-	 * 
-	 * @param m
-	 *          the m
-	 */
-	public JFlowMap(Map<? extends JFlowKey, ? extends JFlow> m) {
-		super(m);
-	}
+    /**
+     * Instantiates a new j flow map.
+     * 
+     * @param initialCapacity the initial capacity
+     */
+    public JFlowMap(int initialCapacity)
+    {
+        super(initialCapacity);
+    }
 
-	/**
-	 * Instantiates a new j flow map.
-	 * 
-	 * @param initialCapacity
-	 *          the initial capacity
-	 * @param loadFactor
-	 *          the load factor
-	 */
-	public JFlowMap(int initialCapacity, float loadFactor) {
-		super(initialCapacity, loadFactor);
-	}
+    /**
+     * Instantiates a new j flow map.
+     * 
+     * @param m the m
+     */
+    public JFlowMap(Map<? extends JFlowKey, ? extends JFlow> m)
+    {
+        super(m);
+    }
 
-	/* (non-Javadoc)
-   * @see org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket, java.lang.Object)
-   */
-  /**
-	 * Next packet.
-	 * 
-	 * @param packet
-	 *          the packet
-	 * @param user
-	 *          the user
-	 * @see org.jnetpcap.packet.PcapPacketHandler#nextPacket(org.jnetpcap.packet.PcapPacket,
-	 *      java.lang.Object)
-	 */
-	public void nextPacket(PcapPacket packet, Object user) {
-  	packet = new PcapPacket(packet); // make a copy
-  	JFlowKey key = packet.getState().getFlowKey();
-  	
-		JFlow flow = super.get(key);
-  	if (flow == null) {
-  		flow = new JFlow(new PcapPacket(packet).getState().getFlowKey());
-  		super.put(key, flow);
-  	}
-  	
-		flow.add(packet);
-		count ++;
-  }
-  
-  /**
-	 * Gets the total packet count.
-	 * 
-	 * @return the total packet count
-	 */
-  public int getTotalPacketCount() {
-  	return count;
-  }
+    /**
+     * Instantiates a new j flow map.
+     * 
+     * @param initialCapacity the initial capacity
+     * @param loadFactor the load factor
+     */
+    public JFlowMap(int initialCapacity, float loadFactor)
+    {
+        super(initialCapacity, loadFactor);
+    }
 
-  /**
-	 * To string.
-	 * 
-	 * @return the string
-	 * @see java.util.AbstractMap#toString()
-	 */
-  public String toString() {
-  	StringBuilder b = new StringBuilder(1024 * 50);
-  	
-  	b.append("total packet count=").append(count).append("\n");
-  	b.append("total flow count=").append(size()).append("\n");
-  	
-  	int i = 0;
-  	for (JFlow flow: values()) {
-  		b.append("flow[").append(i++).append(']').append(' ');
-  		b.append(flow.toString());
-  		b.append(",\n");
-  	}
-  	
-  	return b.toString();
-  }
-  
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket
+     * , java.lang.Object)
+     */
+    /**
+     * Next packet.
+     * 
+     * @param packet the packet
+     * @param user the user
+     * @see org.jnetpcap.packet.PcapPacketHandler#nextPacket(org.jnetpcap.packet.PcapPacket,
+     *      java.lang.Object)
+     */
+    public void nextPacket(PcapPacket packet, Object user)
+    {
+        packet = new PcapPacket(packet); // make a copy
+        JFlowKey key = packet.getState().getFlowKey();
+
+        JFlow flow = super.get(key);
+        if (flow == null)
+        {
+            flow = new JFlow(new PcapPacket(packet).getState().getFlowKey());
+            super.put(key, flow);
+        }
+
+        flow.add(packet);
+        count++;
+    }
+
+    /**
+     * Gets the total packet count.
+     * 
+     * @return the total packet count
+     */
+    public int getTotalPacketCount()
+    {
+        return count;
+    }
+
+    /**
+     * To string.
+     * 
+     * @return the string
+     * @see java.util.AbstractMap#toString()
+     */
+    public String toString()
+    {
+        StringBuilder b = new StringBuilder(1024 * 50);
+
+        b.append("total packet count=").append(count).append("\n");
+        b.append("total flow count=").append(size()).append("\n");
+
+        int i = 0;
+        for (JFlow flow : values())
+        {
+            b.append("flow[").append(i++).append(']').append(' ');
+            b.append(flow.toString());
+            b.append(",\n");
+        }
+
+        return b.toString();
+    }
+
 }

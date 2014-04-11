@@ -25,11 +25,12 @@ package org.jnetpcap.nio;
  * @author markbe
  * 
  */
-public interface Disposable {
+public interface Disposable
+{
 
-	/**
-	 * The objects underlying resources are reclaimed immediately.
-	 */
-	public void dispose();
+    /**
+     * The objects underlying resources are reclaimed immediately.
+     */
+    public void dispose();
 
 }

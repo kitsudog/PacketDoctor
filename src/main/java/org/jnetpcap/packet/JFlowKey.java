@@ -29,223 +29,222 @@ import org.jnetpcap.nio.JStruct;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JFlowKey
-    extends JStruct {
+public class JFlowKey extends JStruct
+{
 
-	/** The Constant FLAG_REVERSABLE. */
-	public static final int FLAG_REVERSABLE = 0x00000001;
+    /** The Constant FLAG_REVERSABLE. */
+    public static final int FLAG_REVERSABLE = 0x00000001;
 
-	/** MACRO used in native code. */
-	private static final int FLOW_KEY_PAIR_COUNT = 3;
+    /** MACRO used in native code. */
+    private static final int FLOW_KEY_PAIR_COUNT = 3;
 
-	/** The Constant STRUCT_NAME. */
-	public final static String STRUCT_NAME = "flow_key_t";
+    /** The Constant STRUCT_NAME. */
+    public final static String STRUCT_NAME = "flow_key_t";
 
-	/**
-	 * Sizeof.
-	 * 
-	 * @return the int
-	 */
-	public native static int sizeof();
+    /**
+     * Sizeof.
+     * 
+     * @return the int
+     */
+    public native static int sizeof();
 
-	/**
-	 * Instantiates a new j flow key.
-	 * 
-	 */
-	public JFlowKey() {
-		super(STRUCT_NAME, Type.POINTER);
-	}
+    /**
+     * Instantiates a new j flow key.
+     * 
+     */
+    public JFlowKey()
+    {
+        super(STRUCT_NAME, Type.POINTER);
+    }
 
-	/**
-	 * Instantiates a new j flow key.
-	 * 
-	 * @param type
-	 *          the type
-	 */
-	public JFlowKey(Type type) {
-		super(STRUCT_NAME, type);
-	}
+    /**
+     * Instantiates a new j flow key.
+     * 
+     * @param type the type
+     */
+    public JFlowKey(Type type)
+    {
+        super(STRUCT_NAME, type);
+    }
 
-	/**
-	 * Equal.
-	 * 
-	 * @param key
-	 *          the key
-	 * @return true, if successful
-	 */
-	public native boolean equal(JFlowKey key);
+    /**
+     * Equal.
+     * 
+     * @param key the key
+     * @return true, if successful
+     */
+    public native boolean equal(JFlowKey key);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	/**
-	 * Equals.
-	 * 
-	 * @param obj
-	 *          the obj
-	 * @return true, if successful
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof JFlowKey) {
-			final JFlowKey key = (JFlowKey) obj;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    /**
+     * Equals.
+     * 
+     * @param obj the obj
+     * @return true, if successful
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof JFlowKey)
+        {
+            final JFlowKey key = (JFlowKey) obj;
 
-			return this.equal(key);
-		} else {
-			return false;
-		}
-	}
+            return this.equal(key);
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-	/**
-	 * Gets the flags.
-	 * 
-	 * @return the flags
-	 */
-	public native int getFlags();
+    /**
+     * Gets the flags.
+     * 
+     * @return the flags
+     */
+    public native int getFlags();
 
-	/**
-	 * Retrieves bitmap of headers that are part of this key. Each bit within the
-	 * returned bitmap represents a different header ID.
-	 * 
-	 * @return bitmap of headers that have contributed atleast one key pair
-	 */
-	public native long getHeaderMap();
+    /**
+     * Retrieves bitmap of headers that are part of this key. Each bit within
+     * the returned bitmap represents a different header ID.
+     * 
+     * @return bitmap of headers that have contributed atleast one key pair
+     */
+    public native long getHeaderMap();
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @param index
-	 *          the index
-	 * @return the id
-	 */
-	public native int getId(int index);
-	
-	/**
-	 * Gets the ids.
-	 * 
-	 * @return the ids
-	 */
-	public int[] getIds() {
-		int[] ids = new int[getPairCount()];
-		
-		for (int i = 0; i < ids.length; i ++) {
-			ids[i] = getId(i);
-		}
-		
-		return ids;
-	}
+    /**
+     * Gets the id.
+     * 
+     * @param index the index
+     * @return the id
+     */
+    public native int getId(int index);
 
+    /**
+     * Gets the ids.
+     * 
+     * @return the ids
+     */
+    public int[] getIds()
+    {
+        int[] ids = new int[getPairCount()];
 
-	/**
-	 * Gets the pair.
-	 * 
-	 * @param index
-	 *          the index
-	 * @param reversePairs
-	 *          the reverse pairs
-	 * @return the pair
-	 */
-	public native long getPair(int index, boolean reversePairs);
-	
-	/**
-	 * Gets the pairs.
-	 * 
-	 * @return the pairs
-	 */
-	public long[] getPairs() {
-		long[] pairs = new long[getPairCount()];
-		
-		for (int i = 0; i < pairs.length; i ++) {
-			pairs[i] = getPair(i, false);
-		}
-		
-		return pairs;
-	}
+        for (int i = 0; i < ids.length; i++)
+        {
+            ids[i] = getId(i);
+        }
 
-	/**
-	 * Gets the pair count.
-	 * 
-	 * @return the pair count
-	 */
-	public native int getPairCount();
+        return ids;
+    }
 
-	/**
-	 * Gets the pair p1.
-	 * 
-	 * @param index
-	 *          the index
-	 * @param reversePairs
-	 *          the reverse pairs
-	 * @return the pair p1
-	 */
-	public native int getPairP1(int index, boolean reversePairs);
-	
-	/**
-	 * Gets the pair p2.
-	 * 
-	 * @param index
-	 *          the index
-	 * @param reversePairs
-	 *          the reverse pairs
-	 * @return the pair p2
-	 */
-	public native int getPairP2(int index, boolean reversePairs);
+    /**
+     * Gets the pair.
+     * 
+     * @param index the index
+     * @param reversePairs the reverse pairs
+     * @return the pair
+     */
+    public native long getPair(int index, boolean reversePairs);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	/**
-	 * Hash code.
-	 * 
-	 * @return the int
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public native int hashCode();
+    /**
+     * Gets the pairs.
+     * 
+     * @return the pairs
+     */
+    public long[] getPairs()
+    {
+        long[] pairs = new long[getPairCount()];
 
-	/**
-	 * Compares the flow keys and returns the direction in which the match
-	 * occured. Forward or reverse.
-	 * 
-	 * @param key
-	 *          key to compare against this key
-	 * @return 0 means key's don't match, 1 keys matched in forward direction and
-	 *         -1 means matched in reverse direction.
-	 */
-	public native int match(JFlowKey key);
+        for (int i = 0; i < pairs.length; i++)
+        {
+            pairs[i] = getPair(i, false);
+        }
 
-	/**
-	 * Peer.
-	 * 
-	 * @param peer
-	 *          the peer
-	 * @return the int
-	 */
-	protected int peer(JPacket.State peer) {
+        return pairs;
+    }
 
-		/*
-		 * Flowkey structure is always at the start of packet_state_t.
-		 */
-		return super.peer(peer);
-	}
+    /**
+     * Gets the pair count.
+     * 
+     * @return the pair count
+     */
+    public native int getPairCount();
 
-	/**
-	 * To debug string.
-	 * 
-	 * @return the string
-	 * @see org.jnetpcap.nio.JMemory#toDebugString()
-	 */
-	public String toDebugString() {
-		Formatter out = new Formatter();
+    /**
+     * Gets the pair p1.
+     * 
+     * @param index the index
+     * @param reversePairs the reverse pairs
+     * @return the pair p1
+     */
+    public native int getPairP1(int index, boolean reversePairs);
 
-		out.format("[count=%d, map=0x%x, hash=0x%x]", getPairCount(),
-		    getHeaderMap(), hashCode());
+    /**
+     * Gets the pair p2.
+     * 
+     * @param index the index
+     * @param reversePairs the reverse pairs
+     * @return the pair p2
+     */
+    public native int getPairP2(int index, boolean reversePairs);
 
-		return out.toString();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    /**
+     * Hash code.
+     * 
+     * @return the int
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public native int hashCode();
+
+    /**
+     * Compares the flow keys and returns the direction in which the match
+     * occured. Forward or reverse.
+     * 
+     * @param key key to compare against this key
+     * @return 0 means key's don't match, 1 keys matched in forward direction
+     *         and -1 means matched in reverse direction.
+     */
+    public native int match(JFlowKey key);
+
+    /**
+     * Peer.
+     * 
+     * @param peer the peer
+     * @return the int
+     */
+    protected int peer(JPacket.State peer)
+    {
+
+        /*
+         * Flowkey structure is always at the start of packet_state_t.
+         */
+        return super.peer(peer);
+    }
+
+    /**
+     * To debug string.
+     * 
+     * @return the string
+     * @see org.jnetpcap.nio.JMemory#toDebugString()
+     */
+    public String toDebugString()
+    {
+        @SuppressWarnings("resource")
+        Formatter out = new Formatter();
+
+        out.format("[count=%d, map=0x%x, hash=0x%x]", getPairCount(), getHeaderMap(), hashCode());
+
+        return out.toString();
+    }
 }

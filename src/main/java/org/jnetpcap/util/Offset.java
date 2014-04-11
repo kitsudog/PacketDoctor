@@ -25,12 +25,13 @@ package org.jnetpcap.util;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface Offset {
+public interface Offset
+{
 
-	/**
-	 * Offset of the object.
-	 * 
-	 * @return a zero based offset
-	 */
-	public int offset();
+    /**
+     * Offset of the object.
+     * 
+     * @return a zero based offset
+     */
+    public int offset();
 }

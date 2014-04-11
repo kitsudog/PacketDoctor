@@ -28,66 +28,67 @@ import java.util.logging.LogRecord;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JNetPcapFormatter
-    extends Formatter {
+public class JNetPcapFormatter extends Formatter
+{
 
-	/**
-	 * Instantiates a new j net pcap formatter.
-	 */
-	public JNetPcapFormatter() {
-	}
+    /**
+     * Instantiates a new j net pcap formatter.
+     */
+    public JNetPcapFormatter()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-	 */
-	/**
-	 * Format.
-	 * 
-	 * @param record
-	 *          the record
-	 * @return the string
-	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-	 */
-	@Override
-	public String format(LogRecord record) {
-		final String msg =
-		    String.format(record.getMessage(), record.getParameters());
-		record.getLoggerName().split("\\.");
-		String prefix = prefix(record);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
+     */
+    /**
+     * Format.
+     * 
+     * @param record the record
+     * @return the string
+     * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
+     */
+    @Override
+    public String format(LogRecord record)
+    {
+        final String msg = String.format(record.getMessage(), record.getParameters());
+        record.getLoggerName().split("\\.");
+        String prefix = prefix(record);
 
-		Throwable thrown = record.getThrown();
-		String error = "";
-		if (thrown != null) {
-			StringBuilder b = new StringBuilder();
-			String ex = thrown.getClass().getCanonicalName() + ":";
-//			b.append(prefix).append(" ");
-			b.append(ex).append(" ");
-			b.append(thrown.getMessage()).append("\n");
-			
-			for (StackTraceElement e : thrown.getStackTrace()) {
-				b.append(ex).append(" ");
-				b.append(e.toString()).append("\n");
-			}
+        Throwable thrown = record.getThrown();
+        String error = "";
+        if (thrown != null)
+        {
+            StringBuilder b = new StringBuilder();
+            String ex = thrown.getClass().getCanonicalName() + ":";
+            // b.append(prefix).append(" ");
+            b.append(ex).append(" ");
+            b.append(thrown.getMessage()).append("\n");
 
-			error = b.toString();
-		}
+            for (StackTraceElement e : thrown.getStackTrace())
+            {
+                b.append(ex).append(" ");
+                b.append(e.toString()).append("\n");
+            }
 
-		return String.format(prefix + " %s\n%s", msg, error);
-	}
+            error = b.toString();
+        }
 
-	/**
-	 * Prefix.
-	 * 
-	 * @param record
-	 *          the record
-	 * @return the string
-	 */
-	private String prefix(LogRecord record) {
-		String[] c = record.getLoggerName().split("\\.");
+        return String.format(prefix + " %s\n%s", msg, error);
+    }
 
-		return String.format("%s:%s:", record.getLevel().toString(),
-		    c[c.length - 1], record.getSourceMethodName());
-	}
+    /**
+     * Prefix.
+     * 
+     * @param record the record
+     * @return the string
+     */
+    private String prefix(LogRecord record)
+    {
+        String[] c = record.getLoggerName().split("\\.");
+
+        return String.format("%s:%s:", record.getLevel().toString(), c[c.length - 1], record.getSourceMethodName());
+    }
 }

@@ -27,50 +27,51 @@ import java.beans.PropertyChangeEvent;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JEvent {
+public class JEvent
+{
 
-	/**
-	 * Int value.
-	 * 
-	 * @param evt
-	 *          the evt
-	 * @return the int
-	 */
-	public static int intValue(PropertyChangeEvent evt) {
-		return Integer.parseInt((String) evt.getNewValue());
-	}
+    /**
+     * Int value.
+     * 
+     * @param evt the evt
+     * @return the int
+     */
+    public static int intValue(PropertyChangeEvent evt)
+    {
+        return Integer.parseInt((String) evt.getNewValue());
+    }
 
-	/**
-	 * Long value.
-	 * 
-	 * @param evt
-	 *          the evt
-	 * @return the long
-	 */
-	public static long longValue(PropertyChangeEvent evt) {
-		return Long.parseLong((String) evt.getNewValue());
-	}
+    /**
+     * Long value.
+     * 
+     * @param evt the evt
+     * @return the long
+     */
+    public static long longValue(PropertyChangeEvent evt)
+    {
+        return Long.parseLong((String) evt.getNewValue());
+    }
 
-	/**
-	 * Boolean value.
-	 * 
-	 * @param evt
-	 *          the evt
-	 * @return true, if successful
-	 */
-	public static boolean booleanValue(PropertyChangeEvent evt) {
-		return Boolean.parseBoolean((String) evt.getNewValue());
-	}
+    /**
+     * Boolean value.
+     * 
+     * @param evt the evt
+     * @return true, if successful
+     */
+    public static boolean booleanValue(PropertyChangeEvent evt)
+    {
+        return Boolean.parseBoolean((String) evt.getNewValue());
+    }
 
-	/**
-	 * String value.
-	 * 
-	 * @param evt
-	 *          the evt
-	 * @return the string
-	 */
-	public static String stringValue(PropertyChangeEvent evt) {
-		return (String) evt.getNewValue();
-	}
+    /**
+     * String value.
+     * 
+     * @param evt the evt
+     * @return the string
+     */
+    public static String stringValue(PropertyChangeEvent evt)
+    {
+        return (String) evt.getNewValue();
+    }
 
 }

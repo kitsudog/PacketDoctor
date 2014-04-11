@@ -26,12 +26,13 @@ package org.jnetpcap.util;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface Length {
+public interface Length
+{
 
-	/**
-	 * Length of the object.
-	 * 
-	 * @return length of the object
-	 */
-	public int length();
+    /**
+     * Length of the object.
+     * 
+     * @return length of the object
+     */
+    public int length();
 }

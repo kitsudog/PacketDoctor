@@ -26,33 +26,35 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JHeaderChecksum {
+public interface JHeaderChecksum
+{
 
-	/**
-	 * Retrieves the header's checksum.
-	 * 
-	 * @return header's stored checksum
-	 */
-	public int checksum();
+    /**
+     * Retrieves the header's checksum.
+     * 
+     * @return header's stored checksum
+     */
+    public int checksum();
 
-	/**
-	 * Calculates a checksum using protocol specification for a header. Checksums
-	 * for partial headers or fragmented packets (unless the protocol alows it)
-	 * are not calculated.
-	 * 
-	 * @return header's calculated checksum
-	 */
-	public int calculateChecksum();
+    /**
+     * Calculates a checksum using protocol specification for a header.
+     * Checksums for partial headers or fragmented packets (unless the protocol
+     * alows it) are not calculated.
+     * 
+     * @return header's calculated checksum
+     */
+    public int calculateChecksum();
 
-	/**
-	 * Validates the header's data against the stored checksum. Checksums for
-	 * partial headers or fragmented packets (unless the protocol alows it) are
-	 * not validated and true is always returned.
-	 * 
-	 * @return Calculates a checksum and validates it against the store checksum
-	 *         in the header. If checksums match or header is a fragment true is
-	 *         returned, otherwise if the checksums don't match false is returned.
-	 */
-	public boolean isChecksumValid();
+    /**
+     * Validates the header's data against the stored checksum. Checksums for
+     * partial headers or fragmented packets (unless the protocol alows it) are
+     * not validated and true is always returned.
+     * 
+     * @return Calculates a checksum and validates it against the store checksum
+     *         in the header. If checksums match or header is a fragment true is
+     *         returned, otherwise if the checksums don't match false is
+     *         returned.
+     */
+    public boolean isChecksumValid();
 
 }

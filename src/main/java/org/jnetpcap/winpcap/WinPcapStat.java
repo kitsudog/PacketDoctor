@@ -30,69 +30,75 @@ import org.jnetpcap.PcapStat;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class WinPcapStat
-    extends PcapStat {
+public class WinPcapStat extends PcapStat
+{
 
-	/**
-	 * Inits the i ds.
-	 */
-	private native static void initIDs();
+    /**
+     * Inits the i ds.
+     */
+    private native static void initIDs();
 
-	static {
-		initIDs();
-	}
+    static
+    {
+        initIDs();
+    }
 
-	/**
-	 * Empty stats structure that will be filled in after the call to
-	 * <code>statsEx</code>.
-	 */
-	private WinPcapStat() {
+    /**
+     * Empty stats structure that will be filled in after the call to
+     * <code>statsEx</code>.
+     */
+    private WinPcapStat()
+    {
 
-	}
+    }
 
-	/**
-	 * number of packets that are received by the application.
-	 * 
-	 * @return the capt
-	 */
-	public long getCapt() {
-		return super.capt;
-	}
+    /**
+     * number of packets that are received by the application.
+     * 
+     * @return the capt
+     */
+    public long getCapt()
+    {
+        return super.capt;
+    }
 
-	/**
-	 * number of packets lost on the network.
-	 * 
-	 * @return the netdrop
-	 */
-	public long getNetdrop() {
-		return super.netdrop;
-	}
+    /**
+     * number of packets lost on the network.
+     * 
+     * @return the netdrop
+     */
+    public long getNetdrop()
+    {
+        return super.netdrop;
+    }
 
-	/**
-	 * number of packets sent by the server on the network.
-	 * 
-	 * @return the sent
-	 */
-	public long getSent() {
-		return super.sent;
-	}
+    /**
+     * number of packets sent by the server on the network.
+     * 
+     * @return the sent
+     */
+    public long getSent()
+    {
+        return super.sent;
+    }
 
-	/**
-	 * Dumps all the values as a string.
-	 * 
-	 * @return the string
-	 */
-	public String toString() {
+    /**
+     * Dumps all the values as a string.
+     * 
+     * @return the string
+     */
+    public String toString()
+    {
 
-		out.setLength(0);
+        out.setLength(0);
 
-		out.append("recv=").append(getRecv());
-		out.append(", drop=").append(getDrop());
-		out.append(", ifdrop=").append(getIfDrop());
-		out.append(", capt=").append(getCapt());
-		out.append(", netdrop=").append(getNetdrop());
-		out.append(", sent=").append(getSent());
+        out.append("recv=").append(getRecv());
+        out.append(", drop=").append(getDrop());
+        out.append(", ifdrop=").append(getIfDrop());
+        out.append(", capt=").append(getCapt());
+        out.append(", netdrop=").append(getNetdrop());
+        out.append(", sent=").append(getSent());
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 }

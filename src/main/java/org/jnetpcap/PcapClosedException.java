@@ -25,53 +25,53 @@ package org.jnetpcap;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PcapClosedException
-    extends IllegalStateException {
+public class PcapClosedException extends IllegalStateException
+{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 4803545074835523202L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 4803545074835523202L;
 
-	/**
-	 * Instantiates a new pcap closed exception.
-	 */
-	public PcapClosedException() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Instantiates a new pcap closed exception.
+     */
+    public PcapClosedException()
+    {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap closed exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public PcapClosedException(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Instantiates a new pcap closed exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public PcapClosedException(String message, Throwable cause)
+    {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap closed exception.
-	 * 
-	 * @param s
-	 *          the s
-	 */
-	public PcapClosedException(String s) {
-		super(s);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Instantiates a new pcap closed exception.
+     * 
+     * @param s the s
+     */
+    public PcapClosedException(String s)
+    {
+        super(s);
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap closed exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-	public PcapClosedException(Throwable cause) {
-		super(cause);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Instantiates a new pcap closed exception.
+     * 
+     * @param cause the cause
+     */
+    public PcapClosedException(Throwable cause)
+    {
+        super(cause);
+        // TODO Auto-generated constructor stub
+    }
 
 }

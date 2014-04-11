@@ -48,7 +48,7 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  * 
- * <pre>
+ *         <pre>
  *  #define SLL_HDR_LEN	16		          // total header length
  *  #define SLL_ADDRLEN	8		            // length of address field
  * 
@@ -63,127 +63,134 @@ import org.jnetpcap.protocol.JProtocol;
  * </pre>
  */
 @Header(length = SLL.SLL_HDR_LEN, suite = ProtocolSuite.LAN, description = "Linux Cooked Capture")
-public class SLL
-    extends
-    JHeader {
+public class SLL extends JHeader
+{
 
-	/** The Constant SLL_HDR_LEN. */
-	public final static int SLL_HDR_LEN = 16;
+    /** The Constant SLL_HDR_LEN. */
+    public final static int SLL_HDR_LEN = 16;
 
-	/** The Constant LINUX_SLL_HOST. */
-	public final static int LINUX_SLL_HOST = 0;
+    /** The Constant LINUX_SLL_HOST. */
+    public final static int LINUX_SLL_HOST = 0;
 
-	/** The Constant LINUX_SLL_BROADCAST. */
-	public final static int LINUX_SLL_BROADCAST = 1;
+    /** The Constant LINUX_SLL_BROADCAST. */
+    public final static int LINUX_SLL_BROADCAST = 1;
 
-	/** The Constant LINUX_SLL_MULTICAST. */
-	public final static int LINUX_SLL_MULTICAST = 2;
+    /** The Constant LINUX_SLL_MULTICAST. */
+    public final static int LINUX_SLL_MULTICAST = 2;
 
-	/** The Constant LINUX_SLL_OTHERHOST. */
-	public final static int LINUX_SLL_OTHERHOST = 3;
+    /** The Constant LINUX_SLL_OTHERHOST. */
+    public final static int LINUX_SLL_OTHERHOST = 3;
 
-	/** The Constant LINUX_SLL_OUTGOING. */
-	public final static int LINUX_SLL_OUTGOING = 4;
+    /** The Constant LINUX_SLL_OUTGOING. */
+    public final static int LINUX_SLL_OUTGOING = 4;
 
-	/** Constant numerial ID for this protocol's header. */
-	public static int ID = JProtocol.SLL_ID;
+    /** Constant numerial ID for this protocol's header. */
+    public static int ID = JProtocol.SLL_ID;
 
-	/**
-	 * Packet type.
-	 * 
-	 * @return packet type
-	 */
-	@Field(offset = 0, length = 16)
-	public int packetType() {
-		return super.getUShort(0);
-	}
+    /**
+     * Packet type.
+     * 
+     * @return packet type
+     */
+    @Field(offset = 0, length = 16)
+    public int packetType()
+    {
+        return super.getUShort(0);
+    }
 
-	/**
-	 * Link Layer address type.
-	 * 
-	 * @return address type
-	 */
-	@Field(offset = 16, length = 16)
-	public int haType() {
-		return super.getUShort(2);
-	}
+    /**
+     * Link Layer address type.
+     * 
+     * @return address type
+     */
+    @Field(offset = 16, length = 16)
+    public int haType()
+    {
+        return super.getUShort(2);
+    }
 
-	/**
-	 * The Enum HardwareAddressType.
-	 */
-	public enum HardwareAddressType {
-		
-		/** The LINU x_ sl l_ host. */
-		LINUX_SLL_HOST,
-		
-		/** The LINU x_ sl l_ broadcast. */
-		LINUX_SLL_BROADCAST,
-		
-		/** The LINU x_ sl l_ multicast. */
-		LINUX_SLL_MULTICAST,
-		
-		/** The LINU x_ sl l_ otherhost. */
-		LINUX_SLL_OTHERHOST,
-		
-		/** The LINU x_ sl l_ outgoing. */
-		LINUX_SLL_OUTGOING,
-	}
+    /**
+     * The Enum HardwareAddressType.
+     */
+    public enum HardwareAddressType {
 
-	/**
-	 * Ha type enum.
-	 * 
-	 * @return the hardware address type
-	 */
-	public HardwareAddressType haTypeEnum() {
-		return HardwareAddressType.values()[haType()];
-	}
+        /** The LINU x_ sl l_ host. */
+        LINUX_SLL_HOST,
 
-	/**
-	 * Link Layer address length.
-	 * 
-	 * @return address length in bytes
-	 */
-	@Field(offset = 32, length = 16)
-	public int haLength() {
-		return super.getUShort(4);
-	}
+        /** The LINU x_ sl l_ broadcast. */
+        LINUX_SLL_BROADCAST,
 
-	/**
-	 * Link Layer address length.
-	 * 
-	 * @return address length in bits
-	 */
-	@Dynamic(Field.Property.LENGTH)
-	public int addressLength() {
-		return haLength() * 8;
-	}
+        /** The LINU x_ sl l_ multicast. */
+        LINUX_SLL_MULTICAST,
 
-	/**
-	 * Link layer address.
-	 * 
-	 * @return address
-	 */
-	@Field(offset = 48, format = "#mac#")
-	public byte[] address() {
-		return super.getByteArray(6, haLength());
-	}
+        /** The LINU x_ sl l_ otherhost. */
+        LINUX_SLL_OTHERHOST,
 
-	/**
-	 * next protocol.
-	 * 
-	 * @return next protocol
-	 */
-	@Field(offset = 112, length = 16, format = "%x")
-	public int type() {
-		return super.getUShort(14);
-	}
+        /** The LINU x_ sl l_ outgoing. */
+        LINUX_SLL_OUTGOING,
+    }
 
-	/**
-	 * Next protocol as an EtherType constant.
-	 * 
-	 * @return next protocol
-	 */
-	public Ethernet.EthernetType typeEnum() {
-		return Ethernet.EthernetType.valueOf(type());
-	}
+    /**
+     * Ha type enum.
+     * 
+     * @return the hardware address type
+     */
+    public HardwareAddressType haTypeEnum()
+    {
+        return HardwareAddressType.values()[haType()];
+    }
+
+    /**
+     * Link Layer address length.
+     * 
+     * @return address length in bytes
+     */
+    @Field(offset = 32, length = 16)
+    public int haLength()
+    {
+        return super.getUShort(4);
+    }
+
+    /**
+     * Link Layer address length.
+     * 
+     * @return address length in bits
+     */
+    @Dynamic(Field.Property.LENGTH)
+    public int addressLength()
+    {
+        return haLength() * 8;
+    }
+
+    /**
+     * Link layer address.
+     * 
+     * @return address
+     */
+    @Field(offset = 48, format = "#mac#")
+    public byte[] address()
+    {
+        return super.getByteArray(6, haLength());
+    }
+
+    /**
+     * next protocol.
+     * 
+     * @return next protocol
+     */
+    @Field(offset = 112, length = 16, format = "%x")
+    public int type()
+    {
+        return super.getUShort(14);
+    }
+
+    /**
+     * Next protocol as an EtherType constant.
+     * 
+     * @return next protocol
+     */
+    public Ethernet.EthernetType typeEnum()
+    {
+        return Ethernet.EthernetType.valueOf(type());
+    }
 }

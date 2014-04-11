@@ -25,30 +25,30 @@ package org.jnetpcap.nio;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JFunction
-    extends
-    JMemory {
+public class JFunction extends JMemory
+{
 
-	/** The name. */
-	private final String name;
+    /** The name. */
+    private final String name;
 
-	/**
-	 * Creates an empty function object suitable for peering.
-	 * 
-	 * @param name
-	 *          name of this function
-	 */
-	public JFunction(String name) {
-		super(Type.POINTER);
-		this.name = name;
-	}
+    /**
+     * Creates an empty function object suitable for peering.
+     * 
+     * @param name name of this function
+     */
+    public JFunction(String name)
+    {
+        super(Type.POINTER);
+        this.name = name;
+    }
 
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public final String getName() {
-		return this.name;
-	}
+    /**
+     * Gets the name.
+     * 
+     * @return the name
+     */
+    public final String getName()
+    {
+        return this.name;
+    }
 }

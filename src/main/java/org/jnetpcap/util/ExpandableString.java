@@ -41,215 +41,225 @@ import java.util.List;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class ExpandableString
-    extends JStringBuilder {
+public class ExpandableString extends JStringBuilder
+{
 
-	/** The count. */
-	protected int count = 0;
+    /** The count. */
+    protected int count = 0;
 
-	/** The end. */
-	protected int end;
+    /** The end. */
+    protected int end;
 
-	/** The quoted. */
-	private final List<String> quoted = new LinkedList<String>();
+    /** The quoted. */
+    private final List<String> quoted = new LinkedList<String>();
 
-	/** The start. */
-	protected int start;
+    /** The start. */
+    protected int start;
 
-	/** The template. */
-	private String template;
+    /** The template. */
+    private String template;
 
-	/**
-	 * Instantiates a new expandable string.
-	 * 
-	 * @param template
-	 *          the template
-	 */
-	public ExpandableString(String template) {
-		this.template = template;
-		super.append(template);
-	}
+    /**
+     * Instantiates a new expandable string.
+     * 
+     * @param template the template
+     */
+    public ExpandableString(String template)
+    {
+        this.template = template;
+        super.append(template);
+    }
 
-	/**
-	 * Gets the template.
-	 * 
-	 * @return the template
-	 */
-	public final String getTemplate() {
-		return this.template;
-	}
+    /**
+     * Gets the template.
+     * 
+     * @return the template
+     */
+    public final String getTemplate()
+    {
+        return this.template;
+    }
 
-	/**
-	 * Removes the.
-	 * 
-	 * @param seq
-	 *          the seq
-	 * @return true, if successful
-	 */
-	public boolean remove(String seq) {
-		return replaceSequence(seq, "", "");
-	}
+    /**
+     * Removes the.
+     * 
+     * @param seq the seq
+     * @return true, if successful
+     */
+    public boolean remove(String seq)
+    {
+        return replaceSequence(seq, "", "");
+    }
 
-	/**
-	 * Replace sequence.
-	 * 
-	 * @param open
-	 *          the open
-	 * @param close
-	 *          the close
-	 * @param with
-	 *          the with
-	 * @return true, if successful
-	 */
-	public boolean replaceSequence(String open, String close, String with) {
-		while (scanNext(open, close) && start != -1) {
-			super.replace(start, end + 1, with);
-		}
+    /**
+     * Replace sequence.
+     * 
+     * @param open the open
+     * @param close the close
+     * @param with the with
+     * @return true, if successful
+     */
+    public boolean replaceSequence(String open, String close, String with)
+    {
+        while (scanNext(open, close) && start != -1)
+        {
+            super.replace(start, end + 1, with);
+        }
 
-		return (start == -1) ? true : false;
-	}
+        return (start == -1) ? true : false;
+    }
 
-	/**
-	 * Reset.
-	 * 
-	 * @return the expandable string
-	 */
-	public ExpandableString reset() {
-		super.setLength(0);
-		super.append(template);
-		this.start = 0;
-		this.end = 0;
+    /**
+     * Reset.
+     * 
+     * @return the expandable string
+     */
+    public ExpandableString reset()
+    {
+        super.setLength(0);
+        super.append(template);
+        this.start = 0;
+        this.end = 0;
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Restore quotes.
-	 * 
-	 * @return true, if successful
-	 */
-	protected boolean restoreQuotes() {
-		while (scanNext("\\\\'", "\\\\'") && start != -1) {
-			super.replace(start, end + 3, quoted.remove(0));
-		}
+    /**
+     * Restore quotes.
+     * 
+     * @return true, if successful
+     */
+    protected boolean restoreQuotes()
+    {
+        while (scanNext("\\\\'", "\\\\'") && start != -1)
+        {
+            super.replace(start, end + 3, quoted.remove(0));
+        }
 
-		return (start == -1) ? true : false;
-	}
+        return (start == -1) ? true : false;
+    }
 
-	/**
-	 * Save quotes.
-	 * 
-	 * @return true, if successful
-	 */
-	protected boolean saveQuotes() {
-		quoted.clear();
+    /**
+     * Save quotes.
+     * 
+     * @return true, if successful
+     */
+    protected boolean saveQuotes()
+    {
+        quoted.clear();
 
-		while (scanNext("'", "'") && start != -1) {
+        while (scanNext("'", "'") && start != -1)
+        {
 
-			quoted.add(super.substring(start, end + 1));
+            quoted.add(super.substring(start, end + 1));
 
-			super.replace(start, end + 1, "\\\\'\\\\'"); // Twice escaped empty quote
-		}
+            super.replace(start, end + 1, "\\\\'\\\\'"); // Twice escaped empty
+                                                         // quote
+        }
 
-		return (start == -1) ? true : false;
-	}
+        return (start == -1) ? true : false;
+    }
 
-	/**
-	 * Scan next.
-	 * 
-	 * @param open
-	 *          the open
-	 * @param close
-	 *          the close
-	 * @return true, if successful
-	 */
-	protected boolean scanNext(String open, String close) {
-		return scanNext(open, close, 0);
-	}
+    /**
+     * Scan next.
+     * 
+     * @param open the open
+     * @param close the close
+     * @return true, if successful
+     */
+    protected boolean scanNext(String open, String close)
+    {
+        return scanNext(open, close, 0);
+    }
 
-	/**
-	 * Scan next.
-	 * 
-	 * @param open
-	 *          the open
-	 * @param close
-	 *          the close
-	 * @param offset
-	 *          the offset
-	 * @return true, if successful
-	 */
-	protected boolean scanNext(String open, String close, int offset) {
+    /**
+     * Scan next.
+     * 
+     * @param open the open
+     * @param close the close
+     * @param offset the offset
+     * @return true, if successful
+     */
+    protected boolean scanNext(String open, String close, int offset)
+    {
 
-		start = super.indexOf(open, offset);
-		if (start == -1) {
-			return true; // NORMAL EXIT HERE - We're done
-		}
+        start = super.indexOf(open, offset);
+        if (start == -1)
+        {
+            return true; // NORMAL EXIT HERE - We're done
+        }
 
-		/*
-		 * Check for escaped characters
-		 */
-		if (start != 0 && super.charAt(start - 1) == '\\') {
-			return scanNext(open, close, start + 1); // Resume scan just passed it
-		}
+        /*
+         * Check for escaped characters
+         */
+        if (start != 0 && super.charAt(start - 1) == '\\')
+        {
+            return scanNext(open, close, start + 1); // Resume scan just passed
+                                                     // it
+        }
 
-		if (scanNextEnd(close, start + 1) == false) {
-			return false;
-		}
+        if (scanNextEnd(close, start + 1) == false)
+        {
+            return false;
+        }
 
-		count++;
+        count++;
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Scan next end.
-	 * 
-	 * @param close
-	 *          the close
-	 * @param offset
-	 *          the offset
-	 * @return true, if successful
-	 */
-	private boolean scanNextEnd(String close, int offset) {
-		end = super.indexOf(close, offset);
-		if (end == -1) {
-			return false; // Missing matching close
-		}
+    /**
+     * Scan next end.
+     * 
+     * @param close the close
+     * @param offset the offset
+     * @return true, if successful
+     */
+    private boolean scanNextEnd(String close, int offset)
+    {
+        end = super.indexOf(close, offset);
+        if (end == -1)
+        {
+            return false; // Missing matching close
+        }
 
-		if (end != 0 && super.charAt(end - 1) == '\\') {
-			return scanNextEnd(close, end + 1);
-		}
+        if (end != 0 && super.charAt(end - 1) == '\\')
+        {
+            return scanNextEnd(close, end + 1);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Sets the template.
-	 * 
-	 * @param template
-	 *          the template to set
-	 */
-	public final void setTemplate(String template) {
-		this.template = template;
-		reset();
-	}
+    /**
+     * Sets the template.
+     * 
+     * @param template the template to set
+     */
+    public final void setTemplate(String template)
+    {
+        this.template = template;
+        reset();
+    }
 
-	/**
-	 * Template.
-	 * 
-	 * @return the string
-	 */
-	public String template() {
-		return this.template;
-	}
+    /**
+     * Template.
+     * 
+     * @return the string
+     */
+    public String template()
+    {
+        return this.template;
+    }
 
-	/**
-	 * To string.
-	 * 
-	 * @return the string
-	 * @see org.jnetpcap.util.JStringBuilder#toString()
-	 */
-	public String toString() {
-		return super.toString();
-	}
+    /**
+     * To string.
+     * 
+     * @return the string
+     * @see org.jnetpcap.util.JStringBuilder#toString()
+     */
+    public String toString()
+    {
+        return super.toString();
+    }
 }

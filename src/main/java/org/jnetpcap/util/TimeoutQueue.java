@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class TimeoutQueue.
@@ -30,85 +29,91 @@ import java.util.Queue;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class TimeoutQueue {
+public class TimeoutQueue
+{
 
-	/**
-	 * This queue contains various analysis objects that are time constrained.
-	 * Such as IP fragmentation. If all the fragments don't arrive within a
-	 * reassembly time window, then we timeout that analysis object, remove it
-	 * from maps and notify any listeners that analysis expired. The time is taken
-	 * from all arriving packets as they are read. Their timestamp determines the
-	 * current processing time (which is different from current system clock as we
-	 * might be reading from a file using saved timestamps.
-	 */
-	private Queue<Timeout> timeoutQueue = new PriorityQueue<Timeout>();
+    /**
+     * This queue contains various analysis objects that are time constrained.
+     * Such as IP fragmentation. If all the fragments don't arrive within a
+     * reassembly time window, then we timeout that analysis object, remove it
+     * from maps and notify any listeners that analysis expired. The time is
+     * taken from all arriving packets as they are read. Their timestamp
+     * determines the current processing time (which is different from current
+     * system clock as we might be reading from a file using saved timestamps.
+     */
+    private Queue<Timeout> timeoutQueue = new PriorityQueue<Timeout>();
 
-	/**
-	 * Timeout.
-	 * 
-	 * @param timeInMillis
-	 *          the time in millis
-	 */
-	public void timeout(long timeInMillis) {
-		if (timeoutQueue.isEmpty()
-		    || timeoutQueue.peek().isTimedout(timeInMillis) == false) {
-			return;
-		}
+    /**
+     * Timeout.
+     * 
+     * @param timeInMillis the time in millis
+     */
+    public void timeout(long timeInMillis)
+    {
+        if (timeoutQueue.isEmpty() || timeoutQueue.peek().isTimedout(timeInMillis) == false)
+        {
+            return;
+        }
 
-		for (Iterator<Timeout> i = timeoutQueue.iterator(); i.hasNext();) {
-			Timeout entry = i.next();
-			if (entry.isTimedout(timeInMillis)) {
-				i.remove();
-				entry.timeout();
+        for (Iterator<Timeout> i = timeoutQueue.iterator(); i.hasNext();)
+        {
+            Timeout entry = i.next();
+            if (entry.isTimedout(timeInMillis))
+            {
+                i.remove();
+                entry.timeout();
 
-			} else {
-				break;
-			}
-		}
-	}
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 
-	/**
-	 * Timeout.
-	 * 
-	 * @param entry
-	 *          the entry
-	 * @return true, if successful
-	 */
-	public boolean timeout(Timeout entry) {
-		entry.timeout();
+    /**
+     * Timeout.
+     * 
+     * @param entry the entry
+     * @return true, if successful
+     */
+    public boolean timeout(Timeout entry)
+    {
+        entry.timeout();
 
-		return remove(entry);
-	}
+        return remove(entry);
+    }
 
-	/**
-	 * Checks if is empty.
-	 * 
-	 * @return true, if is empty
-	 */
-	public boolean isEmpty() {
-		return timeoutQueue.isEmpty();
-	}
+    /**
+     * Checks if is empty.
+     * 
+     * @return true, if is empty
+     */
+    public boolean isEmpty()
+    {
+        return timeoutQueue.isEmpty();
+    }
 
-	/**
-	 * Adds the.
-	 * 
-	 * @param o
-	 *          the o
-	 * @return true, if successful
-	 */
-	public boolean add(Timeout o) {
-		return this.timeoutQueue.add(o);
-	}
+    /**
+     * Adds the.
+     * 
+     * @param o the o
+     * @return true, if successful
+     */
+    public boolean add(Timeout o)
+    {
+        return this.timeoutQueue.add(o);
+    }
 
-	/**
-	 * Removes the.
-	 * 
-	 * @param o
-	 *          the o
-	 * @return true, if successful
-	 */
-	public boolean remove(Timeout o) {
-		return this.timeoutQueue.remove(o);
-	}
+    /**
+     * Removes the.
+     * 
+     * @param o the o
+     * @return true, if successful
+     */
+    public boolean remove(Timeout o)
+    {
+        return this.timeoutQueue.remove(o);
+    }
 
 }

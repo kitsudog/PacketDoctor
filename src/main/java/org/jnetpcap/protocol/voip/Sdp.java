@@ -60,179 +60,189 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header
-public class Sdp
-    extends
-    JMappedHeader {
+public class Sdp extends JMappedHeader
+{
 
-	/**
-	 * A table of various fields for SDP protocol.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	@Field
-	public enum Fields {
-		
-		/** Connection info field. */
-		ConnectionInfo,
-		
-		/** Media field. */
-		Media,
-		
-		/** Owner field. */
-		Owner,
-		
-		/** Session name field. */
-		SessionName,
+    /**
+     * A table of various fields for SDP protocol.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    @Field
+    public enum Fields {
 
-		/** Time field. */
-		Time,
+        /** Connection info field. */
+        ConnectionInfo,
 
-		/** Version field. */
-		Version
-	}
+        /** Media field. */
+        Media,
 
-	/** Constant numerial ID for this protocol's header. */
-	public static int ID = JProtocol.SDP_ID;
+        /** Owner field. */
+        Owner,
 
-	static {
-		try {
-			ID = JRegistry.register(Sdp.class);
-		} catch (final RegistryHeaderErrors e) {
-			e.printStackTrace();
-		}
-	}
+        /** Session name field. */
+        SessionName,
 
-	/**
-	 * Calculates the length of this header from a static context.
-	 * 
-	 * @param buffer
-	 *          buffer containing the packet or this header content
-	 * @param offset
-	 *          offset into the buffer where this header begins
-	 * @return length in bytes for this header, excluding payload
-	 */
-	@HeaderLength
-	public static int headerLength(final JBuffer buffer, final int offset) {
-		return buffer.size() - offset;
-	}
+        /** Time field. */
+        Time,
 
-	/** The attributes. */
-	private String[] attributes;
+        /** Version field. */
+        Version
+    }
 
-	/** The attributes length. */
-	private int attributesLength;
+    /** Constant numerial ID for this protocol's header. */
+    public static int ID = JProtocol.SDP_ID;
 
-	/** The attributes offset. */
-	private int attributesOffset;
+    static
+    {
+        try
+        {
+            ID = JRegistry.register(Sdp.class);
+        }
+        catch (final RegistryHeaderErrors e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-	/** The text. */
-	private String text;
+    /**
+     * Calculates the length of this header from a static context.
+     * 
+     * @param buffer buffer containing the packet or this header content
+     * @param offset offset into the buffer where this header begins
+     * @return length in bytes for this header, excluding payload
+     */
+    @HeaderLength
+    public static int headerLength(final JBuffer buffer, final int offset)
+    {
+        return buffer.size() - offset;
+    }
 
-	/**
-	 * Returns as array of Strings with all the attributes of this message.
-	 * 
-	 * @return array containing all the attributes found in this message
-	 */
-	@Field(offset = 0, length = 10, format = "%s[]")
-	public String[] attributes() {
-		return this.attributes;
-	}
+    /** The attributes. */
+    private String[] attributes;
 
-	/**
-	 * Returns the length of the 'attributes' field.
-	 * 
-	 * @return length of the 'attributes' field; the length is in bits
-	 */
-	@Dynamic(Field.Property.LENGTH)
-	public int attributesLength() {
-		return this.attributesLength;
-	}
+    /** The attributes length. */
+    private int attributesLength;
 
-	/**
-	 * Returns the offset into the header for the 'attributes' field.
-	 * 
-	 * @return offset from the start of the header; the offset is in bits
-	 */
-	@Dynamic(Field.Property.OFFSET)
-	public int attributesOffset() {
-		return this.attributesOffset;
-	}
+    /** The attributes offset. */
+    private int attributesOffset;
 
-	/**
-	 * Decode header.
-	 * 
-	 * @see org.jnetpcap.packet.JHeader#decodeHeader()
-	 */
-	@Override
-	protected void decodeHeader() {
-		this.text = super.getUTF8String(0, size());
+    /** The text. */
+    private String text;
 
-		final String[] lines = this.text.split("\r\n");
-		final List<String> list = new ArrayList<String>(10);
+    /**
+     * Returns as array of Strings with all the attributes of this message.
+     * 
+     * @return array containing all the attributes found in this message
+     */
+    @Field(offset = 0, length = 10, format = "%s[]")
+    public String[] attributes()
+    {
+        return this.attributes;
+    }
 
-		int offset = 0;
-		for (String line : lines) {
-			final char firstChar = line.charAt(0);
-			line = line.substring(2).trim();
-			final int length = line.length() * 8;
+    /**
+     * Returns the length of the 'attributes' field.
+     * 
+     * @return length of the 'attributes' field; the length is in bits
+     */
+    @Dynamic(Field.Property.LENGTH)
+    public int attributesLength()
+    {
+        return this.attributesLength;
+    }
 
-			// System.out.printf("line='%s'\n", line);
+    /**
+     * Returns the offset into the header for the 'attributes' field.
+     * 
+     * @return offset from the start of the header; the offset is in bits
+     */
+    @Dynamic(Field.Property.OFFSET)
+    public int attributesOffset()
+    {
+        return this.attributesOffset;
+    }
 
-			switch (firstChar) {
-				case 'v':
-					super.addField(Fields.Version, line, offset, length);
-					break;
+    /**
+     * Decode header.
+     * 
+     * @see org.jnetpcap.packet.JHeader#decodeHeader()
+     */
+    @Override
+    protected void decodeHeader()
+    {
+        this.text = super.getUTF8String(0, size());
 
-				case 'o':
-					super.addField(Fields.Owner, line, offset, length);
-					break;
+        final String[] lines = this.text.split("\r\n");
+        final List<String> list = new ArrayList<String>(10);
 
-				case 's':
-					super.addField(Fields.SessionName, line, offset, length);
-					break;
+        int offset = 0;
+        for (String line : lines)
+        {
+            final char firstChar = line.charAt(0);
+            line = line.substring(2).trim();
+            final int length = line.length() * 8;
 
-				case 'c':
-					super.addField(Fields.ConnectionInfo, line, offset, length);
-					break;
+            // System.out.printf("line='%s'\n", line);
 
-				case 't':
-					super.addField(Fields.Time, line, offset, length);
-					break;
+            switch (firstChar)
+            {
+                case 'v':
+                    super.addField(Fields.Version, line, offset, length);
+                    break;
 
-				case 'm':
-					super.addField(Fields.Media, line, offset, length);
-					break;
+                case 'o':
+                    super.addField(Fields.Owner, line, offset, length);
+                    break;
 
-				case 'a':
-					list.add(line);
-					break;
-			}
+                case 's':
+                    super.addField(Fields.SessionName, line, offset, length);
+                    break;
 
-			offset += (line.length() + 2) * 8;
-		}
-		this.attributesOffset = offset;
-		this.attributesLength = (size() - offset / 8) * 8;
-		this.attributes = list.toArray(new String[list.size()]);
-	}
+                case 'c':
+                    super.addField(Fields.ConnectionInfo, line, offset, length);
+                    break;
 
-	/**
-	 * Experimental function.
-	 * 
-	 * @return the entire SDP header as a text string
-	 */
-	// @Field(offset = 0, format="#textdump#")
-	public String text() {
-		return this.text;
-	}
+                case 't':
+                    super.addField(Fields.Time, line, offset, length);
+                    break;
 
-	/**
-	 * Experimental function.
-	 * 
-	 * @return size of the SDP header in bits
-	 */
-	// @Dynamic(Field.Property.LENGTH)
-	public int textLength() {
-		return size() * 8;
-	}
+                case 'm':
+                    super.addField(Fields.Media, line, offset, length);
+                    break;
+
+                case 'a':
+                    list.add(line);
+                    break;
+            }
+
+            offset += (line.length() + 2) * 8;
+        }
+        this.attributesOffset = offset;
+        this.attributesLength = (size() - offset / 8) * 8;
+        this.attributes = list.toArray(new String[list.size()]);
+    }
+
+    /**
+     * Experimental function.
+     * 
+     * @return the entire SDP header as a text string
+     */
+    // @Field(offset = 0, format="#textdump#")
+    public String text()
+    {
+        return this.text;
+    }
+
+    /**
+     * Experimental function.
+     * 
+     * @return size of the SDP header in bits
+     */
+    // @Dynamic(Field.Property.LENGTH)
+    public int textLength()
+    {
+        return size() * 8;
+    }
 }

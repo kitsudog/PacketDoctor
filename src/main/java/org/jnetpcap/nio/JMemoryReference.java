@@ -24,98 +24,96 @@ package org.jnetpcap.nio;
  * 
  * @author markbe
  */
-public class JMemoryReference extends DisposableReference {
+public class JMemoryReference extends DisposableReference
+{
 
-	/**
-	 * Address is modified by JNI, even though it is marked final. This prevents
-	 * anyone else from changing it, except the JNI code reponsible for management
-	 * of this object. This value is only changed during the construction of the
-	 * object and during the destroy call.
-	 */
-	long address;
-	
-	/** The size. */
-	long size;
+    /**
+     * Address is modified by JNI, even though it is marked final. This prevents
+     * anyone else from changing it, except the JNI code reponsible for
+     * management of this object. This value is only changed during the
+     * construction of the object and during the destroy call.
+     */
+    long address;
 
-	/**
-	 * Instantiates a new j memory reference.
-	 * 
-	 * @param referant
-	 *          the referant
-	 * @param address
-	 *          the address
-	 * @param size
-	 *          the size
-	 */
-	public JMemoryReference(Object referant, long address, long size) {
-		super(referant);
-		this.address = address;
-		this.size = size;
-	}
+    /** The size. */
+    long size;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.nio.Disposable#dispose()
-	 */
-	/**
-	 * Dispose.
-	 * 
-	 * @see org.jnetpcap.nio.DisposableReference#dispose()
-	 */
-	@Override
-	public void dispose() {
-		disposeNative(size);
-	}
+    /**
+     * Instantiates a new j memory reference.
+     * 
+     * @param referant the referant
+     * @param address the address
+     * @param size the size
+     */
+    public JMemoryReference(Object referant, long address, long size)
+    {
+        super(referant);
+        this.address = address;
+        this.size = size;
+    }
 
-	/**
-	 * Does a native memory cleanup.
-	 * 
-	 * @param size
-	 *          the size
-	 */
-	protected void disposeNative(long size) {
-		disposeNative0(address, size);
-	}
-	
-	/**
-	 * Dispose native0.
-	 * 
-	 * @param address
-	 *          the address
-	 * @param size
-	 *          the size
-	 */
-	private native void disposeNative0(long address, long size);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.nio.Disposable#dispose()
+     */
+    /**
+     * Dispose.
+     * 
+     * @see org.jnetpcap.nio.DisposableReference#dispose()
+     */
+    @Override
+    public void dispose()
+    {
+        disposeNative(size);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.nio.DisposableReference#remove()
-	 */
-	/**
-	 * Removes the.
-	 * 
-	 * @see org.jnetpcap.nio.DisposableReference#remove()
-	 */
-	@Override
-	public void remove() {
-		address = 0L;
-		size = 0L;
-		super.remove();
-	}
+    /**
+     * Does a native memory cleanup.
+     * 
+     * @param size the size
+     */
+    protected void disposeNative(long size)
+    {
+        disposeNative0(address, size);
+    }
 
-	/**
-	 * Size.
-	 * 
-	 * @return the int
-	 * @see org.jnetpcap.nio.DisposableReference#size()
-	 */
-	@Override
-	public int size() {
-		return (int) size;
-	}
-	
-	
+    /**
+     * Dispose native0.
+     * 
+     * @param address the address
+     * @param size the size
+     */
+    private native void disposeNative0(long address, long size);
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.nio.DisposableReference#remove()
+     */
+    /**
+     * Removes the.
+     * 
+     * @see org.jnetpcap.nio.DisposableReference#remove()
+     */
+    @Override
+    public void remove()
+    {
+        address = 0L;
+        size = 0L;
+        super.remove();
+    }
+
+    /**
+     * Size.
+     * 
+     * @return the int
+     * @see org.jnetpcap.nio.DisposableReference#size()
+     */
+    @Override
+    public int size()
+    {
+        return (int) size;
+    }
 
 }

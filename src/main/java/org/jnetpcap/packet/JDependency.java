@@ -24,6 +24,7 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JDependency {
+public interface JDependency
+{
 
 }

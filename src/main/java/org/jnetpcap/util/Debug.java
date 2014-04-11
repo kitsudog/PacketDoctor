@@ -30,134 +30,138 @@ import org.jnetpcap.nio.JStruct;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class Debug
-    extends
-    JStruct {
+public class Debug extends JStruct
+{
 
-	/**
-	 * Size of native debug_t structure.
-	 * 
-	 * @return size in bytes
-	 */
-	public native static int sizeof();
+    /**
+     * Size of native debug_t structure.
+     * 
+     * @return size in bytes
+     */
+    public native static int sizeof();
 
-	/**
-	 * Instantiates a new debug.
-	 * 
-	 */
-	public Debug() {
-		super("class Debug", sizeof());
-	}
+    /**
+     * Instantiates a new debug.
+     * 
+     */
+    public Debug()
+    {
+        super("class Debug", sizeof());
+    }
 
-	/**
-	 * Provides access to raw level value.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	public interface LevelId {
+    /**
+     * Provides access to raw level value.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    public interface LevelId
+    {
 
-		/**
-		 * Gets the numerical id for this priority level.
-		 * 
-		 * @return numerical id
-		 * @see org.jnetpcap.util.Debug.LevelId#intValue()
-		 */
-		public int intValue();
-	}
+        /**
+         * Gets the numerical id for this priority level.
+         * 
+         * @return numerical id
+         * @see org.jnetpcap.util.Debug.LevelId#intValue()
+         */
+        public int intValue();
+    }
 
-	/**
-	 * Defines various message severity levels.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	public enum Level implements LevelId {
-		
-		/** The ERROR. */
-		ERROR(4),
-		
-		/** The WARN. */
-		WARN(6),
-		
-		/** The INFO. */
-		INFO(8),
-		
-		/** The TRACE. */
-		TRACE(10);
+    /**
+     * Defines various message severity levels.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    public enum Level implements LevelId {
 
-		/** The level. */
-		private final int level;
+        /** The ERROR. */
+        ERROR(4),
 
-		/**
-		 * Instantiates a new level.
-		 * 
-		 * @param level
-		 *          the level
-		 */
-		private Level(int level) {
-			this.level = level;
-		}
+        /** The WARN. */
+        WARN(6),
 
-		/**
-		 * Gets the numerical id for this level constant.
-		 * 
-		 * @return numerical id
-		 * @see org.jnetpcap.util.Debug.LevelId#intValue()
-		 */
-		public int intValue() {
-			return level;
-		}
+        /** The INFO. */
+        INFO(8),
 
-		/**
-		 * Value of.
-		 * 
-		 * @param level
-		 *          the level
-		 * @return the level
-		 */
-		public static Level valueOf(int level) {
-			for (Level l : values()) {
-				if (l.level == level) {
-					return l;
-				}
-			}
+        /** The TRACE. */
+        TRACE(10);
 
-			return null;
-		}
-	}
+        /** The level. */
+        private final int level;
 
-	/**
-	 * Sets the level.
-	 * 
-	 * @param level
-	 *          the new level
-	 */
-	public void setLevel(Debug.LevelId level) {
-		setLevel(level.intValue());
-	}
+        /**
+         * Instantiates a new level.
+         * 
+         * @param level the level
+         */
+        private Level(int level)
+        {
+            this.level = level;
+        }
 
-	/**
-	 * Sets the level.
-	 * 
-	 * @param level
-	 *          the new level
-	 */
-	public native void setLevel(int level);
+        /**
+         * Gets the numerical id for this level constant.
+         * 
+         * @return numerical id
+         * @see org.jnetpcap.util.Debug.LevelId#intValue()
+         */
+        public int intValue()
+        {
+            return level;
+        }
 
-	/**
-	 * Gets the level.
-	 * 
-	 * @return the level
-	 */
-	public native int getLevel();
+        /**
+         * Value of.
+         * 
+         * @param level the level
+         * @return the level
+         */
+        public static Level valueOf(int level)
+        {
+            for (Level l : values())
+            {
+                if (l.level == level)
+                {
+                    return l;
+                }
+            }
 
-	/**
-	 * Gets the level enum.
-	 * 
-	 * @return the level enum
-	 */
-	public Level getLevelEnum() {
-		return Level.valueOf(getLevel());
-	}
+            return null;
+        }
+    }
+
+    /**
+     * Sets the level.
+     * 
+     * @param level the new level
+     */
+    public void setLevel(Debug.LevelId level)
+    {
+        setLevel(level.intValue());
+    }
+
+    /**
+     * Sets the level.
+     * 
+     * @param level the new level
+     */
+    public native void setLevel(int level);
+
+    /**
+     * Gets the level.
+     * 
+     * @return the level
+     */
+    public native int getLevel();
+
+    /**
+     * Gets the level enum.
+     * 
+     * @return the level enum
+     */
+    public Level getLevelEnum()
+    {
+        return Level.valueOf(getLevel());
+    }
 }

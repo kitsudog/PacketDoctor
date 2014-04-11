@@ -32,105 +32,95 @@ import org.jnetpcap.nio.JBuffer;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PcapDumper {
+public class PcapDumper
+{
 
-	/** The physical. */
-	private volatile long physical;
+    /** The physical. */
+    private volatile long physical;
 
-	/**
-	 * Inits the i ds.
-	 */
-	private static native void initIDs();
+    /**
+     * Inits the i ds.
+     */
+    private static native void initIDs();
 
-	static {
-		initIDs();
-	}
+    static
+    {
+        initIDs();
+    }
 
-	/**
-	 * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
-	 * Note that the calling arguments are suitable for use with dipstach() or
-	 * loop().
-	 * 
-	 * @param hdr
-	 *          pcap capture header
-	 * @param packet
-	 *          packet buffer
-	 * @deprecated use of PcapPktHdr has been replaced by PcapHeader
-	 * @see PcapHeader
-	 */
-	public void dump(PcapPktHdr hdr, ByteBuffer packet) {
-		dump(hdr.getSeconds(), hdr.getUseconds(), hdr.getCaplen(), hdr.getLen(),
-		    packet);
-	}
+    /**
+     * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
+     * Note that the calling arguments are suitable for use with dipstach() or
+     * loop().
+     * 
+     * @param hdr pcap capture header
+     * @param packet packet buffer
+     * @deprecated use of PcapPktHdr has been replaced by PcapHeader
+     * @see PcapHeader
+     */
+    public void dump(PcapPktHdr hdr, ByteBuffer packet)
+    {
+        dump(hdr.getSeconds(), hdr.getUseconds(), hdr.getCaplen(), hdr.getLen(), packet);
+    }
 
-	/**
-	 * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
-	 * Note that the calling arguments are suitable for use with dipstach() or
-	 * loop().
-	 * 
-	 * @param hdr
-	 *          pcap capture header
-	 * @param packet
-	 *          packet buffer
-	 * @since 1.2
-	 */
-	public native void dump(PcapHeader hdr, ByteBuffer packet);
+    /**
+     * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
+     * Note that the calling arguments are suitable for use with dipstach() or
+     * loop().
+     * 
+     * @param hdr pcap capture header
+     * @param packet packet buffer
+     * @since 1.2
+     */
+    public native void dump(PcapHeader hdr, ByteBuffer packet);
 
-	/**
-	 * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
-	 * Note that the calling arguments are suitable for use with dipstach() or
-	 * loop().
-	 * 
-	 * @param hdr
-	 *          pcap capture header
-	 * @param packet
-	 *          packet buffer
-	 * @since 1.2
-	 */
-	public native void dump(PcapHeader hdr, JBuffer packet);
+    /**
+     * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
+     * Note that the calling arguments are suitable for use with dipstach() or
+     * loop().
+     * 
+     * @param hdr pcap capture header
+     * @param packet packet buffer
+     * @since 1.2
+     */
+    public native void dump(PcapHeader hdr, JBuffer packet);
 
-	/**
-	 * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
-	 * Note that the calling arguments are suitable for use with dipstach() or
-	 * loop(). This a convenience method, which takes the parameters of PcapPkthdr
-	 * class directly.
-	 * 
-	 * @param seconds
-	 *          timestamp in seconds
-	 * @param useconds
-	 *          timestamp fraction in microseconds
-	 * @param caplen
-	 *          how much was captured
-	 * @param len
-	 *          actual packet length on wire
-	 * @param packet
-	 *          packet buffer
-	 */
-	public native void dump(long seconds, int useconds, int caplen, int len,
-	    ByteBuffer packet);
+    /**
+     * Outputs a packet to the "savefile" opened with <code>dumpOpen</code>.
+     * Note that the calling arguments are suitable for use with dipstach() or
+     * loop(). This a convenience method, which takes the parameters of
+     * PcapPkthdr class directly.
+     * 
+     * @param seconds timestamp in seconds
+     * @param useconds timestamp fraction in microseconds
+     * @param caplen how much was captured
+     * @param len actual packet length on wire
+     * @param packet packet buffer
+     */
+    public native void dump(long seconds, int useconds, int caplen, int len, ByteBuffer packet);
 
-	/**
-	 * Returns the current file position for the "savefile", representing the
-	 * number of bytes written by <code>Pcap.dumpOpen</code> and
-	 * <code>Pcap.dump</code>.
-	 * 
-	 * @return position within the file, or -1 on error
-	 */
-	public native long ftell();
+    /**
+     * Returns the current file position for the "savefile", representing the
+     * number of bytes written by <code>Pcap.dumpOpen</code> and
+     * <code>Pcap.dump</code>.
+     * 
+     * @return position within the file, or -1 on error
+     */
+    public native long ftell();
 
-	/**
-	 * Flushes the output buffer to the "savefile", so that any packets written
-	 * with <code>Pcap.dump</code> but not yet written to the "savefile" will be
-	 * written.
-	 * 
-	 * @return 0 on success, -1 on error
-	 */
-	public native int flush();
+    /**
+     * Flushes the output buffer to the "savefile", so that any packets written
+     * with <code>Pcap.dump</code> but not yet written to the "savefile" will be
+     * written.
+     * 
+     * @return 0 on success, -1 on error
+     */
+    public native int flush();
 
-	/**
-	 * Closes a savefile. The existing PcapDumper object on which close method was
-	 * invoked is no longer usable and needs to be discarded.
-	 */
-	public native void close();
+    /**
+     * Closes a savefile. The existing PcapDumper object on which close method
+     * was invoked is no longer usable and needs to be discarded.
+     */
+    public native void close();
 
 }

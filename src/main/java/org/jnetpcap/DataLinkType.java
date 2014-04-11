@@ -25,20 +25,21 @@ package org.jnetpcap;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface DataLinkType {
+public interface DataLinkType
+{
 
-	/**
-	 * The integer value for this type of data-link.
-	 * 
-	 * @return ID of the dlt
-	 */
-	public int getValue();
+    /**
+     * The integer value for this type of data-link.
+     * 
+     * @return ID of the dlt
+     */
+    public int getValue();
 
-	/**
-	 * Retrieves a description of the data-link type if avaiable.
-	 * 
-	 * @return description of the datalink type or null if description is not
-	 *         avaialable.
-	 */
-	public String getDescription();
+    /**
+     * Retrieves a description of the data-link type if avaiable.
+     * 
+     * @return description of the datalink type or null if description is not
+     *         avaialable.
+     */
+    public String getDescription();
 }

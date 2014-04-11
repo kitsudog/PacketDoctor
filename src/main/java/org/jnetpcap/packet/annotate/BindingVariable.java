@@ -27,22 +27,22 @@ package org.jnetpcap.packet.annotate;
  */
 public @interface BindingVariable {
 
-	/**
-	 * The Enum MatchType.
-	 */
-	public enum MatchType {
-		
-		/** The VALUE. */
-		VALUE,
-		
-		/** The FUNCTION. */
-		FUNCTION
-	}
-	
-	/**
-	 * Value.
-	 * 
-	 * @return the match type
-	 */
-	MatchType value() default MatchType.VALUE;
+    /**
+     * The Enum MatchType.
+     */
+    public enum MatchType {
+
+        /** The VALUE. */
+        VALUE,
+
+        /** The FUNCTION. */
+        FUNCTION
+    }
+
+    /**
+     * Value.
+     * 
+     * @return the match type
+     */
+    MatchType value() default MatchType.VALUE;
 }

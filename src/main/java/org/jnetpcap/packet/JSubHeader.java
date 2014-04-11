@@ -24,172 +24,164 @@ import org.jnetpcap.packet.structure.JField;
 /**
  * The Class JSubHeader.
  * 
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JSubHeader<T extends JHeader>
-    extends JHeader {
+public class JSubHeader<T extends JHeader> extends JHeader
+{
 
-	/** The length. */
-	private int length;
+    /** The length. */
+    private int length;
 
-	/** The offset. */
-	private int offset;
+    /** The offset. */
+    private int offset;
 
-	/** The parent. */
-	private JHeader parent;
+    /** The parent. */
+    private JHeader parent;
 
-	/**
-	 * Instantiates a new j sub header.
-	 */
-	public JSubHeader() {
-		super();
-	}
+    /**
+     * Instantiates a new j sub header.
+     */
+    public JSubHeader()
+    {
+        super();
+    }
 
-	/**
-	 * Instantiates a new j sub header.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param fields
-	 *          the fields
-	 * @param name
-	 *          the name
-	 * @param nicname
-	 *          the nicname
-	 */
-	public JSubHeader(int id, JField[] fields, String name, String nicname) {
-		super(id, fields, name, nicname);
-	}
+    /**
+     * Instantiates a new j sub header.
+     * 
+     * @param id the id
+     * @param fields the fields
+     * @param name the name
+     * @param nicname the nicname
+     */
+    public JSubHeader(int id, JField[] fields, String name, String nicname)
+    {
+        super(id, fields, name, nicname);
+    }
 
-	/**
-	 * Instantiates a new j sub header.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param fields
-	 *          the fields
-	 * @param name
-	 *          the name
-	 */
-	public JSubHeader(int id, JField[] fields, String name) {
-		super(id, fields, name);
-	}
+    /**
+     * Instantiates a new j sub header.
+     * 
+     * @param id the id
+     * @param fields the fields
+     * @param name the name
+     */
+    public JSubHeader(int id, JField[] fields, String name)
+    {
+        super(id, fields, name);
+    }
 
-	/**
-	 * Instantiates a new j sub header.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param name
-	 *          the name
-	 * @param nicname
-	 *          the nicname
-	 */
-	public JSubHeader(int id, String name, String nicname) {
-		super(id, name, nicname);
-	}
+    /**
+     * Instantiates a new j sub header.
+     * 
+     * @param id the id
+     * @param name the name
+     * @param nicname the nicname
+     */
+    public JSubHeader(int id, String name, String nicname)
+    {
+        super(id, name, nicname);
+    }
 
-	/**
-	 * Instantiates a new j sub header.
-	 * 
-	 * @param id
-	 *          the id
-	 * @param name
-	 *          the name
-	 */
-	public JSubHeader(int id, String name) {
-		super(id, name);
-	}
+    /**
+     * Instantiates a new j sub header.
+     * 
+     * @param id the id
+     * @param name the name
+     */
+    public JSubHeader(int id, String name)
+    {
+        super(id, name);
+    }
 
-	/**
-	 * Instantiates a new j sub header.
-	 * 
-	 * @param state
-	 *          the state
-	 * @param fields
-	 *          the fields
-	 * @param name
-	 *          the name
-	 * @param nicname
-	 *          the nicname
-	 */
-	public JSubHeader(State state, JField[] fields, String name, String nicname) {
-		super(state, fields, name, nicname);
-	}
+    /**
+     * Instantiates a new j sub header.
+     * 
+     * @param state the state
+     * @param fields the fields
+     * @param name the name
+     * @param nicname the nicname
+     */
+    public JSubHeader(State state, JField[] fields, String name, String nicname)
+    {
+        super(state, fields, name, nicname);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JHeader#getLength()
-	 */
-	/**
-	 * Gets the length.
-	 * 
-	 * @return the length
-	 * @see org.jnetpcap.packet.JHeader#getLength()
-	 */
-	@Override
-	public int getLength() {
-		return length;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JHeader#getLength()
+     */
+    /**
+     * Gets the length.
+     * 
+     * @return the length
+     * @see org.jnetpcap.packet.JHeader#getLength()
+     */
+    @Override
+    public int getLength()
+    {
+        return length;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JHeader#getOffset()
-	 */
-	/**
-	 * Gets the offset.
-	 * 
-	 * @return the offset
-	 * @see org.jnetpcap.packet.JHeader#getOffset()
-	 */
-	@Override
-	public int getOffset() {
-		return offset;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jnetpcap.packet.JHeader#getOffset()
+     */
+    /**
+     * Gets the offset.
+     * 
+     * @return the offset
+     * @see org.jnetpcap.packet.JHeader#getOffset()
+     */
+    @Override
+    public int getOffset()
+    {
+        return offset;
+    }
 
-	/**
-	 * Sets the offset.
-	 * 
-	 * @param offset
-	 *          the new offset
-	 */
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
+    /**
+     * Sets the offset.
+     * 
+     * @param offset the new offset
+     */
+    public void setOffset(int offset)
+    {
+        this.offset = offset;
+    }
 
-	/**
-	 * Sets the length.
-	 * 
-	 * @param length
-	 *          the new length
-	 */
-	public void setLength(int length) {
-		this.length = length;
-	}
+    /**
+     * Sets the length.
+     * 
+     * @param length the new length
+     */
+    public void setLength(int length)
+    {
+        this.length = length;
+    }
 
-	/**
-	 * Sets the parent.
-	 * 
-	 * @param parent
-	 *          the new parent
-	 */
-	public void setParent(JHeader parent) {
-		this.parent = parent;
-	}
+    /**
+     * Sets the parent.
+     * 
+     * @param parent the new parent
+     */
+    public void setParent(JHeader parent)
+    {
+        this.parent = parent;
+    }
 
-	/**
-	 * Gets the parent.
-	 * 
-	 * @return the parent
-	 * @see org.jnetpcap.packet.JHeader#getParent()
-	 */
-	public JHeader getParent() {
-		return this.parent;
-	}
+    /**
+     * Gets the parent.
+     * 
+     * @return the parent
+     * @see org.jnetpcap.packet.JHeader#getParent()
+     */
+    public JHeader getParent()
+    {
+        return this.parent;
+    }
 
 }

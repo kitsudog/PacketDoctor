@@ -25,143 +25,155 @@ import java.util.List;
 // TODO: Auto-generated Javadoc
 /**
  * Class peered with native <code>pcap_if_t</code> structure. Addresses is
- * replaced as a list to simulate a linked list of address structures. This is not a JNI peering
- * class, and is only a read-only object.
+ * replaced as a list to simulate a linked list of address structures. This is
+ * not a JNI peering class, and is only a read-only object.
  * 
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PcapIf {
+public class PcapIf
+{
 
-	/**
-	 * Inits the i ds.
-	 */
-	private native static void initIDs();
+    /**
+     * Inits the i ds.
+     */
+    private native static void initIDs();
 
-	static {
-		initIDs();
+    static
+    {
+        initIDs();
 
-		try {
-			Class.forName("org.jnetpcap.PcapAddr");
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+        try
+        {
+            Class.forName("org.jnetpcap.PcapAddr");
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	/**
-	 * The field is initialized to the next object in native linked list, but is
-	 * not accessible from java.
-	 */
-	private volatile PcapIf next;
+    /**
+     * The field is initialized to the next object in native linked list, but is
+     * not accessible from java.
+     */
+    private volatile PcapIf next;
 
-	/** The name. */
-	private volatile String name;
+    /** The name. */
+    private volatile String name;
 
-	/** The description. */
-	private volatile String description;
+    /** The description. */
+    private volatile String description;
 
-	/**
-	 * Preallocate the list. The list will be filled in based on pcap_addr
-	 * structure from JNI. The field can be assigned to any kind of list since JNI
-	 * does dynamic lookup on the List.add method. We allocate a more efficient
-	 * ArrayList with only 2 addresses max for its initial capacity, as its very
-	 * rare to have interfaces assigned multiple addresses. The list will resize
-	 * incase there are more then 2 automatically.
-	 */
-	private List<PcapAddr> addresses = new ArrayList<PcapAddr>(2);
+    /**
+     * Preallocate the list. The list will be filled in based on pcap_addr
+     * structure from JNI. The field can be assigned to any kind of list since
+     * JNI does dynamic lookup on the List.add method. We allocate a more
+     * efficient ArrayList with only 2 addresses max for its initial capacity,
+     * as its very rare to have interfaces assigned multiple addresses. The list
+     * will resize incase there are more then 2 automatically.
+     */
+    private List<PcapAddr> addresses = new ArrayList<PcapAddr>(2);
 
-	/** The flags. */
-	private volatile int flags;
+    /** The flags. */
+    private volatile int flags;
 
-	/**
-	 * pcap_if.next field is unimportant since this java API fills in all the
-	 * entries into a List. Since the field does exist, though we leave the method
-	 * but make it private and not user accessible. This avoid when next is null
-	 * issues.
-	 * 
-	 * @return the next
-	 */
-	private final PcapIf getNext() {
-		return this.next;
-	}
+    /**
+     * pcap_if.next field is unimportant since this java API fills in all the
+     * entries into a List. Since the field does exist, though we leave the
+     * method but make it private and not user accessible. This avoid when next
+     * is null issues.
+     * 
+     * @return the next
+     */
+    private final PcapIf getNext()
+    {
+        return this.next;
+    }
 
-	/**
-	 * pcap_if.name field.
-	 * 
-	 * @return the name
-	 */
-	public final String getName() {
-		return this.name;
-	}
+    /**
+     * pcap_if.name field.
+     * 
+     * @return the name
+     */
+    public final String getName()
+    {
+        return this.name;
+    }
 
-	/**
-	 * pcap_if.description field.
-	 * 
-	 * @return the description
-	 */
-	public final String getDescription() {
-		return this.description;
-	}
+    /**
+     * pcap_if.description field.
+     * 
+     * @return the description
+     */
+    public final String getDescription()
+    {
+        return this.description;
+    }
 
-	/**
-	 * A list of addresses for this field. The native C linked list of
-	 * <code>pcap_if</code> structures is turned into a java <code>List</code>
-	 * for convenience.
-	 * 
-	 * @return the addresses
-	 */
-	public final List<PcapAddr> getAddresses() {
-		return this.addresses;
-	}
+    /**
+     * A list of addresses for this field. The native C linked list of
+     * <code>pcap_if</code> structures is turned into a java <code>List</code>
+     * for convenience.
+     * 
+     * @return the addresses
+     */
+    public final List<PcapAddr> getAddresses()
+    {
+        return this.addresses;
+    }
 
-	/**
-	 * pcap_if.flags field.
-	 * 
-	 * @return the flags
-	 */
-	public final int getFlags() {
-		return this.flags;
-	}
+    /**
+     * pcap_if.flags field.
+     * 
+     * @return the flags
+     */
+    public final int getFlags()
+    {
+        return this.flags;
+    }
 
-	/**
-	 * Retrieves the hardware address of this network interface. The native OS is
-	 * queried via the appropriate OS calls to retrive the hardware address of the
-	 * interface (MAC address). This is a direct call, not cached data.
-	 * 
-	 * @return hardware address as an array of bytes; this method returns null if
-	 *         interface doesn't have or is incapable of having a hardware address
-	 *         such as loopback interfaces and others
-	 * @throws IOException
-	 *           if there was a problem retrieving the address
-	 */
-	public byte[] getHardwareAddress() throws IOException {
-		return PcapUtils.getHardwareAddress(this);
-	}
+    /**
+     * Retrieves the hardware address of this network interface. The native OS
+     * is queried via the appropriate OS calls to retrive the hardware address
+     * of the interface (MAC address). This is a direct call, not cached data.
+     * 
+     * @return hardware address as an array of bytes; this method returns null
+     *         if interface doesn't have or is incapable of having a hardware
+     *         address such as loopback interfaces and others
+     * @throws IOException if there was a problem retrieving the address
+     */
+    public byte[] getHardwareAddress() throws IOException
+    {
+        return PcapUtils.getHardwareAddress(this);
+    }
 
-	/**
-	 * Debug string.
-	 * @return debug string
-	 */
-	@Override
-  public String toString() {
-		StringBuilder out = new StringBuilder();
+    /**
+     * Debug string.
+     * @return debug string
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder out = new StringBuilder();
 
-		out.append("<");
-		if (addresses != null && addresses.isEmpty() == false) {
-			out.append("flags=").append(flags);
-			out.append(", addresses=").append(addresses);
-			out.append(", ");
-		}
-		out.append("name=").append(name);
-		out.append(", desc=").append(description);
+        out.append("<");
+        if (addresses != null && addresses.isEmpty() == false)
+        {
+            out.append("flags=").append(flags);
+            out.append(", addresses=").append(addresses);
+            out.append(", ");
+        }
+        out.append("name=").append(name);
+        out.append(", desc=").append(description);
 
-		out.append(">");
+        out.append(">");
 
-		// if (next != null) {
-		// out.append("\n").append(next.toString());
-		// }
+        // if (next != null) {
+        // out.append("\n").append(next.toString());
+        // }
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
 }

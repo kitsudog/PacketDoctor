@@ -32,39 +32,42 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header(length = 5, nicname = "snap")
-public class IEEESnap
-    extends JHeader {
+public class IEEESnap extends JHeader
+{
 
-	/** The Constant ID. */
-	public static final int ID = JProtocol.IEEE_SNAP_ID;
-	
-	/**
-	 * Oui.
-	 * 
-	 * @return the long
-	 */
-	@Field(offset = 0, length = 24, format = "%x")
-	public long oui() {
-		return getUInt(0) & 0x00FFFFFF;
-	}
+    /** The Constant ID. */
+    public static final int ID = JProtocol.IEEE_SNAP_ID;
 
-	/**
-	 * Pid description.
-	 * 
-	 * @return the string
-	 */
-	@Dynamic(Field.Property.DESCRIPTION)
-	public String pidDescription() {
-		return Ethernet.EthernetType.toString(pid());
-	}
-	
-	/**
-	 * Pid.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 24, length = 16, format = "%x")
-	public int pid() {
-		return getUShort(3);
-	}
+    /**
+     * Oui.
+     * 
+     * @return the long
+     */
+    @Field(offset = 0, length = 24, format = "%x")
+    public long oui()
+    {
+        return getUInt(0) & 0x00FFFFFF;
+    }
+
+    /**
+     * Pid description.
+     * 
+     * @return the string
+     */
+    @Dynamic(Field.Property.DESCRIPTION)
+    public String pidDescription()
+    {
+        return Ethernet.EthernetType.toString(pid());
+    }
+
+    /**
+     * Pid.
+     * 
+     * @return the int
+     */
+    @Field(offset = 24, length = 16, format = "%x")
+    public int pid()
+    {
+        return getUShort(3);
+    }
 }

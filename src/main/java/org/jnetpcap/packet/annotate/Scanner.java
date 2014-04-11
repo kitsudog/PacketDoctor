@@ -37,11 +37,11 @@ import org.jnetpcap.packet.JHeader;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Scanner {
-	
-	/**
-	 * Value.
-	 * 
-	 * @return the class<? extends j header>
-	 */
-	Class<? extends JHeader> value() default JHeader.class;
+
+    /**
+     * Value.
+     * 
+     * @return the class<? extends j header>
+     */
+    Class<? extends JHeader> value() default JHeader.class;
 }

@@ -33,300 +33,321 @@ import org.jnetpcap.packet.structure.JField;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class XmlFormatter extends JFormatter {
+public class XmlFormatter extends JFormatter
+{
 
-	/** The Constant PAD. */
-	private static final String PAD = "  ";
+    /** The Constant PAD. */
+    private static final String PAD = "  ";
 
-	/** The Constant LT. */
-	private static final String LT = "<";
+    /** The Constant LT. */
+    private static final String LT = "<";
 
-	/** The Constant GT. */
-	private static final String GT = ">";
+    /** The Constant GT. */
+    private static final String GT = ">";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.format.JFormatter#end(org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JField,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param field
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#fieldAfter(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.structure.JField, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void fieldAfter(JHeader header, JField field, Detail detail)
-			throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#end(org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JField,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param field
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#fieldAfter(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.structure.JField,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void fieldAfter(JHeader header, JField field, Detail detail) throws IOException
+    {
 
-		if (field.getStyle() == Style.BYTE_ARRAY_HEX_DUMP) {
-			decLevel();
-			pad().format(LT + "/hexdump" + GT + "\n");
-		} /*
-			 * else if (false && field.hasSubFields()) { final String v =
-			 * stylizeSingleLine(header, field, field.getValue(header));
-			 * 
-			 * pad().format(LT + "/field" + GT);
-			 * 
-			 * }
-			 */else if (field.getStyle() == Style.INT_BITS) {
-		}
+        if (field.getStyle() == Style.BYTE_ARRAY_HEX_DUMP)
+        {
+            decLevel();
+            pad().format(LT + "/hexdump" + GT + "\n");
+        } /*
+           * else if (false && field.hasSubFields()) { final String v =
+           * stylizeSingleLine(header, field, field.getValue(header));
+           * 
+           * pad().format(LT + "/field" + GT);
+           * 
+           * }
+           */
+        else if (field.getStyle() == Style.INT_BITS)
+        {
+        }
 
-		decLevel();
-	}
+        decLevel();
+    }
 
-	/**
-	 * Instantiates a new xml formatter.
-	 */
-	public XmlFormatter() {
-		super();
-	}
+    /**
+     * Instantiates a new xml formatter.
+     */
+    public XmlFormatter()
+    {
+        super();
+    }
 
-	/**
-	 * Instantiates a new xml formatter.
-	 * 
-	 * @param out
-	 *          the out
-	 */
-	public XmlFormatter(Appendable out) {
-		super(out);
-	}
+    /**
+     * Instantiates a new xml formatter.
+     * 
+     * @param out the out
+     */
+    public XmlFormatter(Appendable out)
+    {
+        super(out);
+    }
 
-	/**
-	 * Instantiates a new xml formatter.
-	 * 
-	 * @param out
-	 *          the out
-	 */
-	public XmlFormatter(StringBuilder out) {
-		super(out);
-	}
+    /**
+     * Instantiates a new xml formatter.
+     * 
+     * @param out the out
+     */
+    public XmlFormatter(StringBuilder out)
+    {
+        super(out);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#start(org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JField,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param field
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#fieldBefore(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.structure.JField, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void fieldBefore(JHeader header, JField field, Detail detail)
-			throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#start(org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JField,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param field
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#fieldBefore(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.structure.JField,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void fieldBefore(JHeader header, JField field, Detail detail) throws IOException
+    {
 
-		incLevel(PAD);
+        incLevel(PAD);
 
-		if (field.getStyle() == Style.BYTE_ARRAY_HEX_DUMP) {
-			pad().format(LT + "hexdump offset=\"%d\" length=\"%d\"" + GT,
-					field.getOffset(header),
-					field.getLength(header));
-			incLevel(PAD);
+        if (field.getStyle() == Style.BYTE_ARRAY_HEX_DUMP)
+        {
+            pad().format(LT + "hexdump offset=\"%d\" length=\"%d\"" + GT, field.getOffset(header), field.getLength(header));
+            incLevel(PAD);
 
-			final String[] v =
-					stylizeMultiLine(header,
-							field,
-							Style.BYTE_ARRAY_HEX_DUMP_NO_TEXT,
-							field.getValue(header));
+            final String[] v = stylizeMultiLine(header, field, Style.BYTE_ARRAY_HEX_DUMP_NO_TEXT, field.getValue(header));
 
-			incLevel(PAD);
-			for (String i : v) {
-				pad().format(LT + "hexline data=\"%s\"/" + GT, i.trim());
-			}
+            incLevel(PAD);
+            for (String i : v)
+            {
+                pad().format(LT + "hexline data=\"%s\"/" + GT, i.trim());
+            }
 
-			decLevel();
+            decLevel();
 
-		} /*
-			 * else if (false && field.hasSubFields()) { final String v =
-			 * stylizeSingleLine(header, field, field.getValue(header));
-			 * 
-			 * pad().format( LT +
-			 * "field name=\"%s\" value=\"%s\" offset=\"%d\" length=\"%d\"" + GT,
-			 * field.getName(), v, field.getOffset(header), field.getLength(header));
-			 * 
-			 * }
-			 */else if (field.getStyle() == Style.INT_BITS) {
-		} else if (field.getStyle() == Style.BYTE_ARRAY_ARRAY_IP4_ADDRESS) {
-			byte[][] table = (byte[][]) field.getValue(header);
+        } /*
+           * else if (false && field.hasSubFields()) { final String v =
+           * stylizeSingleLine(header, field, field.getValue(header));
+           * 
+           * pad().format( LT +
+           * "field name=\"%s\" value=\"%s\" offset=\"%d\" length=\"%d\"" + GT,
+           * field.getName(), v, field.getOffset(header),
+           * field.getLength(header));
+           * 
+           * }
+           */
+        else if (field.getStyle() == Style.INT_BITS)
+        {
+        }
+        else if (field.getStyle() == Style.BYTE_ARRAY_ARRAY_IP4_ADDRESS)
+        {
+            byte[][] table = (byte[][]) field.getValue(header);
 
-			for (byte[] b : table) {
-				final String v = stylizeSingleLine(header, field, b);
-				pad().format(LT + "ip4=\"%s\" /" + GT, v);
-			}
+            for (byte[] b : table)
+            {
+                final String v = stylizeSingleLine(header, field, b);
+                pad().format(LT + "ip4=\"%s\" /" + GT, v);
+            }
 
-			incLevel(0); // Inc for multi line fields
-		} else {
-			final String v = stylizeSingleLine(header, field, field.getValue(header));
+            incLevel(0); // Inc for multi line fields
+        }
+        else
+        {
+            final String v = stylizeSingleLine(header, field, field.getValue(header));
 
-			pad().format(LT
-					+ "field name=\"%s\" value=\"%s\" offset=\"%d\" length=\"%d\"/" + GT,
-					field.getName(),
-					v,
-					field.getOffset(header),
-					field.getLength(header));
-		}
+            pad().format(LT + "field name=\"%s\" value=\"%s\" offset=\"%d\" length=\"%d\"/" + GT, field.getName(), v, field.getOffset(header),
+                    field.getLength(header));
+        }
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.format.JFormatter#end(org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#headerAfter(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void headerAfter(JHeader header, Detail detail) throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#end(org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#headerAfter(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void headerAfter(JHeader header, Detail detail) throws IOException
+    {
 
-		pad().format(LT + "/header" + GT);
-		pad();
-	}
+        pad().format(LT + "/header" + GT);
+        pad();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#start(org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#headerBefore(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void headerBefore(JHeader header, Detail detail) throws IOException {
-		pad().format(LT + "header name=\"%s\"", header.getName());
-		incLevel(PAD + PAD);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#start(org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#headerBefore(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void headerBefore(JHeader header, Detail detail) throws IOException
+    {
+        pad().format(LT + "header name=\"%s\"", header.getName());
+        incLevel(PAD + PAD);
 
-		pad().format("nicname=\"%s\"", header.getNicname());
-		pad().format("classname=\"%s\"", header.getClass().getCanonicalName());
-		pad().format("offset=\"%d\"", header.getOffset());
-		pad().format("length=\"%d\"" + GT, header.getLength());
-		decLevel();
-	}
+        pad().format("nicname=\"%s\"", header.getNicname());
+        pad().format("classname=\"%s\"", header.getClass().getCanonicalName());
+        pad().format("offset=\"%d\"", header.getOffset());
+        pad().format("length=\"%d\"" + GT, header.getLength());
+        decLevel();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#packetAfter(org.jnetpcap.packet.JPacket
-	 * , org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param packet
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#packetAfter(org.jnetpcap.packet.JPacket, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	public void packetAfter(JPacket packet, Detail detail) throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#packetAfter(org.jnetpcap.packet
+     * .JPacket , org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param packet
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#packetAfter(org.jnetpcap.packet.JPacket,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    public void packetAfter(JPacket packet, Detail detail) throws IOException
+    {
 
-		decLevel();
-		pad().format(LT + "/packet" + GT);
+        decLevel();
+        pad().format(LT + "/packet" + GT);
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#packetBefore(org.jnetpcap.packet.
-	 * JPacket, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param packet
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#packetBefore(org.jnetpcap.packet.JPacket, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	public void packetBefore(JPacket packet, Detail detail) throws IOException {
-		pad().format(LT + "packet");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#packetBefore(org.jnetpcap.packet.
+     * JPacket, org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param packet
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#packetBefore(org.jnetpcap.packet.JPacket,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    public void packetBefore(JPacket packet, Detail detail) throws IOException
+    {
+        pad().format(LT + "packet");
 
-		incLevel(PAD + PAD);
+        incLevel(PAD + PAD);
 
-		pad().format("wirelen=\"%d\"", packet.getCaptureHeader().wirelen());
-		pad().format("caplen=\"%d\"", packet.getCaptureHeader().caplen());
+        pad().format("wirelen=\"%d\"", packet.getCaptureHeader().wirelen());
+        pad().format("caplen=\"%d\"", packet.getCaptureHeader().caplen());
 
-		if (frameIndex != -1) {
-			pad().format("index=\"%d\"", frameIndex);
-		}
+        if (frameIndex != -1)
+        {
+            pad().format("index=\"%d\"", frameIndex);
+        }
 
-		pad().format("timestamp=\"%s\"",
-				new Timestamp(packet.getCaptureHeader().timestampInMillis()));
-		pad().format("captureSeconds=\"%s\"", packet.getCaptureHeader().seconds());
-		pad().format("captureNanoSeconds=\"%s\"" + GT,
-				packet.getCaptureHeader().nanos());
-		pad();
+        pad().format("timestamp=\"%s\"", new Timestamp(packet.getCaptureHeader().timestampInMillis()));
+        pad().format("captureSeconds=\"%s\"", packet.getCaptureHeader().seconds());
+        pad().format("captureNanoSeconds=\"%s\"" + GT, packet.getCaptureHeader().nanos());
+        pad();
 
-		decLevel();
+        decLevel();
 
-		incLevel(PAD);
-	}
+        incLevel(PAD);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#subHeaderAfter(org.jnetpcap.packet
-	 * .JHeader, org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param subHeader
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#subHeaderAfter(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.JHeader, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void subHeaderAfter(JHeader header, JHeader subHeader, Detail detail)
-			throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#subHeaderAfter(org.jnetpcap.packet
+     * .JHeader, org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param subHeader
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#subHeaderAfter(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void subHeaderAfter(JHeader header, JHeader subHeader, Detail detail) throws IOException
+    {
 
-		headerAfter(subHeader, detail);
-		decLevel();
-	}
+        headerAfter(subHeader, detail);
+        decLevel();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.jnetpcap.packet.format.JFormatter#subHeaderBefore(org.jnetpcap.packet
-	 * .JHeader, org.jnetpcap.packet.JHeader,
-	 * org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	/** 
-	 * @param header
-	 * @param subHeader
-	 * @param detail
-	 * @throws IOException
-	 * @see org.jnetpcap.packet.format.JFormatter#subHeaderBefore(org.jnetpcap.packet.JHeader, org.jnetpcap.packet.JHeader, org.jnetpcap.packet.format.JFormatter.Detail)
-	 */
-	@Override
-	protected void subHeaderBefore(JHeader header,
-			JHeader subHeader,
-			Detail detail) throws IOException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.format.JFormatter#subHeaderBefore(org.jnetpcap.packet
+     * .JHeader, org.jnetpcap.packet.JHeader,
+     * org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    /**
+     * @param header
+     * @param subHeader
+     * @param detail
+     * @throws IOException
+     * @see org.jnetpcap.packet.format.JFormatter#subHeaderBefore(org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.JHeader,
+     *      org.jnetpcap.packet.format.JFormatter.Detail)
+     */
+    @Override
+    protected void subHeaderBefore(JHeader header, JHeader subHeader, Detail detail) throws IOException
+    {
 
-		incLevel(PAD);
-		pad();
+        incLevel(PAD);
+        pad();
 
-		headerBefore(subHeader, detail);
-	}
+        headerBefore(subHeader, detail);
+    }
 
 }

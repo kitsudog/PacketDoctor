@@ -33,118 +33,121 @@ import org.jnetpcap.packet.JPacketHandler;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JPacketSupport implements JPacketHandler<Object> {
+public class JPacketSupport implements JPacketHandler<Object>
+{
 
-	/**
-	 * The Class Entry.
-	 */
-	private static class Entry {
-		
-		/** The handler. */
-		public JPacketHandler<Object> handler;
+    /**
+     * The Class Entry.
+     */
+    private static class Entry
+    {
 
-		/** The user. */
-		public Object user;
+        /** The handler. */
+        public JPacketHandler<Object> handler;
 
-		/**
-		 * Instantiates a new entry.
-		 * 
-		 * @param handler
-		 *          the handler
-		 * @param user
-		 *          the user
-		 */
-		@SuppressWarnings("unchecked")
-		public Entry(JPacketHandler<?> handler, Object user) {
-			this.handler = (JPacketHandler<Object>) handler;
-			this.user = user;
-		}
+        /** The user. */
+        public Object user;
 
-	}
+        /**
+         * Instantiates a new entry.
+         * 
+         * @param handler the handler
+         * @param user the user
+         */
+        @SuppressWarnings("unchecked")
+        public Entry(JPacketHandler<?> handler, Object user)
+        {
+            this.handler = (JPacketHandler<Object>) handler;
+            this.user = user;
+        }
 
-	/** The listeners. */
-	private List<Entry> listeners = new ArrayList<Entry>();
+    }
 
-	/** The listeners array. */
-	private Entry[] listenersArray = null;
+    /** The listeners. */
+    private List<Entry> listeners = new ArrayList<Entry>();
 
-	/**
-	 * Adds the.
-	 * 
-	 * @param <T>
-	 *          the generic type
-	 * @param o
-	 *          the o
-	 * @param user
-	 *          the user
-	 * @return true, if successful
-	 */
-	public <T> boolean add(JPacketHandler<T> o, T user) {
-		listenersArray = null; // reset
+    /** The listeners array. */
+    private Entry[] listenersArray = null;
 
-		return this.listeners.add(new Entry(o, user));
-	}
+    /**
+     * Adds the.
+     * 
+     * @param <T> the generic type
+     * @param o the o
+     * @param user the user
+     * @return true, if successful
+     */
+    public <T> boolean add(JPacketHandler<T> o, T user)
+    {
+        listenersArray = null; // reset
 
-	/**
-	 * Removes the.
-	 * 
-	 * @param o
-	 *          the o
-	 * @return true, if successful
-	 */
-	public boolean remove(JPacketHandler<?> o) {
-		listenersArray = null;
+        return this.listeners.add(new Entry(o, user));
+    }
 
-		for (Iterator<Entry> i = listeners.iterator(); i.hasNext();) {
-			Entry e = i.next();
-			if (o == e.handler) {
-				i.remove();
+    /**
+     * Removes the.
+     * 
+     * @param o the o
+     * @return true, if successful
+     */
+    public boolean remove(JPacketHandler<?> o)
+    {
+        listenersArray = null;
 
-				listenersArray = null; // reset
-				return true;
-			}
-		}
+        for (Iterator<Entry> i = listeners.iterator(); i.hasNext();)
+        {
+            Entry e = i.next();
+            if (o == e.handler)
+            {
+                i.remove();
 
-		return false;
-	}
+                listenersArray = null; // reset
+                return true;
+            }
+        }
 
-	/**
-	 * Fire next packet.
-	 * 
-	 * @param packet
-	 *          the packet
-	 */
-	public void fireNextPacket(JPacket packet) {
-		if (listenersArray == null) {
-			listenersArray = listeners.toArray(new Entry[listeners.size()]);
-		}
+        return false;
+    }
 
-		/*
-		 * More efficient to loop through array than iterator
-		 */
-		for (Entry e : listenersArray) {
-			e.handler.nextPacket(packet, e.user);
-		}
-	}
+    /**
+     * Fire next packet.
+     * 
+     * @param packet the packet
+     */
+    public void fireNextPacket(JPacket packet)
+    {
+        if (listenersArray == null)
+        {
+            listenersArray = listeners.toArray(new Entry[listeners.size()]);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket,
-	 *      java.lang.Object)
-	 */
-	/**
-	 * Next packet.
-	 * 
-	 * @param packet
-	 *          the packet
-	 * @param user
-	 *          the user
-	 * @see org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket,
-	 *      java.lang.Object)
-	 */
-	public void nextPacket(JPacket packet, Object user) {
-		fireNextPacket(packet);
-	}
+        /*
+         * More efficient to loop through array than iterator
+         */
+        for (Entry e : listenersArray)
+        {
+            e.handler.nextPacket(packet, e.user);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket
+     * , java.lang.Object)
+     */
+    /**
+     * Next packet.
+     * 
+     * @param packet the packet
+     * @param user the user
+     * @see org.jnetpcap.packet.JPacketHandler#nextPacket(org.jnetpcap.packet.JPacket,
+     *      java.lang.Object)
+     */
+    public void nextPacket(JPacket packet, Object user)
+    {
+        fireNextPacket(packet);
+    }
 
 }

@@ -30,112 +30,112 @@ import org.jnetpcap.protocol.JProtocol.Suite;
  */
 public enum ProtocolSuite implements Suite {
 
-	/**
-	 * OSI application layer set of protocols.
-	 */
-	APPLICATION,
-	/**
-	 * Tcp/Ip family of protocols.
-	 */
-	TCP_IP,
+    /**
+     * OSI application layer set of protocols.
+     */
+    APPLICATION,
+    /**
+     * Tcp/Ip family of protocols.
+     */
+    TCP_IP,
 
-	/**
-	 * Security related family of protocols.
-	 */
-	SECURITY,
+    /**
+     * Security related family of protocols.
+     */
+    SECURITY,
 
-	/**
-	 * Tunneling family of protocols.
-	 */
-	VPN,
+    /**
+     * Tunneling family of protocols.
+     */
+    VPN,
 
-	/**
-	 * Mobile communication device family of protocols.
-	 */
-	MOBILE,
+    /**
+     * Mobile communication device family of protocols.
+     */
+    MOBILE,
 
-	/**
-	 * OSI network layer family of protocols.
-	 */
-	NETWORK,
+    /**
+     * OSI network layer family of protocols.
+     */
+    NETWORK,
 
-	/**
-	 * Wireless family of protocols.
-	 */
-	WIRELESS,
+    /**
+     * Wireless family of protocols.
+     */
+    WIRELESS,
 
-	/**
-	 * Voice over IP family of protocols.
-	 */
-	VOIP,
+    /**
+     * Voice over IP family of protocols.
+     */
+    VOIP,
 
-	/**
-	 * Local Area Network family of protocols.
-	 */
-	LAN,
+    /**
+     * Local Area Network family of protocols.
+     */
+    LAN,
 
-	/**
-	 * Metropolitan Area Network family of protocols.
-	 */
-	MAN,
+    /**
+     * Metropolitan Area Network family of protocols.
+     */
+    MAN,
 
-	/**
-	 * Wide Area Network family of protocols.
-	 */
-	WAN,
-	/**
-	 * Storage Area Network family of protocols.
-	 */
-	SAN,
+    /**
+     * Wide Area Network family of protocols.
+     */
+    WAN,
+    /**
+     * Storage Area Network family of protocols.
+     */
+    SAN,
 
-	/**
-	 * ISO family of protocols.
-	 */
+    /**
+     * ISO family of protocols.
+     */
 
-	ISO,
+    ISO,
 
-	/**
-	 * SS7 family of protocols.
-	 */
-	SS7,
+    /**
+     * SS7 family of protocols.
+     */
+    SS7,
 
-	/**
-	 * Cisco Systems family of protocols.
-	 */
-	CISCO,
+    /**
+     * Cisco Systems family of protocols.
+     */
+    CISCO,
 
-	/**
-	 * IBM family of protocols.
-	 */
-	IBM,
+    /**
+     * IBM family of protocols.
+     */
+    IBM,
 
-	/**
-	 * Microsoft Corp family of protocols.
-	 */
-	MICROSOFT,
+    /**
+     * Microsoft Corp family of protocols.
+     */
+    MICROSOFT,
 
-	/**
-	 * Novell family of protocols.
-	 */
-	NOVELL,
+    /**
+     * Novell family of protocols.
+     */
+    NOVELL,
 
-	/**
-	 * Apple Corp family of protocols.
-	 */
-	APPLE,
+    /**
+     * Apple Corp family of protocols.
+     */
+    APPLE,
 
-	/**
-	 * Hewlet Packard Corp family of protocols.
-	 */
-	HP,
+    /**
+     * Hewlet Packard Corp family of protocols.
+     */
+    HP,
 
-	/**
-	 * Sun Microsystems Corp family of protocols.
-	 */
-	SUN,
+    /**
+     * Sun Microsystems Corp family of protocols.
+     */
+    SUN,
 
-	/**
-	 * Catch all suite for other types of protocols.
-	 */
-	OTHER,
+    /**
+     * Catch all suite for other types of protocols.
+     */
+    OTHER,
 }

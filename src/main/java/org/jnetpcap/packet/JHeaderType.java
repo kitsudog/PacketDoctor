@@ -25,19 +25,20 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JHeaderType {
-	
-	/**
-	 * Gets the type values.
-	 * 
-	 * @return the type values
-	 */
-	public int[] getTypeValues();
+public interface JHeaderType
+{
 
-	/**
-	 * Ordinal.
-	 * 
-	 * @return the int
-	 */
-  public int ordinal();
+    /**
+     * Gets the type values.
+     * 
+     * @return the type values
+     */
+    public int[] getTypeValues();
+
+    /**
+     * Ordinal.
+     * 
+     * @return the int
+     */
+    public int ordinal();
 }

@@ -28,8 +28,8 @@ import org.jnetpcap.packet.JHeader;
 
 // TODO: Auto-generated Javadoc
 /**
- * Defines a binding method. Any method annotated with <code>Bind</code> must
- * be of specific java method signature and must supply annotation's 'to'
+ * Defines a binding method. Any method annotated with <code>Bind</code> must be
+ * of specific java method signature and must supply annotation's 'to'
  * parameter. In addition, bindings that are defined in non <code>JHeader</code>
  * based classes, must also provide the 'from' parameter.
  * <p>
@@ -37,15 +37,15 @@ import org.jnetpcap.packet.JHeader;
  * the possible binding method declarations and their required Bind annotation
  * parameters.
  * <ul>
- * <li> A static method declared inside a <code>JHeader</code> based class -
- * only requires the 'to' parameter. The 'from' paramter is optional and the
- * default value is the class of the parent header definition that the binding
- * is defined in.</li>
- * <li> A static method declared inside a non <code>JHeader</code> based class -
+ * <li>A static method declared inside a <code>JHeader</code> based class - only
+ * requires the 'to' parameter. The 'from' paramter is optional and the default
+ * value is the class of the parent header definition that the binding is
+ * defined in.</li>
+ * <li>A static method declared inside a non <code>JHeader</code> based class -
  * requires both 'to' and 'from' parameters to be defined.</li>
- * <li> A instance method (non static) declared inside an annonymous class that
- * extends <code>Object.class</code> - requires both 'to' and 'from'
- * parameters to be defined.</li>
+ * <li>A instance method (non static) declared inside an annonymous class that
+ * extends <code>Object.class</code> - requires both 'to' and 'from' parameters
+ * to be defined.</li>
  * </ul>
  * Bind annotation is allowed only on methods. The name of the method is
  * insignicant as long as the return type and formal parameters the method takes
@@ -79,16 +79,19 @@ import org.jnetpcap.packet.JHeader;
  * Here is an example of a complete binding method in a code fragment:
  * 
  * <pre name=code class=java>
- * public class TestBindings {
- * 	&#064;Bind(from = Ip4.class, to = Ethernet.class)
- * 	public static boolean bindIp4ToEthernet(JPacket packet, Ethernet eth) {
- * 		return eth.type() == 0x800;
- * 	}
+ * public class TestBindings
+ * {
+ *     &#064;Bind(from = Ip4.class, to = Ethernet.class)
+ *     public static boolean bindIp4ToEthernet(JPacket packet, Ethernet eth)
+ *     {
+ *         return eth.type() == 0x800;
+ *     }
  * 
- * 	&#064;Bind(from = Ip4.class, to = IEEESnap.class)
- * 	public static boolean bindIp4ToIEEESnap(JPacket packet, IEEESnap snap) {
- * 		return snap.pid() == 0x800;
- * 	}
+ *     &#064;Bind(from = Ip4.class, to = IEEESnap.class)
+ *     public static boolean bindIp4ToIEEESnap(JPacket packet, IEEESnap snap)
+ *     {
+ *         return snap.pid() == 0x800;
+ *     }
  * }
  * </pre>
  * 
@@ -108,11 +111,11 @@ import org.jnetpcap.packet.JHeader;
  * parameters do not match.
  * </p>
  * <p>
- * The <code>Bind</code> annotation also takes an optional "intValue"
- * parameter. This parameter is used for making bindings that matches up with a
- * <code>BindValue</code> marked field. Any field or method that is marked
- * with <code>BindValue</code> annotation within the "to" class, can be used
- * to make a match with "intValue" parameter. Since this is completely optional
+ * The <code>Bind</code> annotation also takes an optional "intValue" parameter.
+ * This parameter is used for making bindings that matches up with a
+ * <code>BindValue</code> marked field. Any field or method that is marked with
+ * <code>BindValue</code> annotation within the "to" class, can be used to make
+ * a match with "intValue" parameter. Since this is completely optional
  * operation, that may or may not be implemented or utilized, it is also
  * neccessary to provide the complete binding method with its logic as well. The
  * "intValue" parameter is used to optimize bindings that use constant value for
@@ -127,26 +130,26 @@ import org.jnetpcap.packet.JHeader;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validate {
 
-	/**
-	 * Binds this validation method as a heuristic discovery method for each
-	 * protocol listed.
-	 * 
-	 * @return a list of protocols to bind as a heuristic validator
-	 */
-	Class<? extends JHeader>[] hueristics() default {};
+    /**
+     * Binds this validation method as a heuristic discovery method for each
+     * protocol listed.
+     * 
+     * @return a list of protocols to bind as a heuristic validator
+     */
+    Class<? extends JHeader>[] hueristics() default {};
 
-	/**
-	 * Maximum header length in bytes.
-	 * 
-	 * @return the maximum allowed
-	 */
-	int max() default Integer.MAX_VALUE;
+    /**
+     * Maximum header length in bytes.
+     * 
+     * @return the maximum allowed
+     */
+    int max() default Integer.MAX_VALUE;
 
-	/**
-	 * Minimum header length that is allowed by this protocol.
-	 * 
-	 * @return the minimum allowed
-	 */
-	int min() default 0;
+    /**
+     * Minimum header length that is allowed by this protocol.
+     * 
+     * @return the minimum allowed
+     */
+    int min() default 0;
 
 }

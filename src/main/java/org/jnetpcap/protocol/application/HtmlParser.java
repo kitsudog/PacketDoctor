@@ -32,160 +32,166 @@ import org.jnetpcap.util.JThreadLocal;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class HtmlParser {
+public class HtmlParser
+{
 
-	/** The e. */
-	private int e = 0;
+    /** The e. */
+    private int e = 0;
 
-	/** The s. */
-	private int s = 0;
+    /** The s. */
+    private int s = 0;
 
-	/** The str. */
-	private String str = null;
+    /** The str. */
+    private String str = null;
 
-	/** The Constant listLocal. */
-	@SuppressWarnings("rawtypes")
-	private static final JThreadLocal<ArrayList> listLocal =
-	    new JThreadLocal<ArrayList>(ArrayList.class);
+    /** The Constant listLocal. */
+    @SuppressWarnings("rawtypes")
+    private static final JThreadLocal<ArrayList> listLocal = new JThreadLocal<ArrayList>(ArrayList.class);
 
-	/**
-	 * Decode all tags.
-	 * 
-	 * @param page
-	 *          the page
-	 * @return the html tag[]
-	 */
-	@SuppressWarnings("unchecked")
-	public HtmlTag[] decodeAllTags(String page) {
-		this.e = 0;
-		this.s = e;
+    /**
+     * Decode all tags.
+     * 
+     * @param page the page
+     * @return the html tag[]
+     */
+    @SuppressWarnings("unchecked")
+    public HtmlTag[] decodeAllTags(String page)
+    {
+        this.e = 0;
+        this.s = e;
 
-		final List<HtmlTag> list = listLocal.get();
-		list.clear();
+        final List<HtmlTag> list = listLocal.get();
+        list.clear();
 
-		int textStart = 0;
-		while (true) {
-			final HtmlTag tag = nextTag(page, '<', '>');
-			if (tag == null) {
-				break;
-			}
+        int textStart = 0;
+        while (true)
+        {
+            final HtmlTag tag = nextTag(page, '<', '>');
+            if (tag == null)
+            {
+                break;
+            }
 
-			if (textStart != this.s) {
-				String text = page.substring(textStart, this.s);
-				if (text.length() != 0) {
-					list.add(new HtmlTag(Tag.TEXT, HtmlTag.Type.ATOMIC, text, page,
-					    textStart, this.s));
-				}
-			}
+            if (textStart != this.s)
+            {
+                String text = page.substring(textStart, this.s);
+                if (text.length() != 0)
+                {
+                    list.add(new HtmlTag(Tag.TEXT, HtmlTag.Type.ATOMIC, text, page, textStart, this.s));
+                }
+            }
 
-			textStart = this.e + 1;
+            textStart = this.e + 1;
 
-			list.add(tag);
-		}
+            list.add(tag);
+        }
 
-		return list.toArray(new HtmlTag[list.size()]);
-	}
+        return list.toArray(new HtmlTag[list.size()]);
+    }
 
-	/**
-	 * Decode links.
-	 * 
-	 * @param tags
-	 *          the tags
-	 * @return the html tag[]
-	 */
-	@SuppressWarnings("unchecked")
-	public HtmlTag[] decodeLinks(HtmlTag[] tags) {
-		List<HtmlTag> links = listLocal.get();
-		links.clear();
+    /**
+     * Decode links.
+     * 
+     * @param tags the tags
+     * @return the html tag[]
+     */
+    @SuppressWarnings(
+    { "unchecked", "incomplete-switch" })
+    public HtmlTag[] decodeLinks(HtmlTag[] tags)
+    {
+        List<HtmlTag> links = listLocal.get();
+        links.clear();
 
-		for (HtmlTag t : tags) {
-			switch (t.getTag()) {
-				case A:
-				case LINK:
-				case IMG:
-				case SCRIPT:
-				case FORM:
-					if (t.type == HtmlTag.Type.OPEN) {
-						links.add(t);
-					}
-			}
-		}
+        for (HtmlTag t : tags)
+        {
+            switch (t.getTag())
+            {
+                case A:
+                case LINK:
+                case IMG:
+                case SCRIPT:
+                case FORM:
+                    if (t.type == HtmlTag.Type.OPEN)
+                    {
+                        links.add(t);
+                    }
+            }
+        }
 
-		return links.toArray(new HtmlTag[links.size()]);
-	}
+        return links.toArray(new HtmlTag[links.size()]);
+    }
 
-	/**
-	 * Extract bounded.
-	 * 
-	 * @param str
-	 *          the str
-	 * @param start
-	 *          the start
-	 * @param end
-	 *          the end
-	 * @return the string
-	 */
-	private String extractBounded(String str, char start, char end) {
-		if (this.str != str) {
-			this.s = 0;
-			this.e = 0;
-			this.str = str;
-		}
+    /**
+     * Extract bounded.
+     * 
+     * @param str the str
+     * @param start the start
+     * @param end the end
+     * @return the string
+     */
+    private String extractBounded(String str, char start, char end)
+    {
+        if (this.str != str)
+        {
+            this.s = 0;
+            this.e = 0;
+            this.str = str;
+        }
 
-		s = str.indexOf('<', e);
-		e = str.indexOf('>', s);
+        s = str.indexOf('<', e);
+        e = str.indexOf('>', s);
 
-		return (s == -1 || e == -1) ? null : str.substring(s + 1, e).trim()
-		    .replace("\r\n", "");
-	}
+        return (s == -1 || e == -1) ? null : str.substring(s + 1, e).trim().replace("\r\n", "");
+    }
 
-	/**
-	 * Next tag.
-	 * 
-	 * @param str
-	 *          the str
-	 * @param start
-	 *          the start
-	 * @param end
-	 *          the end
-	 * @return the html tag
-	 */
-	private HtmlTag nextTag(String str, char start, char end) {
+    /**
+     * Next tag.
+     * 
+     * @param str the str
+     * @param start the start
+     * @param end the end
+     * @return the html tag
+     */
+    private HtmlTag nextTag(String str, char start, char end)
+    {
 
-		String tagString = extractBounded(str, start, end);
-		if (tagString == null) {
-			return null;
-		}
+        String tagString = extractBounded(str, start, end);
+        if (tagString == null)
+        {
+            return null;
+        }
 
-		Tag tag;
-		HtmlTag.Type type = HtmlTag.Type.OPEN;
-		if (tagString.charAt(0) == '/') {
-			tagString = tagString.substring(1);
-			type = HtmlTag.Type.CLOSE;
-		}
+        Tag tag;
+        HtmlTag.Type type = HtmlTag.Type.OPEN;
+        if (tagString.charAt(0) == '/')
+        {
+            tagString = tagString.substring(1);
+            type = HtmlTag.Type.CLOSE;
+        }
 
-		tag = Tag.parseStringPrefix(tagString);
+        tag = Tag.parseStringPrefix(tagString);
 
-		if (tag == null) {
-			return null;
-		}
+        if (tag == null)
+        {
+            return null;
+        }
 
-		HtmlTag ht = new HtmlTag(tag, type, tagString, this.str, this.s, this.e);
+        HtmlTag ht = new HtmlTag(tag, type, tagString, this.str, this.s, this.e);
 
-		return ht;
-	}
+        return ht;
+    }
 
-	/**
-	 * Format.
-	 * 
-	 * @param str
-	 *          the str
-	 * @return the string
-	 */
-	public String format(String str) {
+    /**
+     * Format.
+     * 
+     * @param str the str
+     * @return the string
+     */
+    public String format(String str)
+    {
 
-		str = str.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
-		return str;
-	}
+        str = str.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+        return str;
+    }
 
 }

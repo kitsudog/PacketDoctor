@@ -25,24 +25,22 @@ import java.nio.ByteBuffer;
  * A handler, listener or call back inteface that gets notified when a new
  * packet has been captured.
  * 
- * @param <T>
- *          user object type
+ * @param <T> user object type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface ByteBufferHandler<T> {
+public interface ByteBufferHandler<T>
+{
 
-	/**
-	 * Callback method that will called by libpcap when a new packet is captured.
-	 * 
-	 * @param header
-	 *          pcap capture header
-	 * @param buffer
-	 *          Buffer containing packet data. The new ByteBuffer object is
-	 *          allocated per call for the peering, the data is not copied but
-	 *          referenced.
-	 * @param user
-	 *          user supplied object
-	 */
-	public void nextPacket(PcapHeader header, ByteBuffer buffer, T user);
+    /**
+     * Callback method that will called by libpcap when a new packet is
+     * captured.
+     * 
+     * @param header pcap capture header
+     * @param buffer Buffer containing packet data. The new ByteBuffer object is
+     *        allocated per call for the peering, the data is not copied but
+     *        referenced.
+     * @param user user supplied object
+     */
+    public void nextPacket(PcapHeader header, ByteBuffer buffer, T user);
 }

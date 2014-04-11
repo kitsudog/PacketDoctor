@@ -33,99 +33,110 @@ import org.jnetpcap.packet.annotate.Header;
  * @author Sly Technologies, Inc.
  * @see Rip2
  */
-public class Rip1 extends Rip {
+public class Rip1 extends Rip
+{
 
-	/**
-	 * Rip1 routing table entry definition.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	@Header
-	public static class EntryV1 extends JSubHeader<Rip1> {
+    /**
+     * Rip1 routing table entry definition.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    @Header
+    public static class EntryV1 extends JSubHeader<Rip1>
+    {
 
-		/**
-		 * Address.
-		 * 
-		 * @return the byte[]
-		 */
-		@Field(offset = 4 * 8, length = 32)
-		public byte[] address() {
-			return super.getByteArray(4, 4);
-		}
+        /**
+         * Address.
+         * 
+         * @return the byte[]
+         */
+        @Field(offset = 4 * 8, length = 32)
+        public byte[] address()
+        {
+            return super.getByteArray(4, 4);
+        }
 
-		/**
-		 * Family.
-		 * 
-		 * @return the int
-		 */
-		@Field(offset = 0 * 8, length = 16)
-		public int family() {
-			return super.getUShort(0);
-		}
+        /**
+         * Family.
+         * 
+         * @return the int
+         */
+        @Field(offset = 0 * 8, length = 16)
+        public int family()
+        {
+            return super.getUShort(0);
+        }
 
-		/**
-		 * Metric.
-		 * 
-		 * @return the int
-		 */
-		@Field(offset = 16 * 8, length = 32)
-		public int metric() {
-			return super.getInt(16);
-		}
+        /**
+         * Metric.
+         * 
+         * @return the int
+         */
+        @Field(offset = 16 * 8, length = 32)
+        public int metric()
+        {
+            return super.getInt(16);
+        }
 
-	}
+    }
 
-	/** The routing table. */
-	private EntryV1[] routingTable;
+    /** The routing table. */
+    private EntryV1[] routingTable;
 
-	/**
-	 * The routing table is the only thing that needs decoding. The routing table
-	 * is lazy decoded using {@link Rip1#decodeRoutingTable()} which only then
-	 * creates routing table entries.
-	 */
-	@Override
-	protected void decodeHeader() {
-		super.decodeHeader();
-		this.routingTable = null;
-	}
+    /**
+     * The routing table is the only thing that needs decoding. The routing
+     * table is lazy decoded using {@link Rip1#decodeRoutingTable()} which only
+     * then creates routing table entries.
+     */
+    @Override
+    protected void decodeHeader()
+    {
+        super.decodeHeader();
+        this.routingTable = null;
+    }
 
-	/**
-	 * Do the actual decoding of the routing table.
-	 */
-	private void decodeRoutingTable() {
+    /**
+     * Do the actual decoding of the routing table.
+     */
+    private void decodeRoutingTable()
+    {
 
-		this.routingTable = new EntryV1[this.count];
+        this.routingTable = new EntryV1[this.count];
 
-		for (int i = 0; i < this.count; i++) {
-			final EntryV1 e = new EntryV1();
-			this.routingTable[i] = e;
+        for (int i = 0; i < this.count; i++)
+        {
+            final EntryV1 e = new EntryV1();
+            this.routingTable[i] = e;
 
-			e.peer(this, 4 + i * 20, 20);
-		}
-	}
+            e.peer(this, 4 + i * 20, 20);
+        }
+    }
 
-	/**
-	 * Gets the routing table.
-	 * 
-	 * @return an array of routing table entries
-	 */
-	@Field(offset = 4 * 8, format = "%RIP")
-	public EntryV1[] routingTable() {
-		if (this.routingTable == null) {
-			decodeRoutingTable();
-		}
+    /**
+     * Gets the routing table.
+     * 
+     * @return an array of routing table entries
+     */
+    @Field(offset = 4 * 8, format = "%RIP")
+    public EntryV1[] routingTable()
+    {
+        if (this.routingTable == null)
+        {
+            decodeRoutingTable();
+        }
 
-		return this.routingTable;
-	}
+        return this.routingTable;
+    }
 
-	/**
-	 * Length of the routing table in bits.
-	 * 
-	 * @return the int
-	 */
-	@Dynamic(Field.Property.LENGTH)
-	public int routingTableLength() {
-		return this.count * 20 * 8;
-	}
+    /**
+     * Length of the routing table in bits.
+     * 
+     * @return the int
+     */
+    @Dynamic(Field.Property.LENGTH)
+    public int routingTableLength()
+    {
+        return this.count * 20 * 8;
+    }
 }

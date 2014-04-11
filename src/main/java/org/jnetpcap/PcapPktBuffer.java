@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jnetpcap;
+
 import java.nio.ByteBuffer;
 
 import org.jnetpcap.nio.JBuffer;
@@ -46,18 +47,20 @@ import org.jnetpcap.nio.JBuffer;
  * 
  * @see JBuffer
  */
-public class PcapPktBuffer {
-	
-	/** The buffer. */
-	private volatile ByteBuffer buffer;
+public class PcapPktBuffer
+{
 
-	/**
-	 * Gets the buffer.
-	 * 
-	 * @return the buffer
-	 */
-	public final ByteBuffer getBuffer() {
-		return this.buffer;
-	}
+    /** The buffer. */
+    private volatile ByteBuffer buffer;
+
+    /**
+     * Gets the buffer.
+     * 
+     * @return the buffer
+     */
+    public final ByteBuffer getBuffer()
+    {
+        return this.buffer;
+    }
 
 }

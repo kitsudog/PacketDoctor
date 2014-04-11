@@ -22,61 +22,58 @@ package org.jnetpcap.nio;
 /**
  * The Interface Link.
  * 
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  * @author markbe
  */
-public interface Link<T> {
-	
-	/**
-	 * Link next.
-	 * 
-	 * @return the link
-	 */
-	public Link<T> linkNext();
+public interface Link<T>
+{
 
-	/**
-	 * Link next.
-	 * 
-	 * @param l
-	 *          the l
-	 */
-	public void linkNext(Link<T> l);
+    /**
+     * Link next.
+     * 
+     * @return the link
+     */
+    public Link<T> linkNext();
 
-	/**
-	 * Link prev.
-	 * 
-	 * @return the link
-	 */
-	public Link<T> linkPrev();
+    /**
+     * Link next.
+     * 
+     * @param l the l
+     */
+    public void linkNext(Link<T> l);
 
-	/**
-	 * Link prev.
-	 * 
-	 * @param l
-	 *          the l
-	 */
-	public void linkPrev(Link<T> l);
+    /**
+     * Link prev.
+     * 
+     * @return the link
+     */
+    public Link<T> linkPrev();
 
-	/**
-	 * Link element.
-	 * 
-	 * @return the t
-	 */
-	public T linkElement();
-	
-	/**
-	 * Link collection.
-	 * 
-	 * @return the link sequence
-	 */
-	public LinkSequence<T> linkCollection();
-	
-	/**
-	 * Link collection.
-	 * 
-	 * @param c
-	 *          the c
-	 */
-	public void linkCollection(LinkSequence<T> c);
+    /**
+     * Link prev.
+     * 
+     * @param l the l
+     */
+    public void linkPrev(Link<T> l);
+
+    /**
+     * Link element.
+     * 
+     * @return the t
+     */
+    public T linkElement();
+
+    /**
+     * Link collection.
+     * 
+     * @return the link sequence
+     */
+    public LinkSequence<T> linkCollection();
+
+    /**
+     * Link collection.
+     * 
+     * @param c the c
+     */
+    public void linkCollection(LinkSequence<T> c);
 }

@@ -34,71 +34,78 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header(nicname = "llc")
-public class IEEE802dot2
-    extends JHeader {
+public class IEEE802dot2 extends JHeader
+{
 
-	/** The Constant ID. */
-	public static final int ID = JProtocol.IEEE_802DOT2_ID;
+    /** The Constant ID. */
+    public static final int ID = JProtocol.IEEE_802DOT2_ID;
 
-	/**
-	 * Header length.
-	 * 
-	 * @param buffer
-	 *          the buffer
-	 * @param offset
-	 *          the offset
-	 * @return the int
-	 */
-	@HeaderLength
-	public static int headerLength(JBuffer buffer, int offset) {
-		return ((buffer.getUShort(offset + 2) & 0x3) == 0x3) ? 4 : 5;
-	}
+    /**
+     * Header length.
+     * 
+     * @param buffer the buffer
+     * @param offset the offset
+     * @return the int
+     */
+    @HeaderLength
+    public static int headerLength(JBuffer buffer, int offset)
+    {
+        return ((buffer.getUShort(offset + 2) & 0x3) == 0x3) ? 4 : 5;
+    }
 
-	/**
-	 * Control.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 0, format = "%x")
-	public int control() {
-		/*
-		 * This field is either 1 or 2 bytes in length depending on the control bit.
-		 */
-		int c = getUByte(2);
-		if ((c & 0x3) == 0x3) {
-			return c;
-		} else {
-			return getUShort(2);
-		}
-	}
+    /**
+     * Control.
+     * 
+     * @return the int
+     */
+    @Field(offset = 0, format = "%x")
+    public int control()
+    {
+        /*
+         * This field is either 1 or 2 bytes in length depending on the control
+         * bit.
+         */
+        int c = getUByte(2);
+        if ((c & 0x3) == 0x3)
+        {
+            return c;
+        }
+        else
+        {
+            return getUShort(2);
+        }
+    }
 
-	/**
-	 * Control length.
-	 * 
-	 * @return the int
-	 */
-	@Dynamic(Field.Property.LENGTH)
-	public int controlLength() {
-		return ((super.getUByte(2) & 0x3) == 0x3) ? 1 * 8 : 2 * 8;
-	}
+    /**
+     * Control length.
+     * 
+     * @return the int
+     */
+    @Dynamic(Field.Property.LENGTH)
+    public int controlLength()
+    {
+        return ((super.getUByte(2) & 0x3) == 0x3) ? 1 * 8 : 2 * 8;
+    }
 
-	/**
-	 * Dsap.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 0, length = 8, format = "%x")
-	public int dsap() {
-		return getUByte(0);
-	}
+    /**
+     * Dsap.
+     * 
+     * @return the int
+     */
+    @Field(offset = 0, length = 8, format = "%x")
+    public int dsap()
+    {
+        return getUByte(0);
+    }
 
-	/**
-	 * Ssap.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 8, length = 8, format = "%x")
-	public int ssap() {
-		return getUByte(1);
-	}
+    /**
+     * Ssap.
+     * 
+     * @return the int
+     */
+    @Field(offset = 8, length = 8, format = "%x")
+    public int ssap()
+    {
+        return getUByte(1);
+    }
 }

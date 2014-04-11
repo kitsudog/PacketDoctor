@@ -37,277 +37,274 @@ import java.nio.ByteBuffer;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JNumber
-    extends
-    JMemory {
+public class JNumber extends JMemory
+{
 
-	/**
-	 * Used to request a specific type of primitive that this number will be
-	 * dealing with possibly allocating memory more efficiently to fit the
-	 * primitive type.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	public enum Type {
-		
-		/** 8-bit integer. */
-		BYTE,
+    /**
+     * Used to request a specific type of primitive that this number will be
+     * dealing with possibly allocating memory more efficiently to fit the
+     * primitive type.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    public enum Type {
 
-		/** 16-bit UTF character. */
-		CHAR,
+        /** 8-bit integer. */
+        BYTE,
 
-		/** 32-bit integer. */
-		INT,
+        /** 16-bit UTF character. */
+        CHAR,
 
-		/** 16-bit integer. */
-		SHORT,
+        /** 32-bit integer. */
+        INT,
 
-		/** 64-bit integer. */
-		LONG,
+        /** 16-bit integer. */
+        SHORT,
 
-		/** A floating point value. */
-		FLOAT,
+        /** 64-bit integer. */
+        LONG,
 
-		/** A long floating point value. */
-		DOUBLE;
+        /** A floating point value. */
+        FLOAT,
 
-		/** Size in bytes for this native type on this machine. */
-		public final int size;
+        /** A long floating point value. */
+        DOUBLE;
 
-		/** The biggest size. */
-		private static int biggestSize = 0;
+        /** Size in bytes for this native type on this machine. */
+        public final int size;
 
-		/**
-		 * Instantiates a new type.
-		 */
-		Type() {
-			size = JNumber.sizeof(ordinal());
-		}
+        /** The biggest size. */
+        private static int biggestSize = 0;
 
-		/**
-		 * Returns the size of the biggets primitive.
-		 * 
-		 * @return size in bytes of the biggest primitive on this platform
-		 */
-		public static int getBiggestSize() {
-			if (biggestSize == 0) {
-				for (Type t : values()) {
-					if (t.size > biggestSize) {
-						biggestSize = t.size;
-					}
-				}
-			}
+        /**
+         * Instantiates a new type.
+         */
+        Type()
+        {
+            size = JNumber.sizeof(ordinal());
+        }
 
-			return biggestSize;
-		}
-	}
+        /**
+         * Returns the size of the biggets primitive.
+         * 
+         * @return size in bytes of the biggest primitive on this platform
+         */
+        public static int getBiggestSize()
+        {
+            if (biggestSize == 0)
+            {
+                for (Type t : values())
+                {
+                    if (t.size > biggestSize)
+                    {
+                        biggestSize = t.size;
+                    }
+                }
+            }
 
-	/*
-	 * Although these are private they are still exported to a JNI header file
-	 * where our private sizeof(int) function can use these constants to lookup
-	 * the correct primitive size
-	 */
-	/** The Constant BYTE_ORDINAL. */
-	private final static int BYTE_ORDINAL = 0;
+            return biggestSize;
+        }
+    }
 
-	/** The Constant CHAR_ORDINAL. */
-	private final static int CHAR_ORDINAL = 1;
+    /*
+     * Although these are private they are still exported to a JNI header file
+     * where our private sizeof(int) function can use these constants to lookup
+     * the correct primitive size
+     */
+    /** The Constant BYTE_ORDINAL. */
+    private final static int BYTE_ORDINAL = 0;
 
-	/** The Constant INT_ORDINAL. */
-	private final static int INT_ORDINAL = 2;
+    /** The Constant CHAR_ORDINAL. */
+    private final static int CHAR_ORDINAL = 1;
 
-	/** The Constant SHORT_ORDINAL. */
-	private final static int SHORT_ORDINAL = 3;
+    /** The Constant INT_ORDINAL. */
+    private final static int INT_ORDINAL = 2;
 
-	/** The Constant LONG_ORDINAL. */
-	private final static int LONG_ORDINAL = 4;
+    /** The Constant SHORT_ORDINAL. */
+    private final static int SHORT_ORDINAL = 3;
 
-	/** The Constant LONG_LONG_ORDINAL. */
-	private final static int LONG_LONG_ORDINAL = 5;
+    /** The Constant LONG_ORDINAL. */
+    private final static int LONG_ORDINAL = 4;
 
-	/** The Constant FLOAT_ORDINAL. */
-	private final static int FLOAT_ORDINAL = 6;
+    /** The Constant LONG_LONG_ORDINAL. */
+    private final static int LONG_LONG_ORDINAL = 5;
 
-	/** The Constant DOUBLE_ORDINAL. */
-	private final static int DOUBLE_ORDINAL = 7;
+    /** The Constant FLOAT_ORDINAL. */
+    private final static int FLOAT_ORDINAL = 6;
 
-	/** The Constant MAX_SIZE_ORDINAL. */
-	private final static int MAX_SIZE_ORDINAL = 8;
+    /** The Constant DOUBLE_ORDINAL. */
+    private final static int DOUBLE_ORDINAL = 7;
 
-	/**
-	 * Allocates a JNumber object capable of storing the biggest primitive on this
-	 * platform.
-	 */
-	public JNumber() {
-		super(Type.getBiggestSize());
-	}
+    /** The Constant MAX_SIZE_ORDINAL. */
+    private final static int MAX_SIZE_ORDINAL = 8;
 
-	/**
-	 * Allocates a number of the specified size and type.
-	 * 
-	 * @param type
-	 *          primitive type for which to allocate memory
-	 */
-	public JNumber(Type type) {
-		super(type.size);
-	}
+    /**
+     * Allocates a JNumber object capable of storing the biggest primitive on
+     * this platform.
+     */
+    public JNumber()
+    {
+        super(Type.getBiggestSize());
+    }
 
-	/**
-	 * Creates a number pointer, which does not allocate any memory on its own,
-	 * but needs to be peered with primitive pointer.
-	 * 
-	 * @param type
-	 *          memory model
-	 */
-	public JNumber(JMemory.Type type) {
-		super(type);
-	}
+    /**
+     * Allocates a number of the specified size and type.
+     * 
+     * @param type primitive type for which to allocate memory
+     */
+    public JNumber(Type type)
+    {
+        super(type.size);
+    }
 
-	/**
-	 * Sizeof.
-	 * 
-	 * @param oridnal
-	 *          the oridnal
-	 * @return the int
-	 */
-	private native static int sizeof(int oridnal);
+    /**
+     * Creates a number pointer, which does not allocate any memory on its own,
+     * but needs to be peered with primitive pointer.
+     * 
+     * @param type memory model
+     */
+    public JNumber(JMemory.Type type)
+    {
+        super(type);
+    }
 
-	/**
-	 * Returns the data from this JNUmber as a signed integer.
-	 * 
-	 * @return java signed integer
-	 */
-	public native int intValue();
+    /**
+     * Sizeof.
+     * 
+     * @param oridnal the oridnal
+     * @return the int
+     */
+    private native static int sizeof(int oridnal);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void intValue(int value);
+    /**
+     * Returns the data from this JNUmber as a signed integer.
+     * 
+     * @return java signed integer
+     */
+    public native int intValue();
 
-	/**
-	 * Gets value from native memory.
-	 * 
-	 * @return java signed byte
-	 */
-	public native byte byteValue();
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void intValue(int value);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void byteValue(byte value);
+    /**
+     * Gets value from native memory.
+     * 
+     * @return java signed byte
+     */
+    public native byte byteValue();
 
-	/**
-	 * Gets value from native memory.
-	 * 
-	 * @return java signed short
-	 */
-	public native short shortValue();
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void byteValue(byte value);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void shortValue(short value);
+    /**
+     * Gets value from native memory.
+     * 
+     * @return java signed short
+     */
+    public native short shortValue();
 
-	/**
-	 * Gets value from native memory.
-	 * 
-	 * @return java signed long
-	 */
-	public native long longValue();
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void shortValue(short value);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void longValue(long value);
+    /**
+     * Gets value from native memory.
+     * 
+     * @return java signed long
+     */
+    public native long longValue();
 
-	/**
-	 * Gets value from native memory.
-	 * 
-	 * @return java float
-	 */
-	public native float floatValue();
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void longValue(long value);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void floatValue(float value);
+    /**
+     * Gets value from native memory.
+     * 
+     * @return java float
+     */
+    public native float floatValue();
 
-	/**
-	 * Gets value from native memory.
-	 * 
-	 * @return java double float
-	 */
-	public native double doubleValue();
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void floatValue(float value);
 
-	/**
-	 * Sets new value in native memory.
-	 * 
-	 * @param value
-	 *          new value
-	 */
-	public native void doubleValue(double value);
+    /**
+     * Gets value from native memory.
+     * 
+     * @return java double float
+     */
+    public native double doubleValue();
 
-	/**
-	 * Peers with supplied number object.
-	 * 
-	 * @param number
-	 *          number object to peer with
-	 * @return number of bytes peered
-	 */
-	public int peer(JNumber number) {
-		return super.peer(number);
-	}
+    /**
+     * Sets new value in native memory.
+     * 
+     * @param value new value
+     */
+    public native void doubleValue(double value);
 
-	/**
-	 * Peers with supplied buffer object.
-	 * 
-	 * @param buffer
-	 *          buffer to peer with
-	 * @return number of bytes peered
-	 */
-	public int peer(JBuffer buffer) {
-		return super.peer(buffer, 0, size());
-	}
+    /**
+     * Peers with supplied number object.
+     * 
+     * @param number number object to peer with
+     * @return number of bytes peered
+     */
+    public int peer(JNumber number)
+    {
+        return super.peer(number);
+    }
 
-	/**
-	 * Peers with supplied buffer object.
-	 * 
-	 * @param buffer
-	 *          buffer to peer with
-	 * @param offset
-	 *          offset into supplied buffer
-	 * @return number of bytes peered
-	 */
-	public int peer(JBuffer buffer, int offset) {
-		return super.peer(buffer, offset, size());
-	}
+    /**
+     * Peers with supplied buffer object.
+     * 
+     * @param buffer buffer to peer with
+     * @return number of bytes peered
+     */
+    public int peer(JBuffer buffer)
+    {
+        return super.peer(buffer, 0, size());
+    }
 
-	/**
-	 * Copies data out of the supplied buffer into this number object.
-	 * 
-	 * @param buffer
-	 *          buffer to copy data out of. Buffer's position and limit properties
-	 *          set the bounds for the copy
-	 * @return number of bytes copied
-	 */
-	@Override
-  public int transferFrom(ByteBuffer buffer) {
-		return super.transferFrom(buffer);
-	}
+    /**
+     * Peers with supplied buffer object.
+     * 
+     * @param buffer buffer to peer with
+     * @param offset offset into supplied buffer
+     * @return number of bytes peered
+     */
+    public int peer(JBuffer buffer, int offset)
+    {
+        return super.peer(buffer, offset, size());
+    }
+
+    /**
+     * Copies data out of the supplied buffer into this number object.
+     * 
+     * @param buffer buffer to copy data out of. Buffer's position and limit
+     *        properties set the bounds for the copy
+     * @return number of bytes copied
+     */
+    @Override
+    public int transferFrom(ByteBuffer buffer)
+    {
+        return super.transferFrom(buffer);
+    }
 }

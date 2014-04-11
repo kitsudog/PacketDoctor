@@ -18,7 +18,6 @@
  */
 package org.jnetpcap.packet.structure;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class AnnotatedMethodException.
@@ -26,112 +25,108 @@ package org.jnetpcap.packet.structure;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class AnnotatedMethodException
-    extends HeaderDefinitionError {
+public class AnnotatedMethodException extends HeaderDefinitionError
+{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1165114276807013103L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1165114276807013103L;
 
-	/** The c. */
-	private final Class<?> c;
+    /** The c. */
+    private final Class<?> c;
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param c
-	 *          the c
-	 */
-	public AnnotatedMethodException(Class<?> c) {
-		super(c);
-		this.c = c;
-	}
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param c the c
+     */
+    public AnnotatedMethodException(Class<?> c)
+    {
+        super(c);
+        this.c = c;
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param message
-	 *          the message
-	 */
-	public AnnotatedMethodException(String message) {
-		super(message);
-		this.c = null;
-	}
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param message the message
+     */
+    public AnnotatedMethodException(String message)
+    {
+        super(message);
+        this.c = null;
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param c
-	 *          the c
-	 * @param message
-	 *          the message
-	 */
-	public AnnotatedMethodException(Class<?> c, String message) {
-		super(c, message);
-		this.c = c;
-	}
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param c the c
+     * @param message the message
+     */
+    public AnnotatedMethodException(Class<?> c, String message)
+    {
+        super(c, message);
+        this.c = c;
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-	public AnnotatedMethodException(Throwable cause) {
-		super(cause);
-		this.c = null;
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param cause the cause
+     */
+    public AnnotatedMethodException(Throwable cause)
+    {
+        super(cause);
+        this.c = null;
 
-	}
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param c
-	 *          the c
-	 * @param cause
-	 *          the cause
-	 */
-	public AnnotatedMethodException(Class<?> c, Throwable cause) {
-		super(c, cause);
-		this.c = c;
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param c the c
+     * @param cause the cause
+     */
+    public AnnotatedMethodException(Class<?> c, Throwable cause)
+    {
+        super(c, cause);
+        this.c = c;
 
-	}
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public AnnotatedMethodException(String message, Throwable cause) {
-		super(message, cause);
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public AnnotatedMethodException(String message, Throwable cause)
+    {
+        super(message, cause);
 
-		this.c = null;
-	}
+        this.c = null;
+    }
 
-	/**
-	 * Instantiates a new annotated method exception.
-	 * 
-	 * @param c
-	 *          the c
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public AnnotatedMethodException(Class<?> c, String message, Throwable cause) {
-		super(c, message, cause);
-		this.c = c;
-	}
+    /**
+     * Instantiates a new annotated method exception.
+     * 
+     * @param c the c
+     * @param message the message
+     * @param cause the cause
+     */
+    public AnnotatedMethodException(Class<?> c, String message, Throwable cause)
+    {
+        super(c, message, cause);
+        this.c = c;
+    }
 
-	/**
-	 * Gets the header.
-	 * 
-	 * @return the header
-	 * @see org.jnetpcap.packet.structure.HeaderDefinitionError#getHeader()
-	 */
-	public Class<?> getHeader() {
-		return c;
-	}
+    /**
+     * Gets the header.
+     * 
+     * @return the header
+     * @see org.jnetpcap.packet.structure.HeaderDefinitionError#getHeader()
+     */
+    public Class<?> getHeader()
+    {
+        return c;
+    }
 }

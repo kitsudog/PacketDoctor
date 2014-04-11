@@ -32,45 +32,48 @@ import org.jnetpcap.protocol.JProtocol;
  * @author Sly Technologies, Inc.
  */
 @Header(length = 5, dlt = PcapDLT.PPP)
-public class PPP
-    extends JHeader {
+public class PPP extends JHeader
+{
 
-	/** The Constant ID. */
-	public static final int ID = JProtocol.PPP_ID;
-	
-//	@Field(offset = 0, length = 8) 
-//	public int flags() {
-//		return getUByte(0);
-//	}
+    /** The Constant ID. */
+    public static final int ID = JProtocol.PPP_ID;
 
-	/**
- * Address.
- * 
- * @return the int
- */
-@Field(offset = 0, length = 8)
-	public int address() {
-		return getUByte(0);
-	}
+    // @Field(offset = 0, length = 8)
+    // public int flags() {
+    // return getUByte(0);
+    // }
 
-	/**
-	 * Control.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 8, length = 8)
-	public int control() {
-		return getUByte(1);
-	}
+    /**
+     * Address.
+     * 
+     * @return the int
+     */
+    @Field(offset = 0, length = 8)
+    public int address()
+    {
+        return getUByte(0);
+    }
 
-	/**
-	 * Protocol.
-	 * 
-	 * @return the int
-	 */
-	@Field(offset = 16, length = 16, format = "%x")
-	public int protocol() {
-		return getUShort(2);
-	}
+    /**
+     * Control.
+     * 
+     * @return the int
+     */
+    @Field(offset = 8, length = 8)
+    public int control()
+    {
+        return getUByte(1);
+    }
+
+    /**
+     * Protocol.
+     * 
+     * @return the int
+     */
+    @Field(offset = 16, length = 16, format = "%x")
+    public int protocol()
+    {
+        return getUShort(2);
+    }
 
 }

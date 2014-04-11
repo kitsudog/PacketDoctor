@@ -28,13 +28,14 @@ package org.jnetpcap.packet.annotate;
  */
 public @interface Analyzer {
 
-	/** Default analyzer priority level if one is not specified explicitely. */
-	public final static int DEFAULT_PRIORITY = 100;
+    /** Default analyzer priority level if one is not specified explicitely. */
+    public final static int DEFAULT_PRIORITY = 100;
 
-	/**
-	 * Analyzer priority when analyzers assemble themselves for packet processing.
-	 * 
-	 * @return priority of this analyzer
-	 */
-	int priority() default DEFAULT_PRIORITY;
+    /**
+     * Analyzer priority when analyzers assemble themselves for packet
+     * processing.
+     * 
+     * @return priority of this analyzer
+     */
+    int priority() default DEFAULT_PRIORITY;
 }

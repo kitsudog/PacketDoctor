@@ -30,81 +30,87 @@ import org.jnetpcap.packet.annotate.Field;
  * @author Sly Technologies, Inc.
  * @see Rip1
  */
-public abstract class Rip2
-    extends
-    Rip1 {
+public abstract class Rip2 extends Rip1
+{
 
-	/** The routing table. */
-	private EntryV2[] routingTable;
+    /** The routing table. */
+    private EntryV2[] routingTable;
 
-	/**
-	 * Gets the routing table.
-	 * 
-	 * @return an array of routing table entries
-	 */
-	@Field(offset = 4 * 8)
-	public EntryV2[] routingTable() {
-		if (this.routingTable == null) {
-			decodeRoutingTable();
-		}
+    /**
+     * Gets the routing table.
+     * 
+     * @return an array of routing table entries
+     */
+    @Field(offset = 4 * 8)
+    public EntryV2[] routingTable()
+    {
+        if (this.routingTable == null)
+        {
+            decodeRoutingTable();
+        }
 
-		return this.routingTable;
-	}
+        return this.routingTable;
+    }
 
-	/**
-	 * Do the actual decoding of the routing table.
-	 */
-	private void decodeRoutingTable() {
+    /**
+     * Do the actual decoding of the routing table.
+     */
+    private void decodeRoutingTable()
+    {
 
-		this.routingTable = new EntryV2[count];
+        this.routingTable = new EntryV2[count];
 
-		for (int i = 0; i < count; i++) {
-			final EntryV2 e = new EntryV2();
-			this.routingTable[i] = e;
+        for (int i = 0; i < count; i++)
+        {
+            final EntryV2 e = new EntryV2();
+            this.routingTable[i] = e;
 
-			e.peer(this, 4 + i * 20, 20);
-		}
-	}
+            e.peer(this, 4 + i * 20, 20);
+        }
+    }
 
-	/**
-	 * Rip2 routing table entry definition. Overrides V1 definition and adds V2
-	 * specific fields. V2 fields are unused but reserved present in V1 structure.
-	 * 
-	 * @author Mark Bednarczyk
-	 * @author Sly Technologies, Inc.
-	 */
-	public static class EntryV2
-	    extends
-	    EntryV1 {
+    /**
+     * Rip2 routing table entry definition. Overrides V1 definition and adds V2
+     * specific fields. V2 fields are unused but reserved present in V1
+     * structure.
+     * 
+     * @author Mark Bednarczyk
+     * @author Sly Technologies, Inc.
+     */
+    public static class EntryV2 extends EntryV1
+    {
 
-		/**
-		 * Tag.
-		 * 
-		 * @return the int
-		 */
-		@Field(offset = 2 * 8, length = 16)
-		public int tag() {
-			return super.getUShort(2);
-		}
+        /**
+         * Tag.
+         * 
+         * @return the int
+         */
+        @Field(offset = 2 * 8, length = 16)
+        public int tag()
+        {
+            return super.getUShort(2);
+        }
 
-		/**
-		 * Subnet.
-		 * 
-		 * @return the byte[]
-		 */
-		@Field(offset = 8 * 8, length = 32)
-		public byte[] subnet() {
-			return super.getByteArray(8, 4);
-		}
+        /**
+         * Subnet.
+         * 
+         * @return the byte[]
+         */
+        @Field(offset = 8 * 8, length = 32)
+        public byte[] subnet()
+        {
+            return super.getByteArray(8, 4);
+        }
 
-		/**
-		 * Next hop.
-		 * 
-		 * @return the byte[]
-		 */
-		@Field(offset = 12 * 8, length = 32)
-		public byte[] nextHop() {
-			return super.getByteArray(12, 4);
-		}
-	}
+        /**
+         * Next hop.
+         * 
+         * @return the byte[]
+         */
+        @Field(offset = 12 * 8, length = 32)
+        public byte[] nextHop()
+        {
+            return super.getByteArray(12, 4);
+        }
+    }
 }

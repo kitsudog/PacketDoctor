@@ -23,35 +23,34 @@ package org.jnetpcap.packet;
  * A dispatchable packet hadler. The handler receives fully decoded packets from
  * libpcap library.
  * 
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JPacketHandler<T> {
+public interface JPacketHandler<T>
+{
 
-	/**
-	 * Callback function called on by libpcap and jNetPcap scanner once a new
-	 * packet arrives and has passed the set BPF filter. The packet object
-	 * dispatched is not allocated on a per call basis, but is shared between
-	 * every call made. At the time the pcap dispatch or loop is established a
-	 * freshly allocated packet is used to peer with received packet buffers from
-	 * libpcap, scanned then dispatched to this method for the user to process.
-	 * The packet memory and state is not persistent between calls. If a more
-	 * persistent state is need it must be copied outof the supplied packet into a
-	 * more permanent packet.
-	 * 
-	 * <pre>
-	 * public void nextPacket(JPacket packet, T user) {
-	 * 	JPacket permanentPacket = new JPacket(packet);// creates a permanent packet
-	 * }
-	 * </pre>
-	 * 
-	 * @param packet
-	 *          a non persistent between invokations decoded packet
-	 * @param user
-	 *          user supplied object of type <T>
-	 */
-	public void nextPacket(JPacket packet, T user);
+    /**
+     * Callback function called on by libpcap and jNetPcap scanner once a new
+     * packet arrives and has passed the set BPF filter. The packet object
+     * dispatched is not allocated on a per call basis, but is shared between
+     * every call made. At the time the pcap dispatch or loop is established a
+     * freshly allocated packet is used to peer with received packet buffers
+     * from libpcap, scanned then dispatched to this method for the user to
+     * process. The packet memory and state is not persistent between calls. If
+     * a more persistent state is need it must be copied outof the supplied
+     * packet into a more permanent packet.
+     * 
+     * <pre>
+     * public void nextPacket(JPacket packet, T user)
+     * {
+     *     JPacket permanentPacket = new JPacket(packet);// creates a permanent packet
+     * }
+     * </pre>
+     * 
+     * @param packet a non persistent between invokations decoded packet
+     * @param user user supplied object of type <T>
+     */
+    public void nextPacket(JPacket packet, T user);
 
 }

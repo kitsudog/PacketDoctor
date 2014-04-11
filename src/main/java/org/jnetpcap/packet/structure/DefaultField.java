@@ -18,7 +18,6 @@
  */
 package org.jnetpcap.packet.structure;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class DefaultField.
@@ -26,55 +25,56 @@ package org.jnetpcap.packet.structure;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class DefaultField
-    extends JField {
+public class DefaultField extends JField
+{
 
-	/**
-	 * Instantiates a new default field.
-	 * 
-	 * @param field
-	 *          the field
-	 * @param children
-	 *          the children
-	 */
-	private DefaultField(AnnotatedField field, DefaultField[] children) {
-		super(field, children);
-	}
+    /**
+     * Instantiates a new default field.
+     * 
+     * @param field the field
+     * @param children the children
+     */
+    private DefaultField(AnnotatedField field, DefaultField[] children)
+    {
+        super(field, children);
+    }
 
-	/**
-	 * From annotated field.
-	 * 
-	 * @param field
-	 *          the field
-	 * @return the default field
-	 */
-	public static DefaultField fromAnnotatedField(AnnotatedField field) {
+    /**
+     * From annotated field.
+     * 
+     * @param field the field
+     * @return the default field
+     */
+    public static DefaultField fromAnnotatedField(AnnotatedField field)
+    {
 
-		DefaultField[] children = new DefaultField[field.getSubFields().size()];
-		int i = 0;
-		for (AnnotatedField f : field.getSubFields()) {
-			children[i++] = fromAnnotatedField(f);
-		}
+        DefaultField[] children = new DefaultField[field.getSubFields().size()];
+        int i = 0;
+        for (AnnotatedField f : field.getSubFields())
+        {
+            children[i++] = fromAnnotatedField(f);
+        }
 
-		JField.sortFieldByOffset(children, null, false);
+        JField.sortFieldByOffset(children, null, false);
 
-		return new DefaultField(field, children);
-	}
+        return new DefaultField(field, children);
+    }
 
-	/**
-	 * From annotated fields.
-	 * 
-	 * @param fields
-	 *          the fields
-	 * @return the j field[]
-	 */
-	public static JField[] fromAnnotatedFields(AnnotatedField[] fields) {
-		JField[] f = new JField[fields.length];
+    /**
+     * From annotated fields.
+     * 
+     * @param fields the fields
+     * @return the j field[]
+     */
+    public static JField[] fromAnnotatedFields(AnnotatedField[] fields)
+    {
+        JField[] f = new JField[fields.length];
 
-		for (int i = 0; i < fields.length; i++) {
-			f[i] = fromAnnotatedField(fields[i]);
-		}
+        for (int i = 0; i < fields.length; i++)
+        {
+            f[i] = fromAnnotatedField(fields[i]);
+        }
 
-		return f;
-	}
+        return f;
+    }
 }

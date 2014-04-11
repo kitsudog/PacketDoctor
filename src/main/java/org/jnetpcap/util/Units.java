@@ -24,122 +24,129 @@ package org.jnetpcap.util;
  * 
  * @author HP_Administrator
  */
-public class Units {
-	
-	/** The Constant TEBIBYTE. */
-	public final static long TEBIBYTE = 1024L * Units.GIGIBYTE;
-	
-	/** The Constant GIGIBYTE. */
-	public final static int GIGIBYTE = 1024 * Units.MEBIBYTE;
-	
-	/** The Constant MEBIBYTE. */
-	public final static int MEBIBYTE = 1024 * Units.KIBIBYTE;
-	
-	/** The Constant KIBIBYTE. */
-	public final static int KIBIBYTE = 1024;
+public class Units
+{
 
-	/** The Constant TERABYTE. */
-	public final static long TERABYTE = 1000L * Units.GIGABYTE;
-	
-	/** The Constant GIGABYTE. */
-	public final static int GIGABYTE = 1000 * Units.MEGABYTE;
-	
-	/** The Constant MEGABYTE. */
-	public final static int MEGABYTE = 1000 * Units.KILOBYTE;
-	
-	/** The Constant KILOBYTE. */
-	public final static int KILOBYTE = 1000;
+    /** The Constant TEBIBYTE. */
+    public final static long TEBIBYTE = 1024L * Units.GIGIBYTE;
 
-	/**
-	 * F.
-	 * 
-	 * @param l
-	 *          the l
-	 * @return the string
-	 */
-	public static String f(long l) {
-		return f(l, -1, "");
-	}
+    /** The Constant GIGIBYTE. */
+    public final static int GIGIBYTE = 1024 * Units.MEBIBYTE;
 
-	/**
-	 * F.
-	 * 
-	 * @param l
-	 *          the l
-	 * @param percision
-	 *          the percision
-	 * @return the string
-	 */
-	public static String f(long l, int percision) {
-		return f(l, percision, "");
-	}
+    /** The Constant MEBIBYTE. */
+    public final static int MEBIBYTE = 1024 * Units.KIBIBYTE;
 
-	/**
-	 * F.
-	 * 
-	 * @param l
-	 *          the l
-	 * @param percision
-	 *          the percision
-	 * @param post
-	 *          the post
-	 * @return the string
-	 */
-	public static String f(long l, int percision, String post) {
-		String u = "";
-		double v = l;
-		int p = 0;
-		if (l > Units.TEBIBYTE) {
-			u = "t";
-			v /= 3;
-			p = 4;
-		} else if (l > Units.GIGIBYTE) {
-			u = "g";
-			v /= Units.GIGIBYTE;
-			p = 2;
-		} else if (l > Units.MEBIBYTE) {
-			u = "m";
-			v /= Units.MEBIBYTE;
-			p = 1;
-		} else if (l > Units.KIBIBYTE) {
-			u = "k";
-			v /= Units.KIBIBYTE;
-			p = 0;
-		} else {
-			p = 0;
-		}
+    /** The Constant KIBIBYTE. */
+    public final static int KIBIBYTE = 1024;
 
-		if (percision != -1) {
-			p = percision;
-		}
+    /** The Constant TERABYTE. */
+    public final static long TERABYTE = 1000L * Units.GIGABYTE;
 
-		String f = String.format("%%.%df%%s%%s", p);
+    /** The Constant GIGABYTE. */
+    public final static int GIGABYTE = 1000 * Units.MEGABYTE;
 
-		return String.format(f, v, u, post);
-	}
+    /** The Constant MEGABYTE. */
+    public final static int MEGABYTE = 1000 * Units.KILOBYTE;
 
-	/**
-	 * Fb.
-	 * 
-	 * @param l
-	 *          the l
-	 * @return the string
-	 */
-	public static String fb(long l) {
-		return f(l, -1, "b");
-	}
+    /** The Constant KILOBYTE. */
+    public final static int KILOBYTE = 1000;
 
-	/**
-	 * Fb.
-	 * 
-	 * @param l
-	 *          the l
-	 * @param percision
-	 *          the percision
-	 * @return the string
-	 */
-	public static String fb(long l, int percision) {
-		return f(l, percision, "b");
-	}
+    /**
+     * F.
+     * 
+     * @param l the l
+     * @return the string
+     */
+    public static String f(long l)
+    {
+        return f(l, -1, "");
+    }
+
+    /**
+     * F.
+     * 
+     * @param l the l
+     * @param percision the percision
+     * @return the string
+     */
+    public static String f(long l, int percision)
+    {
+        return f(l, percision, "");
+    }
+
+    /**
+     * F.
+     * 
+     * @param l the l
+     * @param percision the percision
+     * @param post the post
+     * @return the string
+     */
+    public static String f(long l, int percision, String post)
+    {
+        String u = "";
+        double v = l;
+        int p = 0;
+        if (l > Units.TEBIBYTE)
+        {
+            u = "t";
+            v /= 3;
+            p = 4;
+        }
+        else if (l > Units.GIGIBYTE)
+        {
+            u = "g";
+            v /= Units.GIGIBYTE;
+            p = 2;
+        }
+        else if (l > Units.MEBIBYTE)
+        {
+            u = "m";
+            v /= Units.MEBIBYTE;
+            p = 1;
+        }
+        else if (l > Units.KIBIBYTE)
+        {
+            u = "k";
+            v /= Units.KIBIBYTE;
+            p = 0;
+        }
+        else
+        {
+            p = 0;
+        }
+
+        if (percision != -1)
+        {
+            p = percision;
+        }
+
+        String f = String.format("%%.%df%%s%%s", p);
+
+        return String.format(f, v, u, post);
+    }
+
+    /**
+     * Fb.
+     * 
+     * @param l the l
+     * @return the string
+     */
+    public static String fb(long l)
+    {
+        return f(l, -1, "b");
+    }
+
+    /**
+     * Fb.
+     * 
+     * @param l the l
+     * @param percision the percision
+     * @return the string
+     */
+    public static String fb(long l, int percision)
+    {
+        return f(l, percision, "b");
+    }
 
 }

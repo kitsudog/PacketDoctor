@@ -39,106 +39,108 @@ import org.jnetpcap.protocol.tcpip.Http;
  * @author Sly Technologies, Inc.
  */
 @Header
-public class WebImage
-    extends
-    JHeader {
+public class WebImage extends JHeader
+{
 
-	/**
-	 * The Enum Type.
-	 */
-	public enum Type {
-		
-		/** The BMP. */
-		BMP,
-		
-		/** The GIF. */
-		GIF,
-		
-		/** The JPEG. */
-		JPEG,
-		
-		/** The SVG. */
-		SVG,
-	}
+    /**
+     * The Enum Type.
+     */
+    public enum Type {
 
+        /** The BMP. */
+        BMP,
 
-	/**
-	 * Bind2 http.
-	 * 
-	 * @param packet
-	 *          the packet
-	 * @param http
-	 *          the http
-	 * @return true, if successful
-	 */
-	@Bind(to = Http.class)
-	public static boolean bind2Http(JPacket packet, Http http) {
-		Http.ContentType type = http.contentTypeEnum();
-		switch (type) {
-			case JPEG:
-			case PNG:
-			case GIF:
-				return true;
+        /** The GIF. */
+        GIF,
 
-			default:
-				return false;
-		}
-	}
+        /** The JPEG. */
+        JPEG,
 
-	/**
-	 * Header length.
-	 * 
-	 * @param buffer
-	 *          the buffer
-	 * @param offset
-	 *          the offset
-	 * @return the int
-	 */
-	@HeaderLength
-	public static int headerLength(JBuffer buffer, int offset) {
-		return buffer.size() - offset;
-	}
+        /** The SVG. */
+        SVG,
+    }
 
-	/** The data. */
-	private byte[] data;
+    /**
+     * Bind2 http.
+     * 
+     * @param packet the packet
+     * @param http the http
+     * @return true, if successful
+     */
+    @Bind(to = Http.class)
+    public static boolean bind2Http(JPacket packet, Http http)
+    {
+        Http.ContentType type = http.contentTypeEnum();
+        switch (type)
+        {
+            case JPEG:
+            case PNG:
+            case GIF:
+                return true;
 
-	/**
-	 * Decode header.
-	 * 
-	 * @see org.jnetpcap.packet.JHeader#decodeHeader()
-	 */
-	@Override
-	protected void decodeHeader() {
-		this.data = null; // Reinitialize
-	}
+            default:
+                return false;
+        }
+    }
 
-	/**
-	 * Gets the aWT image.
-	 * 
-	 * @return the aWT image
-	 */
-	public Image getAWTImage() {
-		if (data == null) {
-			data = super.getByteArray(0, this.size());
-		}
-		return Toolkit.getDefaultToolkit().createImage(data);
-	}
+    /**
+     * Header length.
+     * 
+     * @param buffer the buffer
+     * @param offset the offset
+     * @return the int
+     */
+    @HeaderLength
+    public static int headerLength(JBuffer buffer, int offset)
+    {
+        return buffer.size() - offset;
+    }
 
-	/**
-	 * Gets the input stream.
-	 * 
-	 * @return the input stream
-	 */
-	public InputStream getInputStream() {
-		return new JBufferInputStream(this);
-	}
+    /** The data. */
+    private byte[] data;
 
-	/**
-	 * Length.
-	 * 
-	 * @return the int
-	 */
-	public int length() {
-		return this.size();
-	}
+    /**
+     * Decode header.
+     * 
+     * @see org.jnetpcap.packet.JHeader#decodeHeader()
+     */
+    @Override
+    protected void decodeHeader()
+    {
+        this.data = null; // Reinitialize
+    }
+
+    /**
+     * Gets the aWT image.
+     * 
+     * @return the aWT image
+     */
+    public Image getAWTImage()
+    {
+        if (data == null)
+        {
+            data = super.getByteArray(0, this.size());
+        }
+        return Toolkit.getDefaultToolkit().createImage(data);
+    }
+
+    /**
+     * Gets the input stream.
+     * 
+     * @return the input stream
+     */
+    public InputStream getInputStream()
+    {
+        return new JBufferInputStream(this);
+    }
+
+    /**
+     * Length.
+     * 
+     * @return the int
+     */
+    public int length()
+    {
+        return this.size();
+    }
 }

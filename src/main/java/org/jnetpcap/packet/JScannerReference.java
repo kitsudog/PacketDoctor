@@ -26,30 +26,28 @@ import org.jnetpcap.nio.JMemoryReference;
  * 
  * @author markbe
  */
-public class JScannerReference extends JMemoryReference {
+public class JScannerReference extends JMemoryReference
+{
 
-	/**
-	 * Instantiates a new j scanner reference.
-	 * 
-	 * @param referant
-	 *          the referant
-	 * @param address
-	 *          the address
-	 * @param size
-	 *          the size
-	 */
-	public JScannerReference(Object referant, long address, long size) {
-		super(referant, address, size);
-	}
+    /**
+     * Instantiates a new j scanner reference.
+     * 
+     * @param referant the referant
+     * @param address the address
+     * @param size the size
+     */
+    public JScannerReference(Object referant, long address, long size)
+    {
+        super(referant, address, size);
+    }
 
-	/**
-	 * Clean up the scanner_t structure and release any held resources. For one
-	 * all the JHeaderScanners that are kept as global references need to be
-	 * released.
-	 * 
-	 * @param size
-	 *          the size
-	 */
-	protected native void disposeNative(long size);
+    /**
+     * Clean up the scanner_t structure and release any held resources. For one
+     * all the JHeaderScanners that are kept as global references need to be
+     * released.
+     * 
+     * @param size the size
+     */
+    protected native void disposeNative(long size);
 
 }

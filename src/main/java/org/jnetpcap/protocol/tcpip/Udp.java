@@ -78,28 +78,28 @@ import org.jnetpcap.util.checksum.Checksum;
  * reliability is desired, it must be implemented in the user's application.
  * </p>
  * <p>
- * The UDP header consists of 4 fields, all of which are 2 bytes (16 bits).
- * The use of two of those is optional in IPv4 (pink background in table). In
- * IPv6 only the source port is optional:
+ * The UDP header consists of 4 fields, all of which are 2 bytes (16 bits). The
+ * use of two of those is optional in IPv4 (pink background in table). In IPv6
+ * only the source port is optional:
  * <ul>
  * <li><b>Source port number</b> - This field identifies the sender's port when
  * meaningful and should be assumed to be the port to reply to if needed. If not
  * used, then it should be zero. If the source host is the client, the port
  * number is likely to be an ephemeral port number. If the source host is the
  * server, the port number is likely to be a well-known port number.
- * <li><b>Destination port number</b> - This field identifies the receiver's port and
- * is required. Similar to source port number, if the client is the destination
- * host then the port number will likely be an ephemeral port number and if the
- * destination host is the server then the port number will likely be a
- * well-known port number.
+ * <li><b>Destination port number</b> - This field identifies the receiver's
+ * port and is required. Similar to source port number, if the client is the
+ * destination host then the port number will likely be an ephemeral port number
+ * and if the destination host is the server then the port number will likely be
+ * a well-known port number.
  * <li><b>Length</b> - A field that specifies the length in bytes of the entire
  * datagram: header and data. The minimum length is 8 bytes since that's the
  * length of the header. The field size sets a theoretical limit of 65,535 bytes
  * (8 byte header + 65,527 bytes of data) for a UDP datagram. The practical
  * limit for the data length which is imposed by the underlying IPv4 protocol is
  * 65,507 bytes (65,535 - 8 byte UDP header - 20 byte IP header).
- * <li><b>Checksum</b> - The checksum field is used for error-checking of the header
- * and data. If the checksum is omitted in IPv4, the field uses the value
+ * <li><b>Checksum</b> - The checksum field is used for error-checking of the
+ * header and data. If the checksum is omitted in IPv4, the field uses the value
  * all-zeros. This field is not optional for IPv6.
  * </ul>
  * </p>
@@ -109,205 +109,220 @@ import org.jnetpcap.util.checksum.Checksum;
  * @author Sly Technologies, Inc.
  */
 @Header(length = 8)
-public class Udp
-    extends
-    JHeader implements JHeaderChecksum {
+public class Udp extends JHeader implements JHeaderChecksum
+{
 
-	/** Unique numerical ID of this header. */
-	public static final int ID = JProtocol.UDP_ID;
+    /** Unique numerical ID of this header. */
+    public static final int ID = JProtocol.UDP_ID;
 
-	/**
-	 * Calculates a checksum using protocol specification for a header. Checksums
-	 * for partial headers or fragmented packets (unless the protocol alows it)
-	 * are not calculated.
-	 * <p>
-	 * The method used to compute the checksum is defined in RFC 768:
-	 * 
-	 * <pre>
-	 * Checksum is the 16-bit one's complement of the one's complement sum of 
-	 * a pseudo header of information from the IP header, the UDP header, 
-	 * and the data, padded with zero octets at the end (if necessary) to make 
-	 * a multiple of two octets.
-	 * </pre>
-	 * 
-	 * In other words, all 16-bit words are summed using one's complement
-	 * arithmetic. The sum is then one's complemented to yield the value of the
-	 * UDP checksum field. If the checksum calculation results in the value zero
-	 * (all 16 bits 0) it should be sent as the one's complement (all 1's). The
-	 * difference between IPv4 and IPv6 is in the data used to compute the
-	 * checksum.
-	 * </p>
-	 * 
-	 * @return header's calculated checksum
-	 */
-	public int calculateChecksum() {
+    /**
+     * Calculates a checksum using protocol specification for a header.
+     * Checksums for partial headers or fragmented packets (unless the protocol
+     * alows it) are not calculated.
+     * <p>
+     * The method used to compute the checksum is defined in RFC 768:
+     * 
+     * <pre>
+     * Checksum is the 16-bit one's complement of the one's complement sum of 
+     * a pseudo header of information from the IP header, the UDP header, 
+     * and the data, padded with zero octets at the end (if necessary) to make 
+     * a multiple of two octets.
+     * </pre>
+     * 
+     * In other words, all 16-bit words are summed using one's complement
+     * arithmetic. The sum is then one's complemented to yield the value of the
+     * UDP checksum field. If the checksum calculation results in the value zero
+     * (all 16 bits 0) it should be sent as the one's complement (all 1's). The
+     * difference between IPv4 and IPv6 is in the data used to compute the
+     * checksum.
+     * </p>
+     * 
+     * @return header's calculated checksum
+     */
+    public int calculateChecksum()
+    {
 
-		if (getIndex() == -1) {
-			throw new IllegalStateException("Oops index not set");
-		}
+        if (getIndex() == -1)
+        {
+            throw new IllegalStateException("Oops index not set");
+        }
 
-		final int ipOffset = getPreviousHeaderOffset();
+        final int ipOffset = getPreviousHeaderOffset();
 
-		return Checksum.inChecksumShouldBe(checksum(), Checksum.pseudoUdp(
-		    this.packet, ipOffset, getOffset()));
-	}
+        return Checksum.inChecksumShouldBe(checksum(), Checksum.pseudoUdp(this.packet, ipOffset, getOffset()));
+    }
 
-	/**
-	 * The checksum field is used for error-checking of the header and data. If
-	 * the checksum is omitted in IPv4, the field uses the value all-zeros. This
-	 * field is not optional for IPv6.
-	 * 
-	 * @return value of checksum field as 16-bit unsigned integer
-	 */
-	@Field(offset = 6 * 8, length = 16, format = "%x")
-	public int checksum() {
-		return getUShort(6);
-	}
+    /**
+     * The checksum field is used for error-checking of the header and data. If
+     * the checksum is omitted in IPv4, the field uses the value all-zeros. This
+     * field is not optional for IPv6.
+     * 
+     * @return value of checksum field as 16-bit unsigned integer
+     */
+    @Field(offset = 6 * 8, length = 16, format = "%x")
+    public int checksum()
+    {
+        return getUShort(6);
+    }
 
-	/**
-	 * Sets the new value for checksum field in the header. Typical usage is
-	 * 
-	 * <pre>
-	 * Udp udp = ...; // Acquire a udp header from somewhere
-	 * udp.destination(123);
-	 * udp.source(321);
-	 * udp.checksum(udp.cacluateChecksum());
-	 * </pre>
-	 * 
-	 * @param value
-	 *          new unsigned 16-bit integer value for checksum
-	 */
-	public void checksum(final int value) {
-		super.setUShort(6, value);
-	}
+    /**
+     * Sets the new value for checksum field in the header. Typical usage is
+     * 
+     * <pre>
+     * Udp udp = ...; // Acquire a udp header from somewhere
+     * udp.destination(123);
+     * udp.source(321);
+     * udp.checksum(udp.cacluateChecksum());
+     * </pre>
+     * 
+     * @param value new unsigned 16-bit integer value for checksum
+     */
+    public void checksum(final int value)
+    {
+        super.setUShort(6, value);
+    }
 
-	/**
-	 * Returns a dynamic description of the checksum field. Specifically it checks
-	 * and displays, as description, the state of the checksum field, if it
-	 * matches the calculated checksum or not.
-	 * 
-	 * @return additional information about the state of the checksum field
-	 */
-	@Dynamic(Field.Property.DESCRIPTION)
-	public String checksumDescription() {
+    /**
+     * Returns a dynamic description of the checksum field. Specifically it
+     * checks and displays, as description, the state of the checksum field, if
+     * it matches the calculated checksum or not.
+     * 
+     * @return additional information about the state of the checksum field
+     */
+    @Dynamic(Field.Property.DESCRIPTION)
+    public String checksumDescription()
+    {
 
-		if (isFragmented()) {
-			return "supressed for fragments";
-		}
+        if (isFragmented())
+        {
+            return "supressed for fragments";
+        }
 
-		if (isPayloadTruncated()) {
-			return "supressed for truncated packets";
-		}
+        if (isPayloadTruncated())
+        {
+            return "supressed for truncated packets";
+        }
 
-		final int checksum = checksum();
-		if (checksum == 0) {
-			return "omitted";
-		}
+        final int checksum = checksum();
+        if (checksum == 0)
+        {
+            return "omitted";
+        }
 
-		final int crc16 = calculateChecksum();
-		if (checksum == crc16) {
-			return "correct";
-		} else {
-			return "incorrect: 0x" + Integer.toHexString(crc16).toUpperCase();
-		}
-	}
+        final int crc16 = calculateChecksum();
+        if (checksum == crc16)
+        {
+            return "correct";
+        }
+        else
+        {
+            return "incorrect: 0x" + Integer.toHexString(crc16).toUpperCase();
+        }
+    }
 
-	/**
-	 * This field identifies the receiver's port and is required. Similar to
-	 * source port number, if the client is the destination host then the port
-	 * number will likely be an ephemeral port number and if the destination host
-	 * is the server then the port number will likely be a well-known port number.
-	 * 
-	 * @return value of destination port as 16-bit unsigned integer
-	 */
-	@Field(offset = 2 * 8, length = 16)
-	@FlowKey(index = 2, reversable = true)
-	public int destination() {
-		return getUShort(2);
-	}
+    /**
+     * This field identifies the receiver's port and is required. Similar to
+     * source port number, if the client is the destination host then the port
+     * number will likely be an ephemeral port number and if the destination
+     * host is the server then the port number will likely be a well-known port
+     * number.
+     * 
+     * @return value of destination port as 16-bit unsigned integer
+     */
+    @Field(offset = 2 * 8, length = 16)
+    @FlowKey(index = 2, reversable = true)
+    public int destination()
+    {
+        return getUShort(2);
+    }
 
-	/**
-	 * Sets a new unsigned 16-bit integer value for the udp port number field.
-	 * 
-	 * @param value
-	 *          new value to be stored in the destination field
-	 */
-	public void destination(final int value) {
-		setUShort(2, value);
-	}
+    /**
+     * Sets a new unsigned 16-bit integer value for the udp port number field.
+     * 
+     * @param value new value to be stored in the destination field
+     */
+    public void destination(final int value)
+    {
+        setUShort(2, value);
+    }
 
-	/**
-	 * Checks if the checksum is valid, for un-fragmented packets. If a packet is
-	 * fragmented, the checksum is not verified as data to is incomplete, but the
-	 * method returns true none the less.
-	 * 
-	 * @return true if checksum checks out or if this is a fragment, otherwise if
-	 *         the computed checksum does not match the stored checksum false is
-	 *         returned
-	 */
-	public boolean isChecksumValid() {
+    /**
+     * Checks if the checksum is valid, for un-fragmented packets. If a packet
+     * is fragmented, the checksum is not verified as data to is incomplete, but
+     * the method returns true none the less.
+     * 
+     * @return true if checksum checks out or if this is a fragment, otherwise
+     *         if the computed checksum does not match the stored checksum false
+     *         is returned
+     */
+    public boolean isChecksumValid()
+    {
 
-		if (isFragmented()) {
-			return true;
-		}
+        if (isFragmented())
+        {
+            return true;
+        }
 
-		if (getIndex() == -1) {
-			throw new IllegalStateException("Oops index not set");
-		}
+        if (getIndex() == -1)
+        {
+            throw new IllegalStateException("Oops index not set");
+        }
 
-		final int ipOffset = getPreviousHeaderOffset();
+        final int ipOffset = getPreviousHeaderOffset();
 
-		return Checksum.pseudoUdp(this.packet, ipOffset, getOffset()) == 0;
-	}
+        return Checksum.pseudoUdp(this.packet, ipOffset, getOffset()) == 0;
+    }
 
-	/**
-	 * A field that specifies the length in bytes of the entire datagram: header
-	 * and data. The minimum length is 8 bytes since that's the length of the
-	 * header. The field size sets a theoretical limit of 65,535 bytes (8 byte
-	 * header + 65,527 bytes of data) for a UDP datagram. The practical limit for
-	 * the data length which is imposed by the underlying Ip4 protocol is 65,507
-	 * bytes (65,535 - 8 byte UDP header - 20 byte IP header).
-	 * 
-	 * @return value of length field as 16-bit unsigned integer
-	 */
-	@Field(offset = 4 * 8, length = 16)
-	public int length() {
-		return getUShort(4);
-	}
+    /**
+     * A field that specifies the length in bytes of the entire datagram: header
+     * and data. The minimum length is 8 bytes since that's the length of the
+     * header. The field size sets a theoretical limit of 65,535 bytes (8 byte
+     * header + 65,527 bytes of data) for a UDP datagram. The practical limit
+     * for the data length which is imposed by the underlying Ip4 protocol is
+     * 65,507 bytes (65,535 - 8 byte UDP header - 20 byte IP header).
+     * 
+     * @return value of length field as 16-bit unsigned integer
+     */
+    @Field(offset = 4 * 8, length = 16)
+    public int length()
+    {
+        return getUShort(4);
+    }
 
-	/**
-	 * Sets a new unsigned 16-bit integer value for the udp field.
-	 * 
-	 * @param value
-	 *          new value to be stored in the length field
-	 */
-	public void length(final int value) {
-		setUShort(4, value);
-	}
+    /**
+     * Sets a new unsigned 16-bit integer value for the udp field.
+     * 
+     * @param value new value to be stored in the length field
+     */
+    public void length(final int value)
+    {
+        setUShort(4, value);
+    }
 
-	/**
-	 * This field identifies the sender's port when meaningful and should be
-	 * assumed to be the port to reply to if needed. If not used, then it should
-	 * be zero. If the source host is the client, the port number is likely to be
-	 * an ephemeral port number. If the source host is the server, the port number
-	 * is likely to be a well-known port number.
-	 * 
-	 * @return value of source port as 16-bit unsigned integer
-	 */
-	@Field(offset = 0, length = 16)
-	@FlowKey(index = 2, reversable = true)
-	public int source() {
-		return getUShort(0);
-	}
+    /**
+     * This field identifies the sender's port when meaningful and should be
+     * assumed to be the port to reply to if needed. If not used, then it should
+     * be zero. If the source host is the client, the port number is likely to
+     * be an ephemeral port number. If the source host is the server, the port
+     * number is likely to be a well-known port number.
+     * 
+     * @return value of source port as 16-bit unsigned integer
+     */
+    @Field(offset = 0, length = 16)
+    @FlowKey(index = 2, reversable = true)
+    public int source()
+    {
+        return getUShort(0);
+    }
 
-	/**
-	 * Sets a new unsigned 16-bit integer value for the udp port number field.
-	 * 
-	 * @param value
-	 *          new value to be stored in the source field
-	 */
-	public void source(final int value) {
-		setUShort(0, value);
-	}
+    /**
+     * Sets a new unsigned 16-bit integer value for the udp port number field.
+     * 
+     * @param value new value to be stored in the source field
+     */
+    public void source(final int value)
+    {
+        setUShort(0, value);
+    }
 
 }

@@ -29,120 +29,133 @@ import java.util.List;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public final class PcapAddr {
+public final class PcapAddr
+{
 
-	/**
-	 * Inits the i ds.
-	 */
-	private native static void initIDs();
+    /**
+     * Inits the i ds.
+     */
+    private native static void initIDs();
 
-	static {
-		initIDs();
+    static
+    {
+        initIDs();
 
-		try {
-			Class.forName("org.jnetpcap.PcapSockAddr");
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException(e);
-		}
+        try
+        {
+            Class.forName("org.jnetpcap.PcapSockAddr");
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException(e);
+        }
 
-	}
+    }
 
-	/** The next. */
-	private volatile PcapAddr next;
+    /** The next. */
+    private volatile PcapAddr next;
 
-	/** The addr. */
-	private volatile PcapSockAddr addr;
+    /** The addr. */
+    private volatile PcapSockAddr addr;
 
-	/** The netmask. */
-	private volatile PcapSockAddr netmask;
+    /** The netmask. */
+    private volatile PcapSockAddr netmask;
 
-	/** The broadaddr. */
-	private volatile PcapSockAddr broadaddr;
+    /** The broadaddr. */
+    private volatile PcapSockAddr broadaddr;
 
-	/** The dstaddr. */
-	private volatile PcapSockAddr dstaddr;
+    /** The dstaddr. */
+    private volatile PcapSockAddr dstaddr;
 
-	/**
-	 * Gets the next.
-	 * 
-	 * @return the next
-	 */
-	private final PcapAddr getNext() {
-		return this.next;
-	}
+    /**
+     * Gets the next.
+     * 
+     * @return the next
+     */
+    private final PcapAddr getNext()
+    {
+        return this.next;
+    }
 
-	/**
-	 * pcap_addr.addr field.
-	 * 
-	 * @return the addr
-	 */
-	public final PcapSockAddr getAddr() {
-		return this.addr;
-	}
+    /**
+     * pcap_addr.addr field.
+     * 
+     * @return the addr
+     */
+    public final PcapSockAddr getAddr()
+    {
+        return this.addr;
+    }
 
-	/**
-	 * pcap_addr.netmask field.
-	 * 
-	 * @return the netmask
-	 */
-	public final PcapSockAddr getNetmask() {
-		return this.netmask;
-	}
+    /**
+     * pcap_addr.netmask field.
+     * 
+     * @return the netmask
+     */
+    public final PcapSockAddr getNetmask()
+    {
+        return this.netmask;
+    }
 
-	/**
-	 * pcap_addr.broadaddr field.
-	 * 
-	 * @return the broadaddr
-	 */
-	public final PcapSockAddr getBroadaddr() {
-		return this.broadaddr;
-	}
+    /**
+     * pcap_addr.broadaddr field.
+     * 
+     * @return the broadaddr
+     */
+    public final PcapSockAddr getBroadaddr()
+    {
+        return this.broadaddr;
+    }
 
-	/**
-	 * pcap_addr.dstaddr field.
-	 * 
-	 * @return the dstaddr
-	 */
-	public final PcapSockAddr getDstaddr() {
-		return this.dstaddr;
-	}
+    /**
+     * pcap_addr.dstaddr field.
+     * 
+     * @return the dstaddr
+     */
+    public final PcapSockAddr getDstaddr()
+    {
+        return this.dstaddr;
+    }
 
-	/**
-	 * To list.
-	 * 
-	 * @return the list
-	 */
-	private List<PcapAddr> toList() {
-		List<PcapAddr> list = new ArrayList<PcapAddr>();
+    /**
+     * To list.
+     * 
+     * @return the list
+     */
+    private List<PcapAddr> toList()
+    {
+        List<PcapAddr> list = new ArrayList<PcapAddr>();
 
-		PcapAddr i = this;
+        PcapAddr i = this;
 
-		while (i != null) {
-			list.add(i);
+        while (i != null)
+        {
+            list.add(i);
 
-			i = i.next;
-		}
+            i = i.next;
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	/**
-	 * Debug information about this address object.
-	 * 
-	 * @return debug info
-	 */
-	@Override
-	public String toString() {
-		StringBuilder out = new StringBuilder();
+    /**
+     * Debug information about this address object.
+     * 
+     * @return debug info
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder out = new StringBuilder();
 
-		out.append("[");
-		out.append("addr=").append(String.valueOf(addr));
-		out.append(", mask=").append(String.valueOf(netmask));
-		out.append(", broadcast=").append(String.valueOf(broadaddr));
-		out.append(", dstaddr=").append(String.valueOf(dstaddr));
-		out.append("]");
+        out.append("[");
+        out.append("addr=").append(String.valueOf(addr));
+        out.append(", mask=").append(String.valueOf(netmask));
+        out.append(", broadcast=").append(String.valueOf(broadaddr));
+        out.append(", dstaddr=").append(String.valueOf(dstaddr));
+        out.append("]");
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
 }

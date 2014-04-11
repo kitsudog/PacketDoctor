@@ -31,93 +31,101 @@ import org.jnetpcap.packet.annotate.Field.Property;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class AnnotatedFieldRuntime {
+public class AnnotatedFieldRuntime
+{
 
-	/** The map. */
-	private final Map<Property, AnnotatedFieldMethod> map =
-	    new HashMap<Property, AnnotatedFieldMethod>();
+    /** The map. */
+    private final Map<Property, AnnotatedFieldMethod> map = new HashMap<Property, AnnotatedFieldMethod>();
 
-	/** The parent. */
-	private final AnnotatedField parent;
+    /** The parent. */
+    private final AnnotatedField parent;
 
-	/**
-	 * Instantiates a new annotated field runtime.
-	 * 
-	 * @param parent
-	 *          the parent
-	 */
-	public AnnotatedFieldRuntime(AnnotatedField parent) {
-		this.parent = parent;
+    /**
+     * Instantiates a new annotated field runtime.
+     * 
+     * @param parent the parent
+     */
+    public AnnotatedFieldRuntime(AnnotatedField parent)
+    {
+        this.parent = parent;
 
-	}
+    }
 
-	/**
-	 * Finish processing.
-	 * 
-	 * @param errors
-	 *          the errors
-	 */
-	public void finishProcessing(List<HeaderDefinitionError> errors) {
+    /**
+     * Finish processing.
+     * 
+     * @param errors the errors
+     */
+    public void finishProcessing(List<HeaderDefinitionError> errors)
+    {
 
-		/*
-		 * Time to optimize and fill in the blanks if there are any
-		 */
-		for (Property f : Property.values()) {
+        /*
+         * Time to optimize and fill in the blanks if there are any
+         */
+        for (Property f : Property.values())
+        {
 
-			try {
-				if (map.containsKey(f) == false) {
-					map.put(f, AnnotatedFieldMethod.generateFunction(f, parent));
-				}
-			} catch (HeaderDefinitionError e) {
-				errors.add(e);
-			}
-		}
-	}
+            try
+            {
+                if (map.containsKey(f) == false)
+                {
+                    map.put(f, AnnotatedFieldMethod.generateFunction(f, parent));
+                }
+            }
+            catch (HeaderDefinitionError e)
+            {
+                errors.add(e);
+            }
+        }
+    }
 
-	/**
-	 * Gets the function map.
-	 * 
-	 * @return the function map
-	 */
-	public Map<Property, AnnotatedFieldMethod> getFunctionMap() {
-		return map;
-	}
+    /**
+     * Gets the function map.
+     * 
+     * @return the function map
+     */
+    public Map<Property, AnnotatedFieldMethod> getFunctionMap()
+    {
+        return map;
+    }
 
-	/**
-	 * Sets the function.
-	 * 
-	 * @param method
-	 *          the new function
-	 */
-	public void setFunction(AnnotatedFieldMethod method) {
-		final Property function = method.getFunction();
+    /**
+     * Sets the function.
+     * 
+     * @param method the new function
+     */
+    public void setFunction(AnnotatedFieldMethod method)
+    {
+        final Property function = method.getFunction();
 
-		if (map.containsKey(function)) {
-			throw new HeaderDefinitionError(method.getMethod().getDeclaringClass(),
-			    "duplicate " + function + " method declarations for field "
-			        + parent.getName());
-		}
+        if (map.containsKey(function))
+        {
+            throw new HeaderDefinitionError(method.getMethod().getDeclaringClass(), "duplicate " + function + " method declarations for field "
+                    + parent.getName());
+        }
 
-		/*
-		 * Set default values if they were declared with the @Field annotation. This
-		 * saves having to make the actual call to the header.
-		 */
-		if (method.isMapped == false) {
-			method.configFromField(parent);
-		}
-		map.put(function, method);
-	}
+        /*
+         * Set default values if they were declared with the @Field annotation.
+         * This saves having to make the actual call to the header.
+         */
+        if (method.isMapped == false)
+        {
+            method.configFromField(parent);
+        }
+        map.put(function, method);
+    }
 
-	/**
-	 * Sets the function.
-	 * 
-	 * @param methods
-	 *          the methods
-	 */
-	public void setFunction(Map<Property, AnnotatedFieldMethod> methods) {
-		for (AnnotatedFieldMethod f : methods.values()) {
-			setFunction(f);
-		}
-	}
+    /**
+     * Sets the function.
+     * 
+     * @param methods the methods
+     */
+    public void setFunction(Map<Property, AnnotatedFieldMethod> methods)
+    {
+        for (AnnotatedFieldMethod f : methods.values())
+        {
+            setFunction(f);
+        }
+    }
 
 }

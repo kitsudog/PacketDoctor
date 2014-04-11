@@ -25,48 +25,48 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class RegistryRuntimeException
-    extends RuntimeException {
+public class RegistryRuntimeException extends RuntimeException
+{
 
-	/** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 2093913023976126160L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 2093913023976126160L;
 
-	/**
-	 * Instantiates a new registry runtime exception.
-	 */
-	public RegistryRuntimeException() {
-	}
+    /**
+     * Instantiates a new registry runtime exception.
+     */
+    public RegistryRuntimeException()
+    {
+    }
 
-	/**
-	 * Instantiates a new registry runtime exception.
-	 * 
-	 * @param message
-	 *          the message
-	 */
-	public RegistryRuntimeException(String message) {
-		super(message);
-	}
+    /**
+     * Instantiates a new registry runtime exception.
+     * 
+     * @param message the message
+     */
+    public RegistryRuntimeException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 * Instantiates a new registry runtime exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-	public RegistryRuntimeException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new registry runtime exception.
+     * 
+     * @param cause the cause
+     */
+    public RegistryRuntimeException(Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 * Instantiates a new registry runtime exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public RegistryRuntimeException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Instantiates a new registry runtime exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public RegistryRuntimeException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 
 }

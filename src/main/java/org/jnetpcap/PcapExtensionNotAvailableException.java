@@ -27,53 +27,53 @@ package org.jnetpcap;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PcapExtensionNotAvailableException
-    extends IllegalStateException {
+public class PcapExtensionNotAvailableException extends IllegalStateException
+{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 4206020497547882412L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 4206020497547882412L;
 
-	/**
-	 * Instantiates a new pcap extension not available exception.
-	 */
-  public PcapExtensionNotAvailableException() {
-	  super();
-	  // TODO Auto-generated constructor stub
-  }
+    /**
+     * Instantiates a new pcap extension not available exception.
+     */
+    public PcapExtensionNotAvailableException()
+    {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap extension not available exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-  public PcapExtensionNotAvailableException(String message, Throwable cause) {
-	  super(message, cause);
-	  // TODO Auto-generated constructor stub
-  }
+    /**
+     * Instantiates a new pcap extension not available exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public PcapExtensionNotAvailableException(String message, Throwable cause)
+    {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap extension not available exception.
-	 * 
-	 * @param s
-	 *          the s
-	 */
-  public PcapExtensionNotAvailableException(String s) {
-	  super(s);
-	  // TODO Auto-generated constructor stub
-  }
+    /**
+     * Instantiates a new pcap extension not available exception.
+     * 
+     * @param s the s
+     */
+    public PcapExtensionNotAvailableException(String s)
+    {
+        super(s);
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Instantiates a new pcap extension not available exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-  public PcapExtensionNotAvailableException(Throwable cause) {
-	  super(cause);
-	  // TODO Auto-generated constructor stub
-  }
+    /**
+     * Instantiates a new pcap extension not available exception.
+     * 
+     * @param cause the cause
+     */
+    public PcapExtensionNotAvailableException(Throwable cause)
+    {
+        super(cause);
+        // TODO Auto-generated constructor stub
+    }
 
 }

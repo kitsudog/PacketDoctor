@@ -47,164 +47,167 @@ import org.jnetpcap.util.config.JConfig;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class JLogger extends Logger {
+public class JLogger extends Logger
+{
 
-	/** Default resource file with logger configurations. */
-	public static final String PROPERTIES_CONFIG =
-			"resources/builtin-logger.properties";
+    /** Default resource file with logger configurations. */
+    public static final String PROPERTIES_CONFIG = "resources/builtin-logger.properties";
 
-	/** The trigger config init. */
-	private static boolean triggerConfigInit = true;
+    /** The trigger config init. */
+    private static boolean triggerConfigInit = true;
 
-	/**
-	 * Initialize using our config.
-	 */
-	static {
-		try {
-			InputStream in =
-					JLogger.class.getClassLoader().getResourceAsStream(PROPERTIES_CONFIG);
-			if (in == null) {
-				Logger
-						.getLogger("")
-						.severe("JLogger.static<>: Unable to find builtin-logger.properties. "
-								+ "Is resources directory missing in JAR File?");
-			} else {
-				// TODO: disabled logger properties reload, causing issues for customers
-				in.close();
-				// LogManager.getLogManager().readConfiguration(in);
-			}
-		} catch (Exception e) {
-			Logger.getLogger("").log(Level.SEVERE,
-					"Unable to find jNetPcap logger.properties",
-					e);
-		}
-	}
+    /**
+     * Initialize using our config.
+     */
+    static
+    {
+        try
+        {
+            InputStream in = JLogger.class.getClassLoader().getResourceAsStream(PROPERTIES_CONFIG);
+            if (in == null)
+            {
+                Logger.getLogger("").severe("JLogger.static<>: Unable to find builtin-logger.properties. " + "Is resources directory missing in JAR File?");
+            }
+            else
+            {
+                // TODO: disabled logger properties reload, causing issues for
+                // customers
+                in.close();
+                // LogManager.getLogManager().readConfiguration(in);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.getLogger("").log(Level.SEVERE, "Unable to find jNetPcap logger.properties", e);
+        }
+    }
 
-	/**
-	 * Instantiates a new j logger.
-	 * 
-	 * @param name
-	 *          the name
-	 * @param resourceBundleName
-	 *          the resource bundle name
-	 */
-	public JLogger(String name, String resourceBundleName) {
-		super(name, resourceBundleName);
-	}
+    /**
+     * Instantiates a new j logger.
+     * 
+     * @param name the name
+     * @param resourceBundleName the resource bundle name
+     */
+    public JLogger(String name, String resourceBundleName)
+    {
+        super(name, resourceBundleName);
+    }
 
-	/**
-	 * Gets the logger.
-	 * 
-	 * @param c
-	 *          the c
-	 * @return the logger
-	 */
-	public static Logger getLogger(Class<?> c) {
-		if (triggerConfigInit && c != JConfig.class) {
-			/*
-			 * This is needed because of the timing. JConfig reloads the logger
-			 * properties and causes all prior initialization to be lost. So we
-			 * basically trigger the JConfig initialization on the first getLogger
-			 * request. If JConfig has already been initialized some other means, it
-			 * won't do it again, but since we don't know we call its init method, the
-			 * first time we do anyway. JConfig also preserves its own level, so
-			 */
-			triggerConfigInit = false;
-			JConfig.init();
-		}
+    /**
+     * Gets the logger.
+     * 
+     * @param c the c
+     * @return the logger
+     */
+    public static Logger getLogger(Class<?> c)
+    {
+        if (triggerConfigInit && c != JConfig.class)
+        {
+            /*
+             * This is needed because of the timing. JConfig reloads the logger
+             * properties and causes all prior initialization to be lost. So we
+             * basically trigger the JConfig initialization on the first
+             * getLogger request. If JConfig has already been initialized some
+             * other means, it won't do it again, but since we don't know we
+             * call its init method, the first time we do anyway. JConfig also
+             * preserves its own level, so
+             */
+            triggerConfigInit = false;
+            JConfig.init();
+        }
 
-		return getLogger(c.getName());
-	}
+        return getLogger(c.getName());
+    }
 
-	/**
-	 * Gets the logger.
-	 * 
-	 * @param p
-	 *          the p
-	 * @return the logger
-	 */
-	public static Logger getLogger(Package p) {
-		if (triggerConfigInit) {
-			/*
-			 * This is needed because of the timing. JConfig reloads the logger
-			 * properties and causes all prior initialization to be lost. So we
-			 * basically trigger the JConfig initialization on the first getLogger
-			 * request. If JConfig has already been initialized some other means, it
-			 * won't do it again, but since we don't know we call its init method, the
-			 * first time we do anyway. JConfig also preserves its own level, so
-			 */
-			triggerConfigInit = false;
-			JConfig.init();
-		}
+    /**
+     * Gets the logger.
+     * 
+     * @param p the p
+     * @return the logger
+     */
+    public static Logger getLogger(Package p)
+    {
+        if (triggerConfigInit)
+        {
+            /*
+             * This is needed because of the timing. JConfig reloads the logger
+             * properties and causes all prior initialization to be lost. So we
+             * basically trigger the JConfig initialization on the first
+             * getLogger request. If JConfig has already been initialized some
+             * other means, it won't do it again, but since we don't know we
+             * call its init method, the first time we do anyway. JConfig also
+             * preserves its own level, so
+             */
+            triggerConfigInit = false;
+            JConfig.init();
+        }
 
-		return getLogger(p.getName());
-	}
+        return getLogger(p.getName());
+    }
 
-	/**
-	 * Read configuration.
-	 * 
-	 * @param properties
-	 *          the properties
-	 * @return the log manager
-	 * @throws SecurityException
-	 *           the security exception
-	 * @throws IOException
-	 *           Signals that an I/O exception has occurred.
-	 */
-	public static LogManager readConfiguration(final Properties properties)
-			throws SecurityException, IOException {
+    /**
+     * Read configuration.
+     * 
+     * @param properties the properties
+     * @return the log manager
+     * @throws SecurityException the security exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    public static LogManager readConfiguration(final Properties properties) throws SecurityException, IOException
+    {
 
-		LogManager man = LogManager.getLogManager();
+        LogManager man = LogManager.getLogManager();
 
-		// TODO: disabled logging reload. Causing issues for customers
-		return man;
+        // TODO: disabled logging reload. Causing issues for customers
+        return man;
 
-		/*
-		 * final PipedOutputStream buf = new PipedOutputStream(); final
-		 * Exchanger<IOException> io = new Exchanger<IOException>(); Thread worker =
-		 * new Thread(new Runnable() {
-		 * 
-		 * public void run() { IOException error = null; try { properties.store(buf,
-		 * ""); buf.close(); } catch (IOException e) { error = e; }
-		 * 
-		 * try { io.exchange(error); } catch (InterruptedException e1) { }
-		 * 
-		 * }
-		 * 
-		 * }, "property writer");
-		 * 
-		 * worker.start();
-		 * 
-		 * man.readConfiguration(new PipedInputStream(buf));
-		 * 
-		 * try { IOException e = io.exchange(null); if (e != null) { throw e; //
-		 * Rethrow original exception } } catch (InterruptedException e) { }
-		 * 
-		 * return man;
-		 */}
+        /*
+         * final PipedOutputStream buf = new PipedOutputStream(); final
+         * Exchanger<IOException> io = new Exchanger<IOException>(); Thread
+         * worker = new Thread(new Runnable() {
+         * 
+         * public void run() { IOException error = null; try {
+         * properties.store(buf, ""); buf.close(); } catch (IOException e) {
+         * error = e; }
+         * 
+         * try { io.exchange(error); } catch (InterruptedException e1) { }
+         * 
+         * }
+         * 
+         * }, "property writer");
+         * 
+         * worker.start();
+         * 
+         * man.readConfiguration(new PipedInputStream(buf));
+         * 
+         * try { IOException e = io.exchange(null); if (e != null) { throw e; //
+         * Rethrow original exception } } catch (InterruptedException e) { }
+         * 
+         * return man;
+         */}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.logging.Logger#setLevel(java.util.logging.Level)
-	 */
-	/**
-	 * Sets the level.
-	 * 
-	 * @param newLevel
-	 *          the new level
-	 * @throws SecurityException
-	 *           the security exception
-	 * @see java.util.logging.Logger#setLevel(java.util.logging.Level)
-	 */
-	@Override
-	public void setLevel(Level newLevel) throws SecurityException {
-		super.setLevel(newLevel);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.logging.Logger#setLevel(java.util.logging.Level)
+     */
+    /**
+     * Sets the level.
+     * 
+     * @param newLevel the new level
+     * @throws SecurityException the security exception
+     * @see java.util.logging.Logger#setLevel(java.util.logging.Level)
+     */
+    @Override
+    public void setLevel(Level newLevel) throws SecurityException
+    {
+        super.setLevel(newLevel);
 
-		if (triggerConfigInit) {
-			triggerConfigInit = false;
-			JConfig.init();
-		}
-	}
+        if (triggerConfigInit)
+        {
+            triggerConfigInit = false;
+            JConfig.init();
+        }
+    }
 
 }

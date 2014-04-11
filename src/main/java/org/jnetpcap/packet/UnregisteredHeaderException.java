@@ -25,48 +25,48 @@ package org.jnetpcap.packet;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class UnregisteredHeaderException
-    extends RegistryRuntimeException {
+public class UnregisteredHeaderException extends RegistryRuntimeException
+{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 8734105996858455745L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 8734105996858455745L;
 
-	/**
-	 * Instantiates a new unregistered header exception.
-	 */
-	public UnregisteredHeaderException() {
-	}
+    /**
+     * Instantiates a new unregistered header exception.
+     */
+    public UnregisteredHeaderException()
+    {
+    }
 
-	/**
-	 * Instantiates a new unregistered header exception.
-	 * 
-	 * @param message
-	 *          the message
-	 */
-	public UnregisteredHeaderException(String message) {
-		super(message);
-	}
+    /**
+     * Instantiates a new unregistered header exception.
+     * 
+     * @param message the message
+     */
+    public UnregisteredHeaderException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 * Instantiates a new unregistered header exception.
-	 * 
-	 * @param cause
-	 *          the cause
-	 */
-	public UnregisteredHeaderException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Instantiates a new unregistered header exception.
+     * 
+     * @param cause the cause
+     */
+    public UnregisteredHeaderException(Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 * Instantiates a new unregistered header exception.
-	 * 
-	 * @param message
-	 *          the message
-	 * @param cause
-	 *          the cause
-	 */
-	public UnregisteredHeaderException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Instantiates a new unregistered header exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
+    public UnregisteredHeaderException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 
 }

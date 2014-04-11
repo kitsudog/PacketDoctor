@@ -28,87 +28,93 @@ package org.jnetpcap;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public class PcapStat {
+public class PcapStat
+{
 
-	/**
-	 * Inits the i ds.
-	 */
-	private static native void initIDs();
+    /**
+     * Inits the i ds.
+     */
+    private static native void initIDs();
 
-	static {
-		System.loadLibrary(Pcap.JNETPCAP_LIBRARY_NAME);
-		initIDs();
-	}
+    static
+    {
+        System.loadLibrary(Pcap.JNETPCAP_LIBRARY_NAME);
+        initIDs();
+    }
 
-	/**
-	 * For toString() to build its string. Should be made thread local.
-	 */
-	protected final static StringBuilder out = new StringBuilder();
+    /**
+     * For toString() to build its string. Should be made thread local.
+     */
+    protected final static StringBuilder out = new StringBuilder();
 
-	/** number of packets received. */
-	private long recv;
+    /** number of packets received. */
+    private long recv;
 
-	/** number of packets dropped. */
-	private long drop;
+    /** number of packets dropped. */
+    private long drop;
 
-	/** drops by interface XXX not yet supported. */
-	private long ifDrop;
+    /** drops by interface XXX not yet supported. */
+    private long ifDrop;
 
-	/*
-	 * The rest of the fields are only filled in by a call to WinPcap.statsEx
-	 * which returns a subclass of PcapStat called WinPcapStat. The fields are
-	 * only accessible from WinPcapStat class.
-	 */
+    /*
+     * The rest of the fields are only filled in by a call to WinPcap.statsEx
+     * which returns a subclass of PcapStat called WinPcapStat. The fields are
+     * only accessible from WinPcapStat class.
+     */
 
-	/** number of packets that are received by the application. */
-	protected long capt;
+    /** number of packets that are received by the application. */
+    protected long capt;
 
-	/** number of packets sent by the server on the network. */
-	protected long sent;
+    /** number of packets sent by the server on the network. */
+    protected long sent;
 
-	/** number of packets lost on the network. */
-	protected long netdrop;
+    /** number of packets lost on the network. */
+    protected long netdrop;
 
-	/**
-	 * Number of packets transmitted on the network
-	 * 
-	 * @return the recv
-	 */
-	public final long getRecv() {
-		return this.recv;
-	}
+    /**
+     * Number of packets transmitted on the network
+     * 
+     * @return the recv
+     */
+    public final long getRecv()
+    {
+        return this.recv;
+    }
 
-	/**
-	 * number of packets dropped by the driver
-	 * 
-	 * @return the drop
-	 */
-	public final long getDrop() {
-		return this.drop;
-	}
+    /**
+     * number of packets dropped by the driver
+     * 
+     * @return the drop
+     */
+    public final long getDrop()
+    {
+        return this.drop;
+    }
 
-	/**
-	 * drops by interface. Not supported.
-	 * 
-	 * @return the ifdrop
-	 */
-	public final long getIfDrop() {
-		return this.ifDrop;
-	}
+    /**
+     * drops by interface. Not supported.
+     * 
+     * @return the ifdrop
+     */
+    public final long getIfDrop()
+    {
+        return this.ifDrop;
+    }
 
-	/**
-	 * Debug string return debug string.
-	 * 
-	 * @return the string
-	 */
-	@Override
-	public String toString() {
-		out.setLength(0);
+    /**
+     * Debug string return debug string.
+     * 
+     * @return the string
+     */
+    @Override
+    public String toString()
+    {
+        out.setLength(0);
 
-		out.append("recv=").append(recv);
-		out.append(", drop=").append(drop);
-		out.append(", ifdrop=").append(ifDrop);
+        out.append("recv=").append(recv);
+        out.append(", drop=").append(drop);
+        out.append(", ifdrop=").append(ifDrop);
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 }

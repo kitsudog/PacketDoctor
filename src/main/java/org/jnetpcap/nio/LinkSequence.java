@@ -24,208 +24,227 @@ import java.util.Iterator;
 /**
  * The Class LinkSequence.
  * 
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  * @author markbe
  */
-public class LinkSequence<T> implements Iterable<T> {
+public class LinkSequence<T> implements Iterable<T>
+{
 
-	/** The name. */
-	private final String name;
+    /** The name. */
+    private final String name;
 
-	/**
-	 * Instantiates a new link sequence.
-	 */
-	public LinkSequence() {
-		this.name = super.toString();
-	}
+    /**
+     * Instantiates a new link sequence.
+     */
+    public LinkSequence()
+    {
+        this.name = super.toString();
+    }
 
-	/**
-	 * Instantiates a new link sequence.
-	 * 
-	 * @param name
-	 *          the name
-	 */
-	public LinkSequence(String name) {
-		this.name = name;
-	}
+    /**
+     * Instantiates a new link sequence.
+     * 
+     * @param name the name
+     */
+    public LinkSequence(String name)
+    {
+        this.name = name;
+    }
 
-	/** The first. */
-	private Link<T> first;
-	
-	/** The last. */
-	private Link<T> last;
+    /** The first. */
+    private Link<T> first;
 
-	/** The size. */
-	private int size;
+    /** The last. */
+    private Link<T> last;
 
-	/**
-	 * Adds the.
-	 * 
-	 * @param l
-	 *          the l
-	 */
-	public void add(Link<T> l) {
-		if (l.linkNext() != null || l.linkPrev() != null) {
-			throw new IllegalStateException("link element already part of list");
-		}
+    /** The size. */
+    private int size;
 
-		if (last == null) {
-			first = l;
-			last = l;
-		} else {
-			last.linkNext(l);
-			l.linkPrev(last);
-			last = l;
-		}
+    /**
+     * Adds the.
+     * 
+     * @param l the l
+     */
+    public void add(Link<T> l)
+    {
+        if (l.linkNext() != null || l.linkPrev() != null)
+        {
+            throw new IllegalStateException("link element already part of list");
+        }
 
-		size++;
-		l.linkCollection(this);
-	}
+        if (last == null)
+        {
+            first = l;
+            last = l;
+        }
+        else
+        {
+            last.linkNext(l);
+            l.linkPrev(last);
+            last = l;
+        }
 
-	/**
-	 * Checks if is empty.
-	 * 
-	 * @return true, if is empty
-	 */
-	public boolean isEmpty() {
-		return size == 0;
-	}
+        size++;
+        l.linkCollection(this);
+    }
 
-	/**
-	 * Removes the.
-	 * 
-	 * @param l
-	 *          the l
-	 */
-	public void remove(Link<T> l) {
-		final Link<T> p = l.linkPrev();
-		final Link<T> n = l.linkNext();
+    /**
+     * Checks if is empty.
+     * 
+     * @return true, if is empty
+     */
+    public boolean isEmpty()
+    {
+        return size == 0;
+    }
 
-		if (p == null && n == null) { // Only element in the list
-			first = null;
-			last = null;
+    /**
+     * Removes the.
+     * 
+     * @param l the l
+     */
+    public void remove(Link<T> l)
+    {
+        final Link<T> p = l.linkPrev();
+        final Link<T> n = l.linkNext();
 
-		} else if (p == null) { // The first of many elements on the list
-			first = n;
-			first.linkPrev(null);
+        if (p == null && n == null)
+        { // Only element in the list
+            first = null;
+            last = null;
 
-		} else if (n == null) { // The last of many elements on the list
-			last = p;
-			last.linkNext(null);
+        }
+        else if (p == null)
+        { // The first of many elements on the list
+            first = n;
+            first.linkPrev(null);
 
-		} else { // In the middle of many
+        }
+        else if (n == null)
+        { // The last of many elements on the list
+            last = p;
+            last.linkNext(null);
 
-			p.linkNext(n);
-			n.linkPrev(p);
-		}
+        }
+        else
+        { // In the middle of many
 
-		l.linkNext(null);
-		l.linkPrev(null);
-		l.linkCollection(null);
+            p.linkNext(n);
+            n.linkPrev(p);
+        }
 
-		size--;
+        l.linkNext(null);
+        l.linkPrev(null);
+        l.linkCollection(null);
 
-		if (size < 0) {
-			final T e = l.linkElement();
-			final String name = (e == null) ? null : e.getClass().getSimpleName();
-			String msg =
-					String.format("%s:: size < 0 :: culprit=%s[%s]",
-							this.name,
-							name,
-							String.valueOf(e));
-			throw new IllegalStateException(msg);
-		}
-	}
+        size--;
 
-	/**
-	 * Size.
-	 * 
-	 * @return the int
-	 */
-	public synchronized int size() {
-		return size;
-	}
+        if (size < 0)
+        {
+            final T e = l.linkElement();
+            final String name = (e == null) ? null : e.getClass().getSimpleName();
+            String msg = String.format("%s:: size < 0 :: culprit=%s[%s]", this.name, name, String.valueOf(e));
+            throw new IllegalStateException(msg);
+        }
+    }
 
-	/**
-	 * Gets the.
-	 * 
-	 * @param index
-	 *          the index
-	 * @return the t
-	 */
-	public synchronized T get(int index) {
-		if (index < 0 || index >= size) {
-			throw new IndexOutOfBoundsException(String.format("index=%d, size=%d",
-					index,
-					size));
-		}
+    /**
+     * Size.
+     * 
+     * @return the int
+     */
+    public synchronized int size()
+    {
+        return size;
+    }
 
-		Link<T> l = first;
-		int i = 0;
-		while (i < index) {
-			l = l.linkNext();
-			i++;
-		}
+    /**
+     * Gets the.
+     * 
+     * @param index the index
+     * @return the t
+     */
+    public synchronized T get(int index)
+    {
+        if (index < 0 || index >= size)
+        {
+            throw new IndexOutOfBoundsException(String.format("index=%d, size=%d", index, size));
+        }
 
-		return (l == null) ? null : l.linkElement();
-	}
+        Link<T> l = first;
+        int i = 0;
+        while (i < index)
+        {
+            l = l.linkNext();
+            i++;
+        }
 
-	/**
-	 * To string.
-	 * 
-	 * @return the string
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		StringBuilder b = new StringBuilder();
+        return (l == null) ? null : l.linkElement();
+    }
 
-		b.append('[');
-		Link<T> node = first;
-		while (node != null) {
-			if (node != first) {
-				b.append(',');
-			}
+    /**
+     * To string.
+     * 
+     * @return the string
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        StringBuilder b = new StringBuilder();
 
-			b.append(node.toString());
+        b.append('[');
+        Link<T> node = first;
+        while (node != null)
+        {
+            if (node != first)
+            {
+                b.append(',');
+            }
 
-			node = node.linkNext();
-		}
-		b.append(']');
+            b.append(node.toString());
 
-		return b.toString();
-	}
+            node = node.linkNext();
+        }
+        b.append(']');
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Iterable#iterator()
-	 */
-	/**
-	 * Iterator.
-	 * 
-	 * @return the iterator
-	 * @see java.lang.Iterable#iterator()
-	 */
-	public Iterator<T> iterator() {
-		return new Iterator<T>() {
+        return b.toString();
+    }
 
-			Link<T> node = first;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Iterable#iterator()
+     */
+    /**
+     * Iterator.
+     * 
+     * @return the iterator
+     * @see java.lang.Iterable#iterator()
+     */
+    public Iterator<T> iterator()
+    {
+        return new Iterator<T>()
+        {
 
-			public boolean hasNext() {
-				return node != null;
-			}
+            Link<T> node = first;
 
-			public T next() {
-				Link<T> prev = node;
-				node = node.linkNext();
-				return prev.linkElement();
-			}
+            public boolean hasNext()
+            {
+                return node != null;
+            }
 
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
+            public T next()
+            {
+                Link<T> prev = node;
+                node = node.linkNext();
+                return prev.linkElement();
+            }
 
-		};
-	}
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+
+        };
+    }
 }

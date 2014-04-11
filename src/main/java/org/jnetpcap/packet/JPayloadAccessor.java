@@ -32,55 +32,52 @@ import org.jnetpcap.nio.JBuffer;
  * @author Mark Bednarczyk
  * @author Sly Technologies, Inc.
  */
-public interface JPayloadAccessor {
-	/**
-	 * Retrieves the playload data portion of the packet right after the current
-	 * header.
-	 * 
-	 * @return newly allocated byte array containing copy of the contents of the
-	 *         header's payload from the packet.
-	 */
-	public byte[] getPayload();
+public interface JPayloadAccessor
+{
+    /**
+     * Retrieves the playload data portion of the packet right after the current
+     * header.
+     * 
+     * @return newly allocated byte array containing copy of the contents of the
+     *         header's payload from the packet.
+     */
+    public byte[] getPayload();
 
-	/**
-	 * Copies the payload data portion of the packet right after the current
-	 * header to user supplied buffer.
-	 * 
-	 * @param buffer
-	 *          buffer where the data will be written to
-	 * @return the same buffer that was passed in
-	 */
-	public byte[] transferPayloadTo(byte[] buffer);
+    /**
+     * Copies the payload data portion of the packet right after the current
+     * header to user supplied buffer.
+     * 
+     * @param buffer buffer where the data will be written to
+     * @return the same buffer that was passed in
+     */
+    public byte[] transferPayloadTo(byte[] buffer);
 
-	/**
-	 * Peers, without copy, the user supplied buffer with payload data portion of
-	 * the packet right after the current header.
-	 * 
-	 * @param buffer
-	 *          buffer to peer the data with
-	 * @return the same buffer that was passed in
-	 */
-	public JBuffer peerPayloadTo(JBuffer buffer);
+    /**
+     * Peers, without copy, the user supplied buffer with payload data portion
+     * of the packet right after the current header.
+     * 
+     * @param buffer buffer to peer the data with
+     * @return the same buffer that was passed in
+     */
+    public JBuffer peerPayloadTo(JBuffer buffer);
 
-	/**
-	 * Copies into the user supplied buffer, the payload data portion of the
-	 * packet right after the current header.
-	 * 
-	 * @param buffer
-	 *          buffer to copy the data to
-	 * @return the same buffer that was passed in
-	 */
-	public JBuffer transferPayloadTo(JBuffer buffer);
+    /**
+     * Copies into the user supplied buffer, the payload data portion of the
+     * packet right after the current header.
+     * 
+     * @param buffer buffer to copy the data to
+     * @return the same buffer that was passed in
+     */
+    public JBuffer transferPayloadTo(JBuffer buffer);
 
-	/**
-	 * Copies into the user supplied buffer, the payload data portion of the
-	 * packet right after the current header. The copy will start at the current
-	 * ByteBuffer position property.
-	 * 
-	 * @param buffer
-	 *          buffer to copy the data to
-	 * @return the same buffer that was passed in
-	 */
-	public ByteBuffer transferPayloadTo(ByteBuffer buffer);
+    /**
+     * Copies into the user supplied buffer, the payload data portion of the
+     * packet right after the current header. The copy will start at the current
+     * ByteBuffer position property.
+     * 
+     * @param buffer buffer to copy the data to
+     * @return the same buffer that was passed in
+     */
+    public ByteBuffer transferPayloadTo(ByteBuffer buffer);
 
 }
