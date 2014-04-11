@@ -445,9 +445,17 @@ public class Main
 
     private PcapIf getDeviceByName(String name) throws UnknownHostException
     {
+        byte[] ipaddr = IpUtils.int2bytes(0xffffffff);
         if (name.matches("([0-9]{1,3}\\.){3}[0-9]{1,3}"))
         {
-            byte[] ipaddr = Inet4Address.getByName(name).getAddress();
+            ipaddr = Inet4Address.getByName(name).getAddress();
+        }
+        if (name.matches("\\d+"))
+        {
+            return alldevs.get(Integer.parseInt(name) - 1);
+        }
+        else
+        {
             for (PcapIf dev : alldevs)
             {
                 if (dev.getName().equals(name))
@@ -466,11 +474,6 @@ public class Main
                     }
                 }
             }
-            throw new Error("没有找到指定ip的设备");
-        }
-        else if (name.matches("\\d+"))
-        {
-            return alldevs.get(Integer.parseInt(name) - 1);
         }
         throw new Error("无法识别的接口");
     }
