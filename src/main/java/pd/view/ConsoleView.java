@@ -1,4 +1,4 @@
-package sniffer.view;
+package pd.view;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

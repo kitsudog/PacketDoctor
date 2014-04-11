@@ -1,4 +1,4 @@
-package sniffer.view;
+package pd.view;
 
 import java.net.URL;
 import java.util.ArrayList;

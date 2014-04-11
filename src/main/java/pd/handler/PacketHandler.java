@@ -1,10 +1,10 @@
-package sniffer.handler;
+package pd.handler;
 
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import sniffer.HandlerException;
-import sniffer.view.IView;
+import pd.HandlerException;
+import pd.view.IView;
 
 public interface PacketHandler
 {

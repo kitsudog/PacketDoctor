@@ -1,6 +1,6 @@
-package sniffer.handler;
+package pd.handler;
 
-import sniffer.view.IView;
+import pd.view.IView;
 
 public abstract class AbstractPacketHandler implements PacketHandler
 {
