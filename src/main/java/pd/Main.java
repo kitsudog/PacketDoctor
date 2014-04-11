@@ -29,12 +29,11 @@ import org.jnetpcap.protocol.tcpip.Tcp;
 
 import pd.filter.BaseFilter;
 import pd.handler.HandlerGenerator;
-import pd.handler.HttpHandler;
 import pd.utils.CommandLineHelper;
+import pd.utils.CommandLineHelper.ExOpt;
 import pd.utils.EndlessFileInputStream;
 import pd.utils.IpUtils;
 import pd.utils.PCAPFileReader;
-import pd.utils.CommandLineHelper.ExOpt;
 import pd.view.ConsoleView;
 import pd.view.GUIView;
 import pd.view.IView;
@@ -73,6 +72,10 @@ public class Main
 
     private int deviceIp;
 
+    private PDConfig conf;
+
+    private String handler;
+
     private Main()
     {
         int r = Pcap.findAllDevs(alldevs, errbuf);
@@ -86,6 +89,7 @@ public class Main
     static
     {
         defaultMap = new HashMap<String, String>();
+        defaultMap.put("handler", "DEFAULT");
         options = new Options();
         options.addOption(OptionBuilder.isRequired(false) //
                 .withLongOpt("gui")//
@@ -126,7 +130,7 @@ public class Main
                 .create("s"));
         options.addOption(OptionBuilder.isRequired(false) //
                 .withLongOpt("source")//
-                .withDescription("指定本机ip(仅与文件配合)")//
+                .withDescription("指定本机ip")//
                 .withType(CommandLineHelper.OPTION_IP)//
                 .hasArg()//
                 .create("S"));
@@ -136,6 +140,11 @@ public class Main
                 .withType(CommandLineHelper.OPTION_FILE_EXIST)//
                 .hasArg()//
                 .create("c"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("handler")//
+                .withDescription("指定策略")//
+                .hasArg()//
+                .create("H"));
     }
 
     /**
@@ -388,7 +397,6 @@ public class Main
             {
                 main.skip = Integer.parseInt(paramMap.get("skip"));
             }
-            main.deviceIp = IpUtils.string2int(paramMap.get("source"));
         }
         else if (paramMap.containsKey("loop"))
         {
@@ -412,7 +420,26 @@ public class Main
         {
             main.port = Integer.parseInt(paramMap.get("port"));
         }
-
+        if (paramMap.containsKey("source"))
+        {
+            main.deviceIp = IpUtils.string2int(paramMap.get("source"));
+        }
+        if (paramMap.containsKey("conf"))
+        {
+            main.conf = PDConfig.parse(new File(paramMap.get("conf")));
+        }
+        else
+        {
+            if (new File("config.prop").exists())
+            {
+                main.conf = PDConfig.parse(new File("config.prop"));
+            }
+            else
+            {
+                main.conf = PDConfig.DEFAULT;
+            }
+        }
+        main.handler = paramMap.get("handler");
         main.start();
     }
 
@@ -471,9 +498,9 @@ public class Main
         view.info("GUI Ready");
     }
 
-    private void start() throws IOException
+    private void start() throws Exception
     {
-        handlerGenerator = new HandlerGenerator(HttpHandler.class, view);
+        handlerGenerator = new HandlerGenerator(conf.getHandlerClass(handler), view);
         BaseFilter filter = new BaseFilter();
         if (host != null)
         {
@@ -485,6 +512,8 @@ public class Main
         }
         handlerGenerator.addFilter(filter);
         handlerGenerator.setSource(deviceIp);
+        view.info("Handler: " + conf.getHandlerName(handler));
+        view.info("Source: " + IpUtils.int2string(deviceIp));
         if (device == LOOP)
         {
             view.info(String.format("WATCH: LOOP"));

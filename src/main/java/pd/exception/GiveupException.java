@@ -1,4 +1,4 @@
-package pd;
+package pd.exception;
 
 public class GiveupException extends HandlerException
 {

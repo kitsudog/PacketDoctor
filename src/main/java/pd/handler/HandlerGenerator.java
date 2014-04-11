@@ -10,8 +10,9 @@ import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import pd.DisconnectException;
-import pd.GiveupException;
+import pd.exception.DisconnectException;
+import pd.exception.GiveupException;
+import pd.exception.PassException;
 import pd.filter.IFilter;
 import pd.utils.IpUtils;
 import pd.view.IView;
@@ -67,6 +68,10 @@ public class HandlerGenerator implements PcapPacketHandler<String>
                 handler.recvPacket(frameNum, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
             }
         }
+        catch (PassException e)
+        {
+            dump(e.msg, frameNum, ip4.getPacket());
+        }
         catch (GiveupException e)
         {
             dump("无法识别的中间态的链接", frameNum, ip4.getPacket());
@@ -105,6 +110,13 @@ public class HandlerGenerator implements PcapPacketHandler<String>
             sourcePort = tcp.destination();
             destination = ip4.sourceToInt();
             destinationPort = tcp.source();
+        }
+        else
+        {
+            source = ip4.sourceToInt();
+            sourcePort = tcp.source();
+            destination = ip4.destinationToInt();
+            destinationPort = tcp.destination();
         }
         view.error(msg
                 + "\n"
@@ -149,7 +161,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         pool.remove(key);
     }
 
-    private PacketHandler getHandler(Ip4 ip4, Tcp tcp)
+    private PacketHandler getHandler(Ip4 ip4, Tcp tcp) throws Exception
     {
         int sourceHost;
         int destinationHost;
@@ -171,7 +183,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         }
         else
         {
-            throw new RuntimeException("不能定位的");
+            throw new PassException("被跳过的包");
         }
         long key = ((long) destinationHost << 32) | (sourcePort << 16) | destinationPort;
         PacketHandler handler = pool.get(key);
