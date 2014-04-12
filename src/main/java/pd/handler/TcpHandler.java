@@ -345,7 +345,7 @@ public class TcpHandler extends AbstractPacketHandler
             else
             {
                 // 未知的状态
-                throw new RuntimeException("状态不对");
+                throw new RuntimeException(String.format("状态不对: %s (%s)", local.state.name(), tcp.flags()));
             }
         }
     }

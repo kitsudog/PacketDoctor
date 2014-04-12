@@ -46,25 +46,34 @@ public class FileSource implements ISource
     @Override
     public JPacket next() throws EOFException
     {
-        try
+        while (true)
         {
-            if (!reader.hasNext())
+            try
             {
-                throw new EOFException();
+                if (reader.hasNext())
+                {
+                    byte[] buffer = reader.next();
+                    JMemoryPacket packet = new JMemoryPacket(type, Arrays.copyOfRange(buffer, 16, buffer.length));
+                    return packet;
+                }
+                else
+                {
+                    Thread.sleep(10);
+                }
             }
-            byte[] buffer = reader.next();
-            JMemoryPacket packet = new JMemoryPacket(type, Arrays.copyOfRange(buffer, 16, buffer.length));
-            return packet;
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            catch (EOFException e)
+            {
+                // PASS
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
-        catch (EOFException e)
-        {
-            throw e;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override

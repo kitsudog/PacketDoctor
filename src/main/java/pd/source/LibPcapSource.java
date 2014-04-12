@@ -1,6 +1,6 @@
 package pd.source;
 
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
@@ -13,9 +13,9 @@ public class LibPcapSource implements ISource
     class Handler implements PcapPacketHandler<String>
     {
 
-        private LinkedList<PcapPacket> queue;
+        private LinkedBlockingQueue<PcapPacket> queue;
 
-        public Handler(LinkedList<PcapPacket> queue)
+        public Handler(LinkedBlockingQueue<PcapPacket> queue)
         {
             this.queue = queue;
         }
@@ -34,13 +34,13 @@ public class LibPcapSource implements ISource
 
     private Handler handler;
 
-    private LinkedList<PcapPacket> packetQueue;
+    private LinkedBlockingQueue<PcapPacket> packetQueue;
 
     private int skip;
 
     public LibPcapSource(PcapIf device)
     {
-        packetQueue = new LinkedList<PcapPacket>();
+        packetQueue = new LinkedBlockingQueue<PcapPacket>();
         handler = new Handler(packetQueue);
         this.device = device;
     }
@@ -61,7 +61,7 @@ public class LibPcapSource implements ISource
                     e.printStackTrace();
                 }
             }
-            packetQueue.pollFirst();
+            packetQueue.poll();
             skip--;
         }
         while (packetQueue.isEmpty())
@@ -75,7 +75,7 @@ public class LibPcapSource implements ISource
                 e.printStackTrace();
             }
         }
-        return packetQueue.pollFirst();
+        return packetQueue.poll();
     }
 
     @Override

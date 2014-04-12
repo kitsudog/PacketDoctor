@@ -55,6 +55,7 @@ public class PCAPFileReader
         else if ((magic & 0xffffffff) == 0xd4c3b2a1)
         {
             buff.order(ByteOrder.LITTLE_ENDIAN);
+            temp.order(ByteOrder.LITTLE_ENDIAN);
         }
         else
         {

@@ -80,7 +80,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         }
         catch (DisconnectException e)
         {
-            view.info(String.format("断开一个连接 %s",
+            view.debug(String.format("断开一个连接 %s",
                     Arrays.binarySearch(source, ip4.sourceToInt()) >= 0 ? IpUtils.toServerDesc(ip4, tcp) : IpUtils.fromClientDesc(ip4, tcp)));
         }
         catch (Exception e)

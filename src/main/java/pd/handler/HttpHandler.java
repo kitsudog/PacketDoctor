@@ -358,13 +358,18 @@ public class HttpHandler extends TcpHandler
                                 i += 2;
                                 if (chunkSize > 0)
                                 {
-                                    if (contentRaw.length < i + chunkSize)
+                                    if (contentRaw.length < i + chunkSize + 2 + 5)
                                     {
                                         // 数据还不够
-                                        state.length += i + chunkSize - contentRaw.length;
+                                        state.length += i + chunkSize + 2 + 5 - contentRaw.length;
                                         return;
                                     }
                                     buff.write(Arrays.copyOfRange(contentRaw, i, i + chunkSize));
+                                }
+                                else
+                                {
+                                    state.length += 2;
+                                    return;
                                 }
                                 cur = chunkSize + i + 2;
                                 i = cur - 1;
