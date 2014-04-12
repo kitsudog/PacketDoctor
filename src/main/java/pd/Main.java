@@ -34,6 +34,7 @@ import pd.utils.CommandLineHelper;
 import pd.utils.CommandLineHelper.ExOpt;
 import pd.utils.IpUtils;
 import pd.utils.ReleaseUtils;
+import pd.utils.StringUtils;
 import pd.view.ConsoleView;
 import pd.view.GUIView;
 import pd.view.IView;
@@ -177,6 +178,10 @@ public class Main
                 .withType(CommandLineHelper.OPTION_INT)//
                 .hasArg()//
                 .create("n"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("help")//
+                .withDescription("显示帮助")//
+                .create());
     }
 
     /**
@@ -263,7 +268,8 @@ public class Main
 
     public static void main(String[] args) throws Exception
     {
-        Map<String, String> paramMap = new CommandLineHelper("包监听工具", options, defaultMap).parse(args);
+        CommandLineHelper helper = new CommandLineHelper("包监听工具", options, defaultMap);
+        Map<String, String> paramMap = helper.parse(args);
         Main.initEnv();
         Main main = new Main();
         if (paramMap.containsKey("gui"))
@@ -274,26 +280,34 @@ public class Main
         {
             main.useConsole();
         }
-
+        if (paramMap.containsKey("help"))
+        {
+            helper.showUsage();
+            return;
+        }
         if (paramMap.containsKey("debug"))
         {
             main.view.setDebug(true);
         }
         if (paramMap.containsKey("list"))
         {
+            String tmp = "";
             for (PcapIf dev : main.alldevs)
             {
-                String ip = "-";
+                String ip = "";
                 if (dev.getAddresses().size() > 0)
                 {
                     for (PcapAddr addr : dev.getAddresses())
                     {
                         ip += IpUtils.bytes2string(addr.getAddr().getData()) + ", ";
                     }
-                    ip.replaceFirst(", $", "");
+                    ip = ip.replaceFirst(", $", "");
                 }
-                main.view.info(String.format("%s : %-10s %s", ip, dev.getName(), dev.getDescription()));
+
+                tmp += String.format("[%s]\t%-10s\t[%s]", ip, dev.getName(), dev.getDescription());
+                tmp += "\n";
             }
+            main.view.info(StringUtils.justify(tmp));
             return;
         }
         else if (paramMap.containsKey("file"))

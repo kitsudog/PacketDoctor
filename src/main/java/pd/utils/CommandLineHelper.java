@@ -237,11 +237,10 @@ final public class CommandLineHelper
         }
     }
 
-    private void showUsage()
+    public void showUsage()
     {
         HelpFormatter formatter = new HelpFormatter();
-        String usageMsg = getClass().getName();
-        formatter.printHelp(usageMsg, this.header, options, null, false);
+        formatter.printHelp(" ", this.header, options, null, false);
     }
 
     private boolean isIp(String ip)
