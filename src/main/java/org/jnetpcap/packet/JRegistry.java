@@ -1067,9 +1067,9 @@ public final class JRegistry
      * @return multi-line string containing various debug information about
      *         JRegistry
      */
+    @SuppressWarnings("resource")
     public static String toDebugString()
     {
-        @SuppressWarnings("resource")
         Formatter out = new Formatter();
 
         try

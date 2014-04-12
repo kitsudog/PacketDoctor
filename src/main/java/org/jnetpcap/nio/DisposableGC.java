@@ -915,6 +915,7 @@ public final class DisposableGC
                 try
                 {
                     drainRefQueueLoop();
+
                 }
                 catch (InterruptedException e)
                 {
@@ -934,9 +935,11 @@ public final class DisposableGC
                     }
                 }
             }
+
         }, "DisposableGC");
 
         cleanupThreadActive.set(true);
+
         cleanupThread.setDaemon(true);
         cleanupThread.setPriority(cleanupThread.getPriority() - 1); // Lower
         // priority
@@ -955,6 +958,7 @@ public final class DisposableGC
             synchronized (cleanupThread)
             {
                 cleanupThreadActive.set(false);
+
                 if (cleanupThread != null)
                 {
                     cleanupThread.wait();

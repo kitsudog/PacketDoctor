@@ -13,27 +13,27 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.pivot.wtk.Alert;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapAddr;
 import org.jnetpcap.PcapIf;
-import org.jnetpcap.packet.JMemoryPacket;
-import org.jnetpcap.protocol.JProtocol;
+import org.jnetpcap.packet.JPacket;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
 import pd.filter.BaseFilter;
 import pd.handler.HandlerGenerator;
+import pd.source.FileSource;
+import pd.source.ISource;
+import pd.source.LibPcapSource;
+import pd.source.ProcessSource;
 import pd.utils.CommandLineHelper;
 import pd.utils.CommandLineHelper.ExOpt;
-import pd.utils.EndlessFileInputStream;
 import pd.utils.IpUtils;
-import pd.utils.PCAPFileReader;
+import pd.utils.ReleaseUtils;
 import pd.view.ConsoleView;
 import pd.view.GUIView;
 import pd.view.IView;
@@ -70,18 +70,24 @@ public class Main
 
     private IView view;
 
-    private int deviceIp;
+    private int[] deviceIp;
 
     private PDConfig conf;
 
     private String handler;
+
+    private String sourceCmd;
+
+    private ISource source;
+
+    private int num = 1000000;
 
     private Main()
     {
         int r = Pcap.findAllDevs(alldevs, errbuf);
         if (r == Pcap.NOT_OK || alldevs.isEmpty())
         {
-            console.alert(String.format("无法读取网卡列表, error is %s", errbuf.toString()));
+            console.alert(String.format("无法读取网卡列表, 尝试提高到管理员权限"));
             throw new Error();
         }
     }
@@ -110,6 +116,10 @@ public class Main
                 .withDescription("指定接口")//
                 .hasArg()//
                 .create("i"));
+        options.addOption(OptionBuilder.isRequired(false) //
+                .withLongOpt("loop")//
+                .withDescription("指定为lo 为接口")//
+                .create("L"));
         options.addOption(OptionBuilder.isRequired(false) //
                 .withLongOpt("port")//
                 .withDescription("指定端口(仅截获与此端口的沟通)")//
@@ -145,6 +155,28 @@ public class Main
                 .withDescription("指定策略")//
                 .hasArg()//
                 .create("H"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("list")//
+                .withDescription("显示所有的网卡列表")//
+                .create("l"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("command")//
+                .withDescription("不使用jnetpcap来获取数据 文件名变量为{}")//
+                .withType(ExOpt.newOne().partner("source"))//
+                .hasArg()//
+                .create("C"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("write")//
+                .withDescription("导出到文件")//
+                .withType(CommandLineHelper.OPTION_CAN_WRITE)//
+                .hasArg()//
+                .create("w"));
+        options.addOption(OptionBuilder.isRequired(false)//
+                .withLongOpt("num")//
+                .withDescription("包的数量(默认1,000,000)")//
+                .withType(CommandLineHelper.OPTION_INT)//
+                .hasArg()//
+                .create("n"));
     }
 
     /**
@@ -161,71 +193,49 @@ public class Main
         {
             String arch = System.getProperty("os.arch");
             String osname = System.getProperty("os.name");
-            String libpath = System.getProperty("java.library.path");
-            if (libpath == null || libpath.length() == 0)
+            try
             {
-                throw new RuntimeException("无法自动释放jnetpcap, 请设置一个拥有写权限的目录-Djava.library.path=");
+                if (osname.equals("Windows"))
+                {
+                    ReleaseUtils.release(String.format("/pd/x86/jnetpcap.dll", arch));
+                    ReleaseUtils.release(String.format("/pd/x86/pcap.dll", arch));
+                }
+                else if (osname.equals("Linux"))
+                {
+                    ReleaseUtils.release(String.format("/pd/%s/libjnetpcap.so", arch));
+                    ReleaseUtils.release(String.format("/pd/%s/libpcap.so.0.9", arch));
+                }
+                else if (osname.equals("Mac"))
+                {
+                    // TODO:
+                }
+                else
+                {
+                    // TODO:
+                }
+
+                System.loadLibrary("jnetpcap");
             }
-            String path = null;
-            StringTokenizer st = new StringTokenizer(libpath, System.getProperty("path.separator"));
-
-            while (true)
+            catch (Throwable e2)
             {
-                if (!st.hasMoreTokens())
+                if (osname.equals("Windows"))
                 {
-                    throw new RuntimeException("无法自动释放jnetpcap, 请设置一个拥有写权限的目录-Djava.library.path=");
+                    console.error("请安装WinPCAP");
                 }
-                path = st.nextToken();
-                File temporaryLib = new File(new File(path), "jnetpcap");
-                if (temporaryLib.exists())
+                else if (osname.equals("Linux"))
                 {
-                    throw new RuntimeException("释放的jnetpcap库无效");
+                    console.error("未知错误");
                 }
-                try
+                else if (osname.equals("Mac"))
                 {
-                    FileOutputStream outputStream = new FileOutputStream(temporaryLib);
-                    byte[] array = new byte[8192];
-                    InputStream libStream = null;
-                    if (osname.startsWith("Linux"))
-                    {
-                        libStream = Main.class.getResourceAsStream(arch.equals("x86") ? "libjnetpcap.so" : "libjnetpcap-64.so");
-                    }
-                    else if (osname.startsWith("Windows"))
-                    {
-                        libStream = Main.class.getResourceAsStream(arch.equals("x86") ? "jnetpcap.dll" : "jnetpcap-64.dll");
-                    }
-                    else if (osname.startsWith("Mac"))
-                    {
-
-                    }
-                    for (int i = libStream.read(array); i != -1; i = libStream.read(array))
-                    {
-                        outputStream.write(array, 0, i);
-                    }
-                    outputStream.flush();
-                    outputStream.close();
-                    libStream.close();
-                    console.info("释放jnetpacp到目录 " + path);
-                    try
-                    {
-                        System.load(temporaryLib.getPath());
-                        console.info("使用临时目录的库 " + path);
-                        break;
-                    }
-                    catch (Throwable e2)
-                    {
-                        console.info("无法使用库" + path + " " + e2.getMessage());
-                    }
+                    // TODO:
                 }
-                catch (Throwable e1)
+                else
                 {
-                    // 尝试下一个
-                    console.info("无法释放库到目录" + path + " " + e1.getMessage());
-                    if (temporaryLib.exists())
-                    {
-                        temporaryLib.delete();
-                    }
+                    // TODO:
                 }
+                e2.printStackTrace();
+                throw new Error("无法继续");
             }
         }
     }
@@ -251,125 +261,6 @@ public class Main
         }
     }
 
-    private void startWithLoop() throws IOException
-    {
-        File temporaryExe = File.createTempFile("RawPcap", ".exe");
-        FileOutputStream outputStream = new FileOutputStream(temporaryExe);
-        byte[] array = new byte[8192];
-        InputStream exeStream = Main.class.getResourceAsStream("RawCap.exe");
-        for (int j = exeStream.read(array); j != -1; j = exeStream.read(array))
-        {
-            outputStream.write(array, 0, j);
-        }
-        outputStream.flush();
-        outputStream.close();
-        exeStream.close();
-        Process proc = null;
-        try
-        {
-            proc = Runtime.getRuntime().exec(temporaryExe.getAbsolutePath() + " -h");
-        }
-        catch (IOException e)
-        {
-            System.err.println("请确认用管理员身份打开");
-            System.exit(1);
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        String line;
-        int devid = -1;
-        while ((line = reader.readLine()) != null)
-        {
-            if (line.indexOf("127.0.0.1") > 0)
-            {
-                devid = Integer.parseInt(line.split("\\.")[0].trim());
-                break;
-            }
-        }
-        if (devid == -1)
-        {
-            view.alert("无法挂载loop");
-            System.exit(1);
-        }
-        File tempFile = File.createTempFile("dump", ".pcap");
-        // 正式启动cap
-        try
-        {
-            final Process subproc = Runtime.getRuntime().exec(temporaryExe.getAbsolutePath() + " -f " + devid + " " + tempFile.getAbsolutePath());
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    subproc.destroy();
-                }
-            }));
-            skip = 0;
-            startWithFile(tempFile, true);
-            subproc.destroy();
-            tempFile.delete();
-            temporaryExe.delete();
-        }
-        catch (SecurityException e)
-        {
-            Alert.alert("请使用管理员的cmd启动", PivotApplication.window);
-        }
-    }
-
-    private void startWithFile(File file, boolean manualStop) throws IOException
-    {
-        PCAPFileReader reader = new PCAPFileReader(new EndlessFileInputStream(file));
-        int cnt = skip;
-        reader.skip(skip);
-        while (true)
-        {
-            if (!manualStop && !reader.hasNext())
-            {
-                break;
-            }
-            byte[] buffer = reader.next();
-            try
-            {
-                if (++cnt > 1000000)
-                {
-                    break;
-                }
-                JMemoryPacket packet = new JMemoryPacket(JProtocol.ETHERNET_ID, Arrays.copyOfRange(buffer, 16, buffer.length));
-                Tcp tcp = packet.getHeader(new Tcp());
-                Ip4 ip4 = packet.getHeader(new Ip4());
-                handlerGenerator.nextPacket(cnt, ip4, tcp);
-            }
-            catch (Throwable e)
-            {
-                System.err.println("无法解析的包 " + cnt);
-                byte[] buff = Arrays.copyOfRange(buffer, 16, buffer.length);
-                for (int i = 0; i < buff.length; i++)
-                {
-                    System.err.print(String.format("%02x ", buff[i]));
-                    if ((i + 1) % 16 == 0)
-                    {
-                        System.err.println();
-                    }
-                }
-                System.err.println();
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void startWithPcap()
-    {
-        int snaplen = 64 * 1024;
-        int flags = Pcap.MODE_PROMISCUOUS;
-        int timeout = 1 * 1000;
-        Pcap pcap = Pcap.openLive(device.getName(), snaplen, flags, timeout, errbuf);
-        int cnt = 0;
-        while (cnt < 1000000)
-        {
-            pcap.loop(1000, handlerGenerator, "jNetPcap rocks!");
-        }
-        pcap.close();
-    }
-
     public static void main(String[] args) throws Exception
     {
         Map<String, String> paramMap = new CommandLineHelper("包监听工具", options, defaultMap).parse(args);
@@ -388,8 +279,24 @@ public class Main
         {
             main.view.setDebug(true);
         }
-
-        if (paramMap.containsKey("file"))
+        if (paramMap.containsKey("list"))
+        {
+            for (PcapIf dev : main.alldevs)
+            {
+                String ip = "-";
+                if (dev.getAddresses().size() > 0)
+                {
+                    for (PcapAddr addr : dev.getAddresses())
+                    {
+                        ip += IpUtils.bytes2string(addr.getAddr().getData()) + ", ";
+                    }
+                    ip.replaceFirst(", $", "");
+                }
+                main.view.info(String.format("%s : %-10s %s", ip, dev.getName(), dev.getDescription()));
+            }
+            return;
+        }
+        else if (paramMap.containsKey("file"))
         {
             main.device = main.FILE;
             main.pcapFile = new File(paramMap.get("file"));
@@ -401,12 +308,24 @@ public class Main
         else if (paramMap.containsKey("loop"))
         {
             main.device = main.LOOP;
-            main.deviceIp = IpUtils.string2int("127.0.0.1");
+            main.deviceIp = new int[]
+            { IpUtils.string2int("127.0.0.1") };
         }
         else if (paramMap.containsKey("if"))
         {
             main.device = main.getDeviceByName(paramMap.get("if"));
-            main.deviceIp = IpUtils.bytes2int(main.device.getAddresses().get(0).getAddr().getData());
+            List<PcapAddr> addrList = main.device.getAddresses();
+            main.deviceIp = new int[addrList.size()];
+            for (int i = 0; i < addrList.size(); i++)
+            {
+                PcapAddr addr = addrList.get(i);
+                main.deviceIp[i] = IpUtils.bytes2int(addr.getAddr().getData());
+            }
+        }
+        else if (paramMap.containsKey("command"))
+        {
+            main.sourceCmd = paramMap.get("command");
+            main.device = main.FILE;
         }
         if (main.device == null)
         {
@@ -422,7 +341,16 @@ public class Main
         }
         if (paramMap.containsKey("source"))
         {
-            main.deviceIp = IpUtils.string2int(paramMap.get("source"));
+            main.deviceIp = new int[]
+            { IpUtils.string2int(paramMap.get("source")) };
+        }
+        if (paramMap.containsKey("write"))
+        {
+            // TODO:
+        }
+        if (paramMap.containsKey("num"))
+        {
+            main.num = Integer.parseInt(paramMap.get("num"));
         }
         if (paramMap.containsKey("conf"))
         {
@@ -458,11 +386,11 @@ public class Main
         {
             for (PcapIf dev : alldevs)
             {
-                if (dev.getName().equals(name))
+                if (name.equals(dev.getName()))
                 {
                     return dev;
                 }
-                if (dev.getDescription().equals(name))
+                if (name.equals(dev.getDescription()))
                 {
                     return dev;
                 }
@@ -517,22 +445,89 @@ public class Main
         handlerGenerator.setSource(deviceIp);
         view.info("Handler: " + conf.getHandlerName(handler));
         view.info("Source: " + IpUtils.int2string(deviceIp));
+        String osname = System.getProperty("os.name");
         if (device == LOOP)
         {
+            if (osname.startsWith("Linux"))
+            {
+                sourceCmd = String.format("tcpdump -i lo -w {}");
+            }
+            else if (osname.startsWith("Windows"))
+            {
+                File temporaryExe = File.createTempFile("RawPcap", ".exe");
+                FileOutputStream outputStream = new FileOutputStream(temporaryExe);
+                byte[] array = new byte[8192];
+                InputStream exeStream = Class.class.getResourceAsStream("/pd/x86/RawCap.exe");
+                for (int j = exeStream.read(array); j != -1; j = exeStream.read(array))
+                {
+                    outputStream.write(array, 0, j);
+                }
+                outputStream.flush();
+                outputStream.close();
+                exeStream.close();
+                Process proc = null;
+                try
+                {
+                    proc = Runtime.getRuntime().exec(temporaryExe.getAbsolutePath() + " -h");
+                }
+                catch (IOException e)
+                {
+                    System.err.println("请确认用管理员身份打开");
+                    System.exit(1);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                String line;
+                int devid = -1;
+                while ((line = reader.readLine()) != null)
+                {
+                    if (line.indexOf("127.0.0.1") > 0)
+                    {
+                        devid = Integer.parseInt(line.split("\\.")[0].trim());
+                        break;
+                    }
+                }
+                if (devid == -1)
+                {
+                    view.alert("无法挂载loop");
+                    System.exit(1);
+                }
+                sourceCmd = String.format("%s -f %s {}", temporaryExe.getPath(), devid);
+            }
+            else if (osname.startsWith("Mac"))
+            {
+            }
             view.info(String.format("WATCH: LOOP"));
-            startWithLoop();
+            source = new ProcessSource(sourceCmd);
+        }
+        else if (sourceCmd != null)
+        {
+            view.info(String.format("WATCH: %s", sourceCmd));
+            source = new ProcessSource(sourceCmd);
         }
         else if (device == FILE)
         {
             view.info(String.format("WATCH: %s", pcapFile.getPath()));
-            startWithFile(pcapFile, false);
+            source = new FileSource(pcapFile.getPath());
         }
         else
         {
-            view.info(String.format("WATCH: %20s %s", device.getAddresses().get(0).getAddr(), device.getName()));
-            startWithPcap();
+            view.info(String.format("WATCH: %20s %s", IpUtils.int2string(deviceIp), device.getName()));
+            source = new LibPcapSource(device);
+        }
+        source.init();
+        int cnt = skip;
+        source.skip(skip);
+        while (true)
+        {
+            if (++cnt > num)
+            {
+                break;
+            }
+            JPacket packet = source.next();
+            Tcp tcp = packet.getHeader(new Tcp());
+            Ip4 ip4 = packet.getHeader(new Ip4());
+            handlerGenerator.nextPacket(cnt, ip4, tcp);
         }
         view.alert("捕获结束");
     }
-
 }

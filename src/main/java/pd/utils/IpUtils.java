@@ -10,6 +10,11 @@ public class IpUtils
         return ((ip[0] & 0xff) << 24) | ((ip[1] & 0xff) << 16) | ((ip[2] & 0xff) << 8) | (ip[3] & 0xff);
     }
 
+    public static String bytes2string(byte[] ip)
+    {
+        return int2string(bytes2int(ip));
+    }
+
     public final static byte[] int2bytes(int ip)
     {
         byte result[] = new byte[4];
@@ -28,6 +33,17 @@ public class IpUtils
         result[2] = ((ip >> 8) & 0xff);
         result[3] = (ip & 0xff);
         return String.format("%d.%d.%d.%d", result[0], result[1], result[2], result[3]);
+    }
+
+    public final static String int2string(int ips[])
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int ip : ips)
+        {
+            sb.append(int2string(ip));
+            sb.append(", ");
+        }
+        return sb.toString().replaceFirst(", $", "");
     }
 
     public static int string2int(String ip)
@@ -91,4 +107,5 @@ public class IpUtils
     {
         return String.format("%s:%d => %s:%d", int2string(ip4.destinationToInt()), tcp.destination(), int2string(ip4.sourceToInt()), tcp.source());
     }
+
 }

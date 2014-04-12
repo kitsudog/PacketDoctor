@@ -1,6 +1,7 @@
 package pd.handler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
 
     private List<IFilter> filters;
 
-    private int source;
+    private int[] source;
 
     public HandlerGenerator(Class<? extends PacketHandler> handlerClass, IView view)
     {
@@ -37,7 +38,7 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         this.filters = new ArrayList<IFilter>();
     }
 
-    public void setSource(int ip)
+    public void setSource(int[] ip)
     {
         source = ip;
     }
@@ -59,11 +60,11 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         try
         {
             PacketHandler handler = getHandler(ip4, tcp);
-            if (ip4.sourceToInt() == source)
+            if (Arrays.binarySearch(source, ip4.sourceToInt()) >= 0)
             {
                 handler.sendPacket(frameNum, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
             }
-            else if (ip4.destinationToInt() == source)
+            else if (Arrays.binarySearch(source, ip4.destinationToInt()) >= 0)
             {
                 handler.recvPacket(frameNum, ip4, tcp, tcp.getPacket().getCaptureHeader().timestampInMillis());
             }
@@ -79,7 +80,8 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         }
         catch (DisconnectException e)
         {
-            view.info(String.format("断开一个连接 %s", ip4.sourceToInt() == source ? IpUtils.toServerDesc(ip4, tcp) : IpUtils.fromClientDesc(ip4, tcp)));
+            view.info(String.format("断开一个连接 %s",
+                    Arrays.binarySearch(source, ip4.sourceToInt()) >= 0 ? IpUtils.toServerDesc(ip4, tcp) : IpUtils.fromClientDesc(ip4, tcp)));
         }
         catch (Exception e)
         {
@@ -97,14 +99,14 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         int sourcePort = 0;
         int destination = 0;
         int destinationPort = 0;
-        if (ip4.sourceToInt() == this.source)
+        if (Arrays.binarySearch(this.source, ip4.sourceToInt()) >= 0)
         {
             source = ip4.sourceToInt();
             sourcePort = tcp.source();
             destination = ip4.destinationToInt();
             destinationPort = tcp.destination();
         }
-        else if (ip4.destinationToInt() == this.source)
+        else if (Arrays.binarySearch(this.source, ip4.destinationToInt()) >= 0)
         {
             source = ip4.destinationToInt();
             sourcePort = tcp.destination();
@@ -141,13 +143,13 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         int destinationHost;
         int sourcePort;
         int destinationPort;
-        if (ip4.sourceToInt() == source)
+        if (Arrays.binarySearch(this.source, ip4.sourceToInt()) >= 0)
         {
             destinationHost = ip4.destinationToInt();
             sourcePort = tcp.source();
             destinationPort = tcp.destination();
         }
-        else if (ip4.destinationToInt() == source)
+        else if (Arrays.binarySearch(this.source, ip4.destinationToInt()) >= 0)
         {
             destinationHost = ip4.sourceToInt();
             sourcePort = tcp.destination();
@@ -167,14 +169,14 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         int destinationHost;
         int sourcePort;
         int destinationPort;
-        if (ip4.sourceToInt() == source)
+        if (Arrays.binarySearch(this.source, ip4.sourceToInt()) >= 0)
         {
             sourceHost = ip4.sourceToInt();
             destinationHost = ip4.destinationToInt();
             sourcePort = tcp.source();
             destinationPort = tcp.destination();
         }
-        else if (ip4.destinationToInt() == source)
+        else if (Arrays.binarySearch(this.source, ip4.destinationToInt()) >= 0)
         {
             sourceHost = ip4.destinationToInt();
             destinationHost = ip4.sourceToInt();

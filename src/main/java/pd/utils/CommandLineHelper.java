@@ -84,6 +84,11 @@ final public class CommandLineHelper
             return opt;
         }
 
+        public static ExOpt newOne()
+        {
+            ExOpt opt = new ExOpt();
+            return opt;
+        }
     }
 
     private Options options;

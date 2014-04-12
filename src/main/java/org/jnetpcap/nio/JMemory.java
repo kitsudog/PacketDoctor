@@ -116,6 +116,7 @@ public abstract class JMemory
         try
         {
             System.loadLibrary(JNETPCAP_LIBRARY_NAME);
+
             Pcap.isInjectSupported();
 
             initIDs();

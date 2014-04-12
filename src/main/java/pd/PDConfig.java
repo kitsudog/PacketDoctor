@@ -61,14 +61,14 @@ public class PDConfig
 
     public String getHandlerName(String handler)
     {
-        HandlerConfig config = handlerConfigs.get(handler);
+        HandlerConfig config = handlerConfigs.get(handler.equals("DEFAULT") ? _default : handler);
         return config.name;
     }
 
     @SuppressWarnings("unchecked")
     public Class<? extends PacketHandler> getHandlerClass(String handler) throws Exception
     {
-        HandlerConfig config = handlerConfigs.get(handler);
+        HandlerConfig config = handlerConfigs.get(handler.equals("DEFAULT") ? _default : handler);
         URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]
         { URL.class });

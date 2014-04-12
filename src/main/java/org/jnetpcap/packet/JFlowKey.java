@@ -238,9 +238,9 @@ public class JFlowKey extends JStruct
      * @return the string
      * @see org.jnetpcap.nio.JMemory#toDebugString()
      */
+    @SuppressWarnings("resource")
     public String toDebugString()
     {
-        @SuppressWarnings("resource")
         Formatter out = new Formatter();
 
         out.format("[count=%d, map=0x%x, hash=0x%x]", getPairCount(), getHeaderMap(), hashCode());

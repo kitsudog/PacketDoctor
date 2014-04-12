@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.jnetpcap.protocol.JProtocol;
+
 @SuppressWarnings("unused")
 public class PCAPFileReader
 {
@@ -31,15 +33,26 @@ public class PCAPFileReader
     {
         this.is = is;
         byte[] b = new byte[24];
+        while (is.available() < 24)
+        {
+            try
+            {
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
         is.read(b);
         ByteBuffer temp = ByteBuffer.wrap(b);
         temp.order(ByteOrder.BIG_ENDIAN);
         int magic = temp.getInt();
-        if (magic == 0xa1b2c3d4)
+        if ((magic & 0xffffffff) == 0xa1b2c3d4)
         {
             buff.order(ByteOrder.BIG_ENDIAN);
         }
-        if (magic == 0xd4c3b2a1)
+        else if ((magic & 0xffffffff) == 0xd4c3b2a1)
         {
             buff.order(ByteOrder.LITTLE_ENDIAN);
         }
@@ -151,6 +164,18 @@ public class PCAPFileReader
     {
         is.close();
         is = null;
+    }
+
+    public int getLinktype()
+    {
+        switch (linktype)
+        {
+            case 1:
+                return JProtocol.ETHERNET_ID;
+            case 101:
+                return JProtocol.IP4_ID;
+        }
+        return -1;
     }
 
 }

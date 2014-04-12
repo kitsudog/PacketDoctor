@@ -522,6 +522,7 @@ public class JHeaderScanner extends JFunction
      * 
      * @see java.lang.Object#toString()
      */
+    @SuppressWarnings("resource")
     /**
      * To string.
      * 
@@ -531,7 +532,6 @@ public class JHeaderScanner extends JFunction
     @Override
     public String toString()
     {
-        @SuppressWarnings("resource")
         final Formatter out = new Formatter();
 
         StringBuilder b = new StringBuilder();
