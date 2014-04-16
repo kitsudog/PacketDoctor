@@ -329,59 +329,59 @@ public class HttpHandler extends TcpHandler
         else
         {
             String contentEncoding = state.headerMap.get("Content-Encoding");
-            if (contentEncoding != null && contentEncoding.equals("gzip"))
+            if ("chunked".equals(state.headerMap.get("Transfer-Encoding")))
             {
-                if ("chunked".equals(state.headerMap.get("Transfer-Encoding")))
+                // 寻找对应的chunked
+                int cur = 0;
+                int chunkSize = 0;
+                ByteArrayOutputStream buff = new ByteArrayOutputStream();
+                try
                 {
-                    // 寻找对应的chunked
-                    int cur = 0;
-                    int chunkSize = 0;
-                    ByteArrayOutputStream buff = new ByteArrayOutputStream();
-                    try
+                    for (int i = cur; i < contentRaw.length - 1; i++)
                     {
-                        for (int i = cur; i < contentRaw.length - 1; i++)
+                        if (contentRaw[i] == '\r' && contentRaw[i + 1] == '\n')
                         {
-                            if (contentRaw[i] == '\r' && contentRaw[i + 1] == '\n')
+                            chunkSize = 0;
+                            if (i == cur)
                             {
-                                chunkSize = 0;
-                                if (i == cur)
+                                cur = i + 2;
+                                i += 1;
+                                continue;
+                            }
+                            for (byte b : Arrays.copyOfRange(contentRaw, cur, i))
+                            {
+                                chunkSize <<= 4;
+                                chunkSize |= b > '9' ? ((b | 32) - ('a' - 10)) : (b - '0');
+                            }
+                            i += 2;
+                            if (chunkSize > 0)
+                            {
+                                if (contentRaw.length < i + chunkSize + 2 + 5)
                                 {
-                                    cur = i + 2;
-                                    i += 1;
-                                    continue;
-                                }
-                                for (byte b : Arrays.copyOfRange(contentRaw, cur, i))
-                                {
-                                    chunkSize <<= 4;
-                                    chunkSize |= b > '9' ? ((b | 32) - ('a' - 10)) : (b - '0');
-                                }
-                                i += 2;
-                                if (chunkSize > 0)
-                                {
-                                    if (contentRaw.length < i + chunkSize + 2 + 5)
-                                    {
-                                        // 数据还不够
-                                        state.length += i + chunkSize + 2 + 5 - contentRaw.length;
-                                        return;
-                                    }
-                                    buff.write(Arrays.copyOfRange(contentRaw, i, i + chunkSize));
-                                }
-                                else
-                                {
-                                    state.length += 2;
+                                    // 数据还不够
+                                    state.length += i + chunkSize + 2 + 5 - contentRaw.length;
                                     return;
                                 }
-                                cur = chunkSize + i + 2;
-                                i = cur - 1;
+                                buff.write(Arrays.copyOfRange(contentRaw, i, i + chunkSize));
                             }
+                            else
+                            {
+                                state.length += 2;
+                                break;
+                            }
+                            cur = chunkSize + i + 2;
+                            i = cur - 1;
                         }
                     }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    contentRaw = buff.toByteArray();
                 }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                contentRaw = buff.toByteArray();
+            }
+            if (contentEncoding != null && contentEncoding.equals("gzip"))
+            {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 try
                 {

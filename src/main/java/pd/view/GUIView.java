@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
@@ -218,7 +217,7 @@ public class GUIView extends Window implements IView, Bindable
         TreeBranch node = new TreeBranch(title.toString());
         ArrayList<String> nodes = new ArrayList<String>();
         int maxLen = 0;
-        for (Object key : new TreeSet<Object>(json.keySet()).toArray())
+        for (Object key : json.keySet())
         {
             Object value = json.get(key);
             if (value instanceof JSONObject)
@@ -262,6 +261,10 @@ public class GUIView extends Window implements IView, Bindable
             {
                 node.add(newJsonNode((JSONArray) value, i));
             }
+            else
+            {
+                node.add(new TreeNode(value.toString()));
+            }
             i++;
         }
         return node;
@@ -273,6 +276,7 @@ public class GUIView extends Window implements IView, Bindable
         tree.setMenuHandler(menuHandler);
         tree.setTreeData(root = new TreeBranch());
         Timer timer = new Timer();
+        final GUIView lock = this;
         timer.schedule(new TimerTask()
         {
 
@@ -283,12 +287,18 @@ public class GUIView extends Window implements IView, Bindable
                 {
                     try
                     {
-                        tree.repaint(true);
-                        dirty = false;
+                        synchronized (lock)
+                        {
+                            tree.repaint(true);
+                        }
                     }
                     catch (Exception e)
                     {
-                        System.err.println("刷新异常 " + e);
+                        error("刷新异常 " + e);
+                    }
+                    finally
+                    {
+                        dirty = false;
                     }
                 }
             }

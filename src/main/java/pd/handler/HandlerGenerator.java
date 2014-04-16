@@ -10,6 +10,7 @@ import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
+import org.jnetpcap.protocol.tcpip.Tcp.Flag;
 
 import pd.exception.DisconnectException;
 import pd.exception.GiveupException;
@@ -122,8 +123,8 @@ public class HandlerGenerator implements PcapPacketHandler<String>
         }
         view.error(msg
                 + "\n"
-                + String.format("frame: %d\t%s:%d => %s:%d\n", frameNum, IpUtils.int2string(source), sourcePort, IpUtils.int2string(destination),
-                        destinationPort)//
+                + String.format("frame: %d\t%s:%d => %s:%d (%s)\n", frameNum, IpUtils.int2string(source), sourcePort, IpUtils.int2string(destination),
+                        destinationPort, tcp == null ? "###UNKNWON###" : Flag.toCompactString(tcp.flags()))//
                 + String.format("tcp.port == %d && tcp.port == %d && ip.host == %s\n", sourcePort, destinationPort, IpUtils.int2string(destination))//
                 + packet.toHexdump());
     }

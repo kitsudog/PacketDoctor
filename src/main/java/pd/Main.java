@@ -515,17 +515,17 @@ public class Main
         }
         else if (sourceCmd != null)
         {
-            view.info(String.format("WATCH: %s", sourceCmd));
+            view.info(String.format("WATCH: %-s", sourceCmd));
             source = new ProcessSource(sourceCmd);
         }
         else if (device == FILE)
         {
-            view.info(String.format("WATCH: %s", pcapFile.getPath()));
+            view.info(String.format("WATCH: %-s", pcapFile.getPath()));
             source = new FileSource(pcapFile.getPath());
         }
         else
         {
-            view.info(String.format("WATCH: %20s %s", IpUtils.int2string(deviceIp), device.getName()));
+            view.info(String.format("WATCH: %-20s %s", IpUtils.int2string(deviceIp), device.getName()));
             source = new LibPcapSource(device);
         }
         source.init();
