@@ -1,6 +1,7 @@
 package pd.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -38,15 +39,15 @@ final public class CommandLineHelper
 
     public static final int OPTION_HOST = 1 << 5;
 
-    private Parser parser = new GnuParser();
+    private final Parser parser = new GnuParser();
 
     static public class ExOpt
     {
         private Integer exopt;
 
-        private List<String> radioParamList = new LinkedList<String>();
+        private final List<String> radioParamList = new LinkedList<String>();
 
-        private List<String> partnerParamList = new LinkedList<String>();
+        private final List<String> partnerParamList = new LinkedList<String>();
 
         private ExOpt()
         {
@@ -91,16 +92,17 @@ final public class CommandLineHelper
         }
     }
 
-    private Options options;
+    private final Options options;
 
-    private Map<String, String> defaultValues = new HashMap<String, String>();
+    private final Map<String, String> defaultValues;
 
-    private String header;
+    private final String header;
+
+    private boolean hasConsole;
 
     public CommandLineHelper(String header, Options options)
     {
-        this.header = header;
-        this.options = options;
+        this(header, options, new HashMap<String, String>());
     }
 
     public CommandLineHelper(String header, Options options, Map<String, String> defaultValues)
@@ -108,6 +110,15 @@ final public class CommandLineHelper
         this.header = header;
         this.options = options;
         this.defaultValues = defaultValues;
+        try
+        {
+            System.in.available();
+            hasConsole = true;
+        }
+        catch (IOException t)
+        {
+            hasConsole = false;
+        }
     }
 
     public Map<String, String> parse(String[] args)
@@ -246,5 +257,10 @@ final public class CommandLineHelper
     private boolean isIp(String ip)
     {
         return ip.matches("((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))");
+    }
+
+    public boolean hasConsole()
+    {
+        return hasConsole;
     }
 }

@@ -50,11 +50,13 @@ public class GUIView extends Window implements IView, Bindable
 
     private boolean dirty;
 
-    private Set<String> include = new HashSet<String>();
+    private final Set<String> include = new HashSet<String>();
 
-    private Set<String> exclude = new HashSet<String>();
+    private final Set<String> exclude = new HashSet<String>();
 
-    private MenuHandler menuHandler = new MenuHandler.Adapter()
+    private final ArrayList<MessageData> allData = new ArrayList<IView.MessageData>();
+
+    private final MenuHandler menuHandler = new MenuHandler.Adapter()
     {
         @Override
         public boolean configureContextMenu(Component component, Menu menu, int x, int y)
@@ -133,8 +135,6 @@ public class GUIView extends Window implements IView, Bindable
         }
     };
 
-    private ArrayList<MessageData> allData = new ArrayList<IView.MessageData>();
-
     synchronized private void reload()
     {
         ApplicationContext.queueCallback(new Runnable()
@@ -166,6 +166,7 @@ public class GUIView extends Window implements IView, Bindable
         });
     }
 
+    @Override
     synchronized public void addNode(final MessageData node)
     {
         allData.add(node);
@@ -330,9 +331,48 @@ public class GUIView extends Window implements IView, Bindable
     }
 
     @Override
-    public int confirm(String msg, String... options)
+    public int confirm(String msg, String options[])
     {
-        return 0;
+        String errMsg = "";
+        while (true)
+        {
+            StringBuilder message = new StringBuilder(errMsg);
+            message.append(String.format("%s:", msg));
+            message.append("\n");
+            for (int i = 0; i < options.length; i++)
+            {
+                message.append(String.format("%d:%s", i, options[i]));
+                message.append("\n");
+            }
+            String result = JOptionPane.showInputDialog(null, message.toString(), "");
+            for (int i = 0; i < options.length; i++)
+            {
+                if (options[i].equals(result))
+                {
+                    return i;
+                }
+            }
+            if (result != null)
+            {
+                try
+                {
+                    int i = Integer.parseInt(result);
+                    if (i >= 0 && i < options.length)
+                    {
+                        return i;
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+                errMsg = "无效,请重新输入\n";
+            }
+            else
+            {
+                System.exit(1);
+            }
+        }
     }
 
     @Override

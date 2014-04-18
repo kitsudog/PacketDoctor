@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
+import org.jnetpcap.protocol.tcpip.Tcp.Flag;
 
 import pd.exception.DisconnectException;
 import pd.exception.HandlerException;
@@ -85,7 +86,7 @@ public class TcpHandler extends AbstractPacketHandler
         public long maxSeq;
     }
 
-    private TcpState local = new TcpState();
+    private final TcpState local = new TcpState();
 
     protected void sendTcp(Ip4 ip4, Tcp tcp, byte[] payload, long timestamp)
     {
@@ -112,6 +113,7 @@ public class TcpHandler extends AbstractPacketHandler
             {
                 // 明确为服务端
                 local.state = STATE.LISTEN;
+                local.ack = tcp.seq();
             }
             else
             {
@@ -230,6 +232,10 @@ public class TcpHandler extends AbstractPacketHandler
             local.state = STATE.CLOSED;
             throw new DisconnectException("完成断线请求");
         }
+        else if (local.state == STATE.CLOSE_WAIT)
+        {
+            view.debug("ErrorPack: " + frameNum);
+        }
         else
         {
             if (tcp.seq() < local.ack)
@@ -238,7 +244,7 @@ public class TcpHandler extends AbstractPacketHandler
             }
             else
             {
-                throw new RuntimeException("状态不对");
+                throw new RuntimeException("状态不对: " + local.state.name() + " recv " + Flag.toCompactString(tcp.flags()));
             }
         }
     }
@@ -261,6 +267,8 @@ public class TcpHandler extends AbstractPacketHandler
         {
             Asserts.isTrue("发送握手包SYN, ACK", tcp.flags() == 0x012); // SYN, ACK
             local.state = STATE.SYNC_RCVD;
+            local.nextSeq = tcp.seq() + 1;
+            local.ack = tcp.ack();
         }
         else if (local.state == STATE.CLOSED) // Client
         {
@@ -304,7 +312,7 @@ public class TcpHandler extends AbstractPacketHandler
             // FIN, ACK | FIN
             {
                 local.state = STATE.FIN_WAIT_1;
-                local.nextSeq = tcp.seq() + 1;
+                local.nextSeq = tcp.seq();
             }
             else
             {

@@ -2,10 +2,12 @@ package pd;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -49,13 +51,13 @@ public class Main
 
     private static Options options;
 
-    private PcapIf LOOP = new PcapIf();
+    private final PcapIf LOOP = new PcapIf();
 
-    private PcapIf FILE = new PcapIf();
+    private final PcapIf FILE = new PcapIf();
 
-    private List<PcapIf> alldevs = new ArrayList<PcapIf>();
+    private final List<PcapIf> alldevs = new ArrayList<PcapIf>();
 
-    private StringBuilder errbuf = new StringBuilder();
+    private final StringBuilder errbuf = new StringBuilder();
 
     private HandlerGenerator handlerGenerator;
 
@@ -259,6 +261,8 @@ public class Main
         if (result == 0)
         {
             device = LOOP;
+            deviceIp = new int[]
+            { IpUtils.string2int("127.0.0.1") };
         }
         else
         {
@@ -272,6 +276,22 @@ public class Main
         Map<String, String> paramMap = helper.parse(args);
         Main.initEnv();
         Main main = new Main();
+        if (!helper.hasConsole())
+        {
+            // 默认开启gui模式
+            paramMap.put("gui", "true");
+            try
+            {
+                // 转储stdout与stderr
+                PrintStream out = new PrintStream(new File("log"));
+                System.setErr(out);
+                System.setOut(out);
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
         if (paramMap.containsKey("gui"))
         {
             main.useGui();
@@ -515,12 +535,12 @@ public class Main
         }
         else if (sourceCmd != null)
         {
-            view.info(String.format("WATCH: %-s", sourceCmd));
+            view.info(String.format("WATCH: %-20s", sourceCmd));
             source = new ProcessSource(sourceCmd);
         }
         else if (device == FILE)
         {
-            view.info(String.format("WATCH: %-s", pcapFile.getPath()));
+            view.info(String.format("WATCH: %-20s", pcapFile.getPath()));
             source = new FileSource(pcapFile.getPath());
         }
         else
